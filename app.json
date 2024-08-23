@@ -6,6 +6,12 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/imovelPadrao.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-image-picker",
+        { "photosPermission": "Permita o acesso à galera para selecionar suas fotos favoritas." }
+      ]
+    ],
     "splash": {
       "image": "./src/assets/images/imovelPadrao.png",
       "resizeMode": "contain",

@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import { cores } from '@/src/constants/cores';
+import { cores } from '../../constants/cores';
 
 export const iconesLib = {
     adicionarFoto: <MaterialIcons name="add-a-photo" size={60} color={cores.secundaria} />,
