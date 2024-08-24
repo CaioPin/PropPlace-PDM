@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import {MapPressEvent, Marker, Region} from "react-native-maps";
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from "expo-location";
+import { getCurrentPositionAsync } from "expo-location";
 import { StyledMapView } from "../utils/elementosEstilizaveis";
+import { permissaoLocalizacao } from "../utils/permissoes";
 
 import pinImovelLivre from "../assets/images/pinImovelLivre.png";
 import pinImovelAlugado from "../assets/images/pinImovelAlugado.png";
@@ -40,8 +41,8 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaProp
                 return;
             }
 
-            const permissao = await requestForegroundPermissionsAsync();
-            if (!permissao.granted) return;
+            const permissao = await permissaoLocalizacao();
+            if (!permissao) return;
         
             const {latitude, longitude} = await getCurrentPositionAsync({}).then(posicao => posicao.coords);
             definirCentroMapa({latitude, longitude});
