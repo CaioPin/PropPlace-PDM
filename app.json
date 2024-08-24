@@ -22,6 +22,12 @@
     },
     "web": {
       "favicon": "./src/assets/images/imovelPadrao.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        { "locationAlwaysAndWhenInUsePermission": "Habilite o uso da sua localização para ter uma experiência personalizada." }
+      ]
+    ]
   }
 }
