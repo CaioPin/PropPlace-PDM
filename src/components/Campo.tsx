@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { StyledText, StyledTextInput, StyledView } from "../utils/elementosEstilizaveis";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
-
+import { View, Text, TextInput } from "react-native";
 enum CampoIcones {
     CADEADO = "cadeado",
     EMAIL = "email",
@@ -29,16 +28,16 @@ function Campo({titulo, texto = "", valorInicial = "", icone, ativo}:CampoPropri
     const tailwindImagem = "ml-3";
     
     return(
-        <StyledView className={tailwindConteiner}>
-            { titulo && <StyledText className={tailwindTitulo} style={estilo.titulo}>{titulo}</StyledText> }
+        <View className={tailwindConteiner}>
+            { titulo && <Text className={tailwindTitulo} style={estilo.titulo}>{titulo}</Text> }
             
-            <StyledView className={tailwindAreaCampo} style={ativo ? estilo.areaCampoAtivo : estilo.areaCampoInativo}>
-                <StyledTextInput className={tailwindCampoTexto} style={ativo ? estilo.textoAtivo : estilo.textoInativo}
+            <View className={tailwindAreaCampo} style={ativo ? estilo.areaCampoAtivo : estilo.areaCampoInativo}>
+                <TextInput className={tailwindCampoTexto} style={ativo ? estilo.textoAtivo : estilo.textoInativo}
                     placeholder={texto} value={valor} onChangeText={definirValor} editable={ativo} />
 
-                { icone && <StyledView className={tailwindImagem}>{iconesLib[icone]}</StyledView> }
-            </StyledView>
-        </StyledView>
+                { icone && <View className={tailwindImagem}>{iconesLib[icone]}</View> }
+            </View>
+        </View>
     );
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { DateData, LocaleConfig } from "react-native-calendars";
-import { StyledCalendar } from "../utils/elementosEstilizaveis";
+import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
+// import { StyledCalendar } from "../utils/elementosEstilizaveis";
 import { cores } from "../constants/cores";
 
 LocaleConfig.locales.pt = {
@@ -97,7 +97,7 @@ function Calendario() {
     const tailwindCalendario = "rounded-xl w-72";
 
     return (
-        <StyledCalendar onDayPress={marcarData} className={tailwindCalendario} theme={tema}
+        <Calendar onDayPress={marcarData} className={tailwindCalendario} theme={tema}
             initialDate={hojeFormatado} minDate={hojeFormatado} maxDate={dataMaxima}
             markingType={"period"} markedDates={datas} hideExtraDays={false}
             showSixWeeks enableSwipeMonths disableAllTouchEventsForDisabledDays />
