@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { View, Text, TextInput } from "react-native";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
-import { View, Text, TextInput } from "react-native";
+
 enum CampoIcones {
     CADEADO = "cadeado",
     EMAIL = "email",

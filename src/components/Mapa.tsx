@@ -95,10 +95,8 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaProp
         if (selecionavel) definirMarcadorToque(coordenadas);
     }
 
-    const tailwindMapa = "w-full h-full";
-
     return (
-        <MapView className={tailwindMapa} region={{...centroMapa, latitudeDelta: 0.02, longitudeDelta: 0.02}}
+        <MapView style={{width: "100%", height: "100%"}} region={{...centroMapa, latitudeDelta: 0.02, longitudeDelta: 0.02}}
             onRegionChangeComplete={mudancaDeRegiao} onPress={toqueNoMapa} moveOnMarkerPress={false}>
             
             { realizarRequisicoes && construirMarcadorImovel() }
