@@ -7,31 +7,33 @@ function Menu(){
     return(
         <StyledView className="flex flex-row justify-between w-full">
 
-        <StyledButton buttonStyle={{width: 90}} 
+        <StyledButton buttonStyle={{width: 80}} 
         icon={iconesLib.home} 
         title={"Home"} 
         iconPosition="top" 
         titleStyle={estilo.texto} 
-        type="clear" 
-        ></StyledButton>
+        type="clear"/>
 
-        <StyledButton buttonStyle={{width: 90}} 
-        icon={iconesLib.lupa} 
+        <StyledButton buttonStyle={{width: 80}} 
+        icon={iconesLib.lupa2} 
         title={"Pesquisar"} 
         iconPosition="top" 
         titleStyle={estilo.texto} 
-        type="clear" 
-        ></StyledButton>
+        type="clear" />
 
-        <StyledButton buttonStyle={{width: 90}} 
+        <StyledButton buttonStyle={{width: 80}} 
         icon={iconesLib.mapa} 
         title={"Mapa"} 
         iconPosition="top" 
         titleStyle={estilo.texto} 
-        type="clear" 
-        ></StyledButton>
+        type="clear"/>
 
-        <StyledButton buttonStyle={{width: 90}} icon={iconesLib.user} title={"Perfil"} iconPosition="top" titleStyle={estilo.texto} type="clear" ></StyledButton>
+        <StyledButton buttonStyle={{width: 80}} 
+        icon={iconesLib.user} 
+        title={"Perfil"} 
+        iconPosition="top" 
+        titleStyle={estilo.texto} 
+        type="clear"/>
 
         </StyledView>
     );
