@@ -51,9 +51,6 @@ const estilo = {
     .fonteM()
     .corSecundaria()
     .construir(),
-    cor: ConstrutorEstiloConstante.construtor()
-    .corSecundaria()
-    .construir(),
 }
 
 export { Menu }
