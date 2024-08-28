@@ -8,7 +8,8 @@ function Menu(){
     return(
       <View className="flex-1 flex-col-reverse">
 
-        <View className="flex flex-row justify-between w-full  px-2 border-t-2 border-[#554348]">
+        <View className="flex flex-row justify-between w-full  px-2 border-t-2
+        border-paleta-secundaria bg-paleta-fundo">
 
         <Button buttonStyle={{flexGrow: 1}} 
         icon={iconesLib.home} 
@@ -32,7 +33,12 @@ function Menu(){
         titleStyle={estilo.texto} 
         type="clear"/>
 
-        <Button buttonStyle={{flexGrow: 1}} icon={iconesLib.user} title={"Perfil"} iconPosition="top" titleStyle={estilo.texto} type="clear" />
+        <Button buttonStyle={{flexGrow: 1}} 
+        icon={iconesLib.user} 
+        title={"Perfil"} 
+        iconPosition="top" 
+        titleStyle={estilo.texto} 
+        type="clear" />
 
         </View>
       </View>
@@ -43,6 +49,9 @@ function Menu(){
 const estilo = {
   texto: ConstrutorEstiloConstante.construtor()
     .fonteM()
+    .corSecundaria()
+    .construir(),
+    cor: ConstrutorEstiloConstante.construtor()
     .corSecundaria()
     .construir(),
 }
