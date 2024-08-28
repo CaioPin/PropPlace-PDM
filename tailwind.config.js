@@ -1,8 +1,24 @@
+// import { cores } from './src/constants/cores'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{ts,tsx}", "./App.tsx"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        'paleta':{
+          primaria: "#99BFC6",
+          secundaria: "#554348",
+          terciaria: "#8C9A9E",
+          auxiliar: "#747578",
+          fundo: "#E6FFFF",
+          construtiva: "#83AB63",
+          destrutiva: "#D35252",
+          branco: "#FFFFFF",
+          preto: "#000000",
+        }
+      }
+    },
   },
   plugins: [],
 }

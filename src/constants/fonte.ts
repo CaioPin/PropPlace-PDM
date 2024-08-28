@@ -9,3 +9,7 @@ export const fonte = {
         xp: 8
     }
 };
+
+export const fontFamily = {
+    
+}

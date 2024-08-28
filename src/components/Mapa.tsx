@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import {MapPressEvent, Marker, Region} from "react-native-maps";
 import { getCurrentPositionAsync } from "expo-location";
-import { StyledMapView } from "../utils/elementosEstilizaveis";
 import { permissaoLocalizacao } from "../utils/permissoes";
+import MapView from "react-native-maps";
 
 import pinImovelLivre from "../assets/images/pinImovelLivre.png";
 import pinImovelAlugado from "../assets/images/pinImovelAlugado.png";
@@ -95,16 +95,14 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaProp
         if (selecionavel) definirMarcadorToque(coordenadas);
     }
 
-    const tailwindMapa = "w-full h-full";
-
     return (
-        <StyledMapView className={tailwindMapa} region={{...centroMapa, latitudeDelta: 0.02, longitudeDelta: 0.02}}
+        <MapView style={{width: "100%", height: "100%"}} region={{...centroMapa, latitudeDelta: 0.02, longitudeDelta: 0.02}}
             onRegionChangeComplete={mudancaDeRegiao} onPress={toqueNoMapa} moveOnMarkerPress={false}>
             
             { realizarRequisicoes && construirMarcadorImovel() }
             { marcarCentro && construirMarcadorCentro() }
             { selecionavel && construirMarcadorToque() }
-        </StyledMapView>
+        </MapView>
     );
 }
 

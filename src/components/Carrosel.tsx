@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { ImageSourcePropType, Modal, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { Image, ImageSourcePropType, Modal, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import { iconesLib } from "../assets/icons/iconesLib";
-import { StyledImage, StyledScrollView, StyledText, StyledView } from "../utils/elementosEstilizaveis";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { permissaoGaleria } from "../utils/permissoes";
 
@@ -72,10 +71,10 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
         const tailwindImagem = "max-h-64 max-w-full mb-3";
 
         return (
-            <StyledView className={tailwindView} style={{height: 268}}>
-                <StyledImage source={itemFocado.imagem} alt={textoAlternativo} className={tailwindImagem}
+            <View className={tailwindView} style={{height: 268}}>
+                <Image source={itemFocado.imagem} alt={textoAlternativo} className={tailwindImagem}
                     resizeMode="contain" defaultSource={imovelPadrao} progressiveRenderingEnabled  />
-            </StyledView>
+            </View>
         );
     }
 
@@ -109,9 +108,9 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
         const tailwindAdicao = "flex justify-center items-center rounded-md w-24 h-24 mr-5";
 
         return (
-            <StyledView className={tailwindAdicao} style={estilos.adicao} onTouchStart={adicionarImagem}>
+            <View className={tailwindAdicao} style={estilos.adicao} onTouchStart={adicionarImagem}>
                 {iconesLib.adicionarFoto}
-            </StyledView>
+            </View>
         );
     }
 
@@ -128,43 +127,43 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
         const tailwindSubtitulo = "mt-2";
 
         return (
-            <StyledView className={tailwindContainer} style={{width: tamanho}} key={indice}>
+            <View className={tailwindContainer} style={{width: tamanho}} key={indice}>
                 { editavel &&
-                    <StyledView className={tailwindIcone} style={estilos.icone} onTouchStart={() => removerItem(item)}>
+                    <View className={tailwindIcone} style={estilos.icone} onTouchStart={() => removerItem(item)}>
                         {iconesLib.lixeira}
-                    </StyledView> }
+                    </View> }
                     
                 <TouchableOpacity onPress={item.redirecionamento || (() => definirItemFocado(item))}>
                     { item.imagem ? 
-                        <StyledImage source={item.imagem} alt={textoAlternativo} className={tailwindImagem}
+                        <Image source={item.imagem} alt={textoAlternativo} className={tailwindImagem}
                             resizeMode="contain" style={{width: tamanho, height: tamanho}}
                             defaultSource={imovelPadrao} progressiveRenderingEnabled /> :
-                        <StyledImage src={item.caminho} alt={textoAlternativo} className={tailwindImagem}
+                        <Image src={item.caminho} alt={textoAlternativo} className={tailwindImagem}
                             resizeMode="contain" style={{width: tamanho, height: tamanho}}
                             defaultSource={imovelPadrao} progressiveRenderingEnabled /> }
 
                     { mostrarTexto && item.titulo &&
-                        <StyledText className={tailwindTitulo} style={estilos.titulo} numberOfLines={2}>{item.titulo}</StyledText> }
+                        <Text className={tailwindTitulo} style={estilos.titulo} numberOfLines={2}>{item.titulo}</Text> }
                     { mostrarTexto && item.subtitulo &&
-                        <StyledText className={tailwindSubtitulo} style={estilos.subtitulo} numberOfLines={1}>{item.subtitulo}</StyledText> }
+                        <Text className={tailwindSubtitulo} style={estilos.subtitulo} numberOfLines={1}>{item.subtitulo}</Text> }
                 </TouchableOpacity>
-            </StyledView>
+            </View>
         );
     }
 
     const tailwindView = "w-full flex " + (editavel ? "flex-row" : "items-center");
     const tailwindCarrossel = (multilinhas ? "flex flex-row flex-wrap " : "") + (editavel ? "flex-1" : "");
-    const Elemento = multilinhas ? StyledView : StyledScrollView;
+    const Elemento = multilinhas ? View : ScrollView;
 
     return (
-        <StyledView className={tailwindView}>
+        <View className={tailwindView}>
             { focarItem() }
             { editavel && adicaoDeImagem() }
 
             <Elemento className={tailwindCarrossel} horizontal>
                 { renderizaveis.map((item, indice) => renderizarItem(item, indice)) }
             </Elemento>
-        </StyledView>
+        </View>
     );
 }
 

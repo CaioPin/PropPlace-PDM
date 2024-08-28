@@ -1,5 +1,5 @@
 export const cores = {
-    primaria: "#93B7BE",
+    primaria: "#99BFC6",
     secundaria: "#554348",
     terciaria: "#8C9A9E",
     auxiliar: "#747578",
