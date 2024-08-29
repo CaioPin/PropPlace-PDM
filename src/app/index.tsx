@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View } from "react-native"
 import { Menu } from "../components/Menu"
-import { Usuarios } from "@/components/Usuarios"
 
 export default function App() {
   return (
