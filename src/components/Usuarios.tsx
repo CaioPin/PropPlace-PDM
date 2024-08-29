@@ -11,11 +11,14 @@ interface UsuariosPropriedades{
     NivelUsuario: string,
 }
 
+//TODO: Receber caminho para pagina do usuario 
+
 function Usuarios({ImagemUsuario, NomeUsuario, NivelUsuario}: UsuariosPropriedades){
     return(
         <Button buttonStyle={estilo.botaoEstilo} type="clear">
             <View className="w-full flex-row">
-                <Image className="rounded-full border border-paleta-secundaria" source={usuario} style={estilo.imagemEstilo} progressiveRenderingEnabled/>
+                {/* TODO: Colocar imagem default caso nao receba imagem */}
+                <Image className="rounded-full border border-paleta-secundaria" source={ImagemUsuario} defaultSource={usuario} style={estilo.imagemEstilo} progressiveRenderingEnabled/>
                 <View className="ml-3 flex-1">
                     <Text className="pt-1 font-black" style={estilo.titulo}>{NomeUsuario}</Text>
                     <Text className="pt-1.5" style={estilo.subtitulo}>{NivelUsuario}</Text>
