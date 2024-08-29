@@ -8,7 +8,7 @@ function Menu(){
     return(
       <View className="flex-1 flex-col-reverse">
 
-        <View className="flex flex-row justify-between w-full  px-2 border-t-2
+        <View className="flex flex-row justify-between w-full px-2 border-t-2
         border-paleta-secundaria bg-paleta-fundo">
 
         <Button buttonStyle={{flexGrow: 1}} 
@@ -49,9 +49,6 @@ function Menu(){
 const estilo = {
   texto: ConstrutorEstiloConstante.construtor()
     .fonteM()
-    .corSecundaria()
-    .construir(),
-    cor: ConstrutorEstiloConstante.construtor()
     .corSecundaria()
     .construir(),
 }

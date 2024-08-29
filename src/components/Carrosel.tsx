@@ -126,6 +126,8 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
         const tailwindTitulo = "mt-3";
         const tailwindSubtitulo = "mt-2";
 
+                        {/* TODO: Colocar imagem default caso nao receba imagem */}
+                        
         return (
             <View className={tailwindContainer} style={{width: tamanho}} key={indice}>
                 { editavel &&
