@@ -1,19 +1,25 @@
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { Button } from "@rneui/base";
 import { Image, Text, View } from "react-native";
-import { cores } from "@/constants/cores";
+import { ImageProps } from "@rneui/themed";
 
-import imovelPadrao from "../assets/images/imovelPadrao.png"
+import usuario from "../assets/images/usuario.png"
 
-function Usuarios(){
+interface UsuariosPropriedades{
+    ImagemUsuario?: ImageProps,
+    NomeUsuario: string,
+    NivelUsuario: string,
+}
+
+function Usuarios({ImagemUsuario, NomeUsuario, NivelUsuario}: UsuariosPropriedades){
     return(
         <Button buttonStyle={estilo.botaoEstilo} type="clear">
             <View className="w-full flex-row">
-                <Image className="rounded-full" style={estilo.imagemEstilo} source={imovelPadrao}/>
-                    <View className="ml-3 flex-1">
-                        <Text className="pt-1 font-black" style={estilo.titulo}>Nome Usuário</Text>
-                        <Text className="pt-1.5" style={estilo.subtitulo}>Proprietário/Inquilino</Text>
-                    </View>
+                <Image className="rounded-full border border-paleta-secundaria" source={usuario} style={estilo.imagemEstilo} progressiveRenderingEnabled/>
+                <View className="ml-3 flex-1">
+                    <Text className="pt-1 font-black" style={estilo.titulo}>{NomeUsuario}</Text>
+                    <Text className="pt-1.5" style={estilo.subtitulo}>{NivelUsuario}</Text>
+                </View>
             </View>
         </Button>
     );
@@ -24,10 +30,10 @@ const estilo = {
     titulo: ConstrutorEstiloConstante.construtor().fonteG().corSecundaria().construir(),
     subtitulo: ConstrutorEstiloConstante.construtor().fonteM().corSecundaria().construir(),
     botaoEstilo: {
-        margin: 5, paddingHorizontal: 0, paddingVertical: 0, height: 60
+        paddingHorizontal: 0, paddingVertical: 0
     },
     imagemEstilo: {
-        width: 58, height: 58, borderWidth: 1, borderColor: cores.secundaria,
+        width: 58, height: 58
     }
 }
 
