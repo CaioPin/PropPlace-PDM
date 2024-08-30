@@ -13,7 +13,7 @@ enum CheckboxPossiveis{
 }
 
 const CheckboxOpcoes: { [key in CheckboxPossiveis]: string[] } = {
-    [CheckboxPossiveis.tiposImovel]: ["Apartamento", "Casa", "Kitnet", "República",],
+    [CheckboxPossiveis.tiposImovel]: ["Apartamento", "Casa", "Kitnet", "República"],
     [CheckboxPossiveis.filtroPessoa]: ["Inquilino", "Proprietário"],
     [CheckboxPossiveis.tempoContrato]: ["1 ano", "Personalizado"],
     [CheckboxPossiveis.filtroImovel]: ["Livre", "Alugado"]
@@ -21,35 +21,38 @@ const CheckboxOpcoes: { [key in CheckboxPossiveis]: string[] } = {
 
 interface CheckboxPropriedades{
     opcoes: string[],
+    separador: boolean
 }
 
-function Checkbox({opcoes}: CheckboxPropriedades){
-    const [check, setCheck] = useState<number | null>(null);
+function Checkbox({opcoes, separador}: CheckboxPropriedades){
+    const [check, setCheck] = useState<number | null>(0);
+    const quantidade = opcoes.length;
 
         return(
             <View>
                 {opcoes.map((opcaoNome, index) => (
-                <CheckBox className="w-max"
-                containerStyle={{}}
-                key={index}
-                title={opcaoNome}
-                textStyle={estilo.textoEstilo}
-                checkedIcon={iconesLib.circulo2} 
-                checkedColor={cores.secundaria}
-                uncheckedIcon={iconesLib.circulo} 
-                uncheckedColor={cores.fundo}
-                iconType="FontAwesome"
-                checked={check === index}
-                onPress={() => setCheck(index)}
-                />
+                    <CheckBox
+                    containerStyle={index === quantidade -1 || 
+                        !separador? estilo.containerSemLinha : estilo.containerComLinha}
+                    key={index}
+                    title={opcaoNome}
+                    textStyle={estilo.textoEstilo}
+                    checkedIcon={iconesLib.circulo2} 
+                    uncheckedIcon={iconesLib.circulo} 
+                    iconType="FontAwesome"
+                    checked={check === index}
+                    onPress={() => setCheck(index)}
+                    />
                 ))}
             </View>
         )
 }
 
 const estilo = {
-    containerEstilo: {paddingTop: 0, borderBottomWidth: 2, borderColor: cores.secundaria, minWidth:350},
-    textoEstilo: ConstrutorEstiloConstante.construtor().fonteGG().corSecundaria().construir()
+    containerSemLinha: {paddingTop: 0, minWidth:320},
+    containerComLinha: {paddingTop: 0, minWidth:320, 
+        borderBottomWidth: 2, borderColor: cores.secundaria},
+    textoEstilo: ConstrutorEstiloConstante.construtor().fonteGG().corSecundaria().construir(),
 }
 
 export {Checkbox, CheckboxOpcoes};
