@@ -1,3 +1,4 @@
+import { iconesLib } from "@/assets/icons/iconesLib";
 import {
   View,
   Text,
@@ -5,7 +6,6 @@ import {
   ScrollView,
   Modal as RNModal,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
 
 type Props = ModalProps & {
@@ -17,30 +17,34 @@ type Props = ModalProps & {
 function Modal({ titulo, subtitulo = "", onClose, children, ...rest }: Props) {
   return (
     <RNModal transparent animationType="slide" {...rest}>
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View className="flex-1 justify-center bg-black/60 px-4">
-          <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-            <View className="bg-paleta-fundo px-5 pt-5 pb-10 rounded-xl">
-              <ScrollView showsVerticalScrollIndicator={false}>
-                {titulo && (
-                  <View className="items-center pt-3">
-                    <Text className="text-paleta-secundaria font-semibold text-lg max-w-xs">
-                      {titulo}
-                    </Text>
-                  </View>
-                )}
-
-                {subtitulo.trim().length > 0 && (
-                  <Text className="text-paleta-secundaria font-regular text-lg leading-6  my-2">
-                    {subtitulo}
-                  </Text>
-                )}
-                {children}
-              </ScrollView>
+      <View className="flex-1 justify-center bg-black/60 px-4">
+        <View className="bg-paleta-fundo px-5 pt-5 pb-10 rounded-xl max-h-96">
+          {onClose && (
+            <TouchableOpacity
+              className="-mt-2 flex flex-row-reverse"
+              activeOpacity={0.7}
+              onPress={onClose}>
+              {iconesLib.X}
+            </TouchableOpacity>
+          )}
+          {titulo && (
+            <View className="a">
+              <Text className="text-paleta-secundaria font-semibold text-lg text-center ">
+                {titulo}
+              </Text>
             </View>
-          </TouchableWithoutFeedback>
+          )}
+
+          {subtitulo.trim().length > 0 && (
+            <Text className="text-paleta-secundaria font-regular text-lg leading-6  my-2 text-center">
+              {subtitulo}
+            </Text>
+          )}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {children}
+          </ScrollView>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </RNModal>
   );
 }
