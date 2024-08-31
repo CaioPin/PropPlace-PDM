@@ -1,24 +1,24 @@
-import { Slot } from "expo-router"
-import { View, StatusBar } from "react-native"
-import "@/styles/global.css"
-import { useFonts } from "expo-font"
+import { Slot } from "expo-router";
+import { View, StatusBar } from "react-native";
+import "@/styles/global.css";
+import { useFonts } from "expo-font";
 import {
   Inter_500Medium,
   Inter_400Regular,
   Inter_600SemiBold,
-} from "@expo-google-fonts/inter"
-import { Menu } from "@/components/Menu"
-import { Loading } from "@/components/Loading"
+} from "@expo-google-fonts/inter";
+import { Menu } from "@/components/Menu";
+import { Loading } from "@/components/Loading";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
     Inter_500Medium,
     Inter_400Regular,
     Inter_600SemiBold,
-  })
+  });
 
   if (!fontsLoaded) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -31,5 +31,5 @@ export default function Layout() {
       <Slot />
       <Menu />
     </View>
-  )
+  );
 }
