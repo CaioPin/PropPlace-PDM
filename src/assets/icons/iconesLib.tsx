@@ -20,5 +20,6 @@ export const iconesLib = {
     telefone: <MaterialCommunityIcons name="cellphone" size={20} color={cores.secundaria} />,
     home: <FontAwesome6 name="house" size={24} color={cores.secundaria} />,
     mapa: <Feather name="map-pin" size={24} color={cores.secundaria} />,
-    user: <FontAwesome5 name="user-circle" size={24} color={cores.secundaria} />
+    user: <FontAwesome5 name="user-circle" size={24} color={cores.secundaria} />,
+    X: <Feather name="x" size={24} color={cores.preto} />
 }
