@@ -4,18 +4,18 @@ import {
   TextProps,
   TouchableOpacity,
   TouchableOpacityProps,
-} from "react-native"
-import clsx from "clsx"
-import { createContext, useContext } from "react"
+} from "react-native";
+import clsx from "clsx";
+import { createContext, useContext } from "react";
 
-type Variantes = "generico" | "inativo" | "enviar" | "cancelar"
+type Variantes = "generico" | "inativo" | "enviar" | "cancelar";
 
 type BotaoProps = TouchableOpacityProps & {
-  variante?: Variantes
-  isLoading?: boolean
-}
+  variante?: Variantes;
+  isLoading?: boolean;
+};
 
-const ThemeContext = createContext<{ variante?: Variantes }>({})
+const ThemeContext = createContext<{ variante?: Variantes }>({});
 
 function Botao({
   variante = "generico",
@@ -37,7 +37,7 @@ function Botao({
         className
       )}
       activeOpacity={0.7}
-      disabled={isLoading}
+      disabled={isLoading || variante === "inativo"}
       {...rest}>
       <ThemeContext.Provider value={{ variante }}>
         {isLoading ? (
@@ -47,23 +47,23 @@ function Botao({
         )}
       </ThemeContext.Provider>
     </TouchableOpacity>
-  )
+  );
 }
 
 function Titulo({ children }: TextProps) {
-  const { variante } = useContext(ThemeContext)
+  const { variante } = useContext(ThemeContext);
 
   return (
     <Text
-      className={clsx("text-xl font-regular", {
+      className={clsx("text-base font-regular", {
         "text-paleta-secundaria": variante === "inativo",
-        "text-white": variante !== "inativo"
+        "text-paleta-branco": variante !== "inativo",
       })}>
       {children}
     </Text>
-  )
+  );
 }
 
-Botao.Titulo = Titulo
+Botao.Titulo = Titulo;
 
-export { Botao }
+export { Botao };
