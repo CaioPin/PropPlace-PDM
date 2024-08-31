@@ -27,7 +27,7 @@ function Botao({
   return (
     <TouchableOpacity
       className={clsx(
-        "h-12 flex-row items-center justify-center rounded-lg gap-2 px-2",
+        "h-12 flex-row items-center justify-center rounded-lg gap-2 px-4",
         {
           "bg-paleta-secundaria": variante === "generico",
           "bg-paleta-terciaria": variante === "inativo",
@@ -55,7 +55,7 @@ function Titulo({ children }: TextProps) {
 
   return (
     <Text
-      className={clsx("text-base font-semibold", {
+      className={clsx("text-xl font-regular", {
         "text-paleta-secundaria": variante === "inativo",
         "text-white": variante !== "inativo"
       })}>
