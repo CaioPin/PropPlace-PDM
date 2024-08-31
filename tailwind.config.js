@@ -1,4 +1,4 @@
-// import { cores } from './src/constants/cores'
+import { fontFamily } from "./src/styles/fontFamily"
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -14,10 +14,9 @@ module.exports = {
           fundo: "#E6FFFF",
           construtiva: "#83AB63",
           destrutiva: "#D35252",
-          branco: "#FFFFFF",
-          preto: "#000000",
         }
-      }
+      },
+      fontFamily
     },
   },
   plugins: [],

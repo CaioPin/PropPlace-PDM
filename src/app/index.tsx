@@ -1,22 +1,14 @@
-import { StatusBar } from "expo-status-bar"
-import { StyleSheet, Text, View } from "react-native"
-import { Menu } from "../components/Menu"
+import { Text, View } from "react-native"
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />  
-      <Text>Open up Index.tsx to start working on your app!</Text>
-        <Menu />
+    <View className="flex justify-center items-center h-full">
+      <Text className="font-regular">INDEX</Text>
+      <Text className="font-medium">testa com font-medium</Text>
+      <Text>testa sem font</Text>
+      <Text className="font-regular">testa font-regular</Text>
+
+      <Text className="font-semibold">testa font-semibold</Text>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-})

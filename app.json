@@ -20,7 +20,9 @@
           "locationAlwaysAndWhenInUsePermission": "Habilite o uso da sua localização para ter uma experiência personalizada."
         }
       ],
-      "expo-router"
+      "expo-router",
+      ["expo-font",
+      {"fonts": ["./src/assets/fonts/SpaceMono-Regular.ttf"]}]
     ],
     "splash": {
       "image": "./src/assets/images/imovelPadrao.png",
