@@ -6,6 +6,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { cores } from '../../constants/cores';
 
@@ -20,5 +21,7 @@ export const iconesLib = {
     telefone: <MaterialCommunityIcons name="cellphone" size={20} color={cores.secundaria} />,
     home: <FontAwesome6 name="house" size={24} color={cores.secundaria} />,
     mapa: <Feather name="map-pin" size={24} color={cores.secundaria} />,
-    user: <FontAwesome5 name="user-circle" size={24} color={cores.secundaria} />
+    user: <FontAwesome5 name="user-circle" size={24} color={cores.secundaria} />,
+    circulo: <FontAwesome name="circle-thin" size={24} color={cores.secundaria} />,
+    circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />
 }
