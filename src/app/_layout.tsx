@@ -18,7 +18,7 @@ export default function Layout() {
   })
 
   if (!fontsLoaded) {
-      return <Loading />
+    return <Loading />
   }
 
   return (
@@ -28,8 +28,8 @@ export default function Layout() {
         backgroundColor="transparent"
         translucent
       />
-        <Slot />
-        <Menu />
+      <Slot />
+      <Menu />
     </View>
   )
 }
