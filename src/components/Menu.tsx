@@ -1,7 +1,7 @@
-import { iconesLib } from "../assets/icons/iconesLib"
-import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante"
-import { View } from "react-native"
-import { Button } from "@rneui/base"
+import { iconesLib } from "../assets/icons/iconesLib";
+import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
+import { View } from "react-native";
+import { Button } from "@rneui/base";
 
 function Menu() {
   return (
@@ -48,7 +48,7 @@ function Menu() {
         </View>
       </View>
     </View>
-  )
+  );
 }
 
 const estilo = {
@@ -56,6 +56,6 @@ const estilo = {
     .fonteM()
     .corSecundaria()
     .construir(),
-}
+};
 
-export { Menu }
+export { Menu };
