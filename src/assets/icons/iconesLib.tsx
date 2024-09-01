@@ -22,6 +22,7 @@ export const iconesLib = {
     home: <FontAwesome6 name="house" size={24} color={cores.secundaria} />,
     mapa: <Feather name="map-pin" size={24} color={cores.secundaria} />,
     user: <FontAwesome5 name="user-circle" size={24} color={cores.secundaria} />,
+    X: <Feather name="x" size={24} color={cores.preto} />,
     circulo: <FontAwesome name="circle-thin" size={24} color={cores.secundaria} />,
     circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />
 }
