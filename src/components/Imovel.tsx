@@ -1,5 +1,6 @@
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { Image, ImageSourcePropType, Text, TouchableOpacity, View } from "react-native";
+import { formataMoeda } from "@/utils/formataMoeda";
 
 interface ImovelPropriedades {
     imagem: ImageSourcePropType,
@@ -30,7 +31,7 @@ function Imovel({imagem, nome, endereco, preco, disponivel, redirecionamento}:Im
                 </Text>
 
                 <Text className="color-paleta-secundaria font-medium" style={estilo.preco} numberOfLines={1}>
-                    R$ {preco.toFixed(2).toString().replace(".", ",")}
+                    {formataMoeda(preco)}
                 </Text>
 
                 <View className="flex flex-row justify-between items-center">
