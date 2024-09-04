@@ -30,14 +30,14 @@ export default function TabLayout() {
       }}
       />
       <Tabs.Screen
-        name='perfil'
+        name='[user]'
         options={{
             title: 'Perfil',
             tabBarIcon: ({ focused }) => focused? iconesLib.userAtivo : iconesLib.user,
             href: {
               pathname: '/[user]',
               params: {
-                user: '',
+                user: 'fulano exemplar',
               },
             },
         }}/>
