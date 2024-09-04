@@ -1,4 +1,4 @@
-import { Slot } from "expo-router";
+import { Slot, Stack } from "expo-router";
 import { View, StatusBar } from "react-native";
 import "@/styles/global.css";
 import { useFonts } from "expo-font";
@@ -7,7 +7,6 @@ import {
   Inter_400Regular,
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
-import { Menu } from "@/components/Menu";
 import { Loading } from "@/components/Loading";
 
 export default function Layout() {
@@ -28,8 +27,7 @@ export default function Layout() {
         backgroundColor="transparent"
         translucent
       />
-      <Slot />
-      <Menu />
+      <Slot />    
     </View>
   );
 }
