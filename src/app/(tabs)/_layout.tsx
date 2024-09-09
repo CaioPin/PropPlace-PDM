@@ -49,7 +49,7 @@ export default function TabLayout() {
             href: {
               pathname: "/[user]",
               params: {
-                user: "fulano exemplar",
+                user: "mock_do_userId_1234123", // id do user logado
               },
             },
           }}
