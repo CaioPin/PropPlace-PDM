@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, KeyboardTypeOptions } from "react-native";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
 
@@ -12,31 +12,63 @@ enum CampoIcones {
 }
 
 interface CampoPropriedades {
+    aoMudar: (parametro:string) => void,
     titulo?: string,
     texto?: string,
     valorInicial?: string,
+    ativo?: boolean,
     icone?: CampoIcones,
-    ativo: boolean
+    teclado?: KeyboardTypeOptions,
+    formatacao?: (parametro:string) => string
 }
 
-function Campo({titulo, texto = "", valorInicial = "", icone, ativo}:CampoPropriedades) {
+function semFormatacao(valor:string) {
+    return valor;
+}
+
+function Campo({ativo, aoMudar, titulo, texto = "", valorInicial = "", icone, teclado = "default", formatacao = semFormatacao}:CampoPropriedades) {
     const [valor, definirValor] = useState(valorInicial);
+    const [valorFormatado, definirValorFormatado] = useState(formatacao(valorInicial));
+
+    function calculaCaracteresRemovidos(formatado:string, naoFormatado:string):number {
+        if (formatacao(naoFormatado).length > formatado.length) {
+            return 1 + calculaCaracteresRemovidos(formatado, naoFormatado.substring(0, naoFormatado.length - 1));
+        }
     
-    const tailwindConteiner = "w-full";
-    const tailwindTitulo = "mb-3";
-    const tailwindAreaCampo = "flex flex-row justify-between items-center w-full p-3 " + (ativo ? "border rounded-md" : "border-b");
-    const tailwindCampoTexto = "flex-1";
-    const tailwindImagem = "ml-3";
+        return 0;
+    }
+
+    function mudancaDeValor(novoValor:string) {
+        const novoValorFormatado = formatacao(novoValor);
+
+        if (valorFormatado.length > novoValorFormatado.length) {
+            const caracteresRemovidos = calculaCaracteresRemovidos(novoValorFormatado, valor);
+            const novoValorSemFormatacao = valor.substring(0, valor.length - caracteresRemovidos);
+
+            definirValor(novoValorSemFormatacao);
+            aoMudar(novoValorSemFormatacao);
+        } else if (novoValorFormatado.length > valorFormatado.length) {
+            const novoValorSemFormatacao = valor + novoValor.charAt(novoValor.length - 1);
+
+            definirValor(novoValorSemFormatacao);
+            aoMudar(novoValorSemFormatacao);
+        }
+
+        definirValorFormatado(novoValorFormatado);
+    }
+    
+    const tailwindAreaCampo = "flex flex-row justify-between items-center w-full p-3 " + (ativo ? "border border-paleta-primaria rounded-md" : "border-b border-paleta-auxiliar");
     
     return(
-        <View className={tailwindConteiner}>
-            { titulo && <Text className={tailwindTitulo} style={estilo.titulo}>{titulo}</Text> }
+        <View className="w-full">
+            { titulo && <Text className="mb-3" style={estilo.titulo}>{titulo}</Text> }
             
-            <View className={tailwindAreaCampo} style={ativo ? estilo.areaCampoAtivo : estilo.areaCampoInativo}>
-                <TextInput className={tailwindCampoTexto} style={ativo ? estilo.textoAtivo : estilo.textoInativo}
-                    placeholder={texto} value={valor} onChangeText={definirValor} editable={ativo} />
+            <View className={tailwindAreaCampo}>
+                <TextInput className="flex-1" style={ativo ? estilo.textoAtivo : estilo.textoInativo}
+                    placeholder={texto} editable={ativo} keyboardType={teclado}
+                    value={valorFormatado} onChangeText={mudancaDeValor} />
 
-                { icone && <View className={tailwindImagem}>{iconesLib[icone]}</View> }
+                { icone && <View className="ml-3">{iconesLib[icone]}</View> }
             </View>
         </View>
     );
@@ -45,9 +77,7 @@ function Campo({titulo, texto = "", valorInicial = "", icone, ativo}:CampoPropri
 const estilo = {
     titulo: ConstrutorEstiloConstante.construtor().fonteG().corSecundaria().construir(),
     textoAtivo: ConstrutorEstiloConstante.construtor().fonteM().corSecundaria().construir(),
-    textoInativo: ConstrutorEstiloConstante.construtor().fonteM().corAuxiliar().construir(),
-    areaCampoAtivo: ConstrutorEstiloConstante.construtor().bordaPrimaria().construir(),
-    areaCampoInativo: ConstrutorEstiloConstante.construtor().bordaAuxiliar().construir()
+    textoInativo: ConstrutorEstiloConstante.construtor().fonteM().corAuxiliar().construir()
 };
 
 export { CampoIcones, Campo };
