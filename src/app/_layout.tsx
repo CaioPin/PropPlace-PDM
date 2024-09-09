@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import { View, StatusBar } from "react-native";
+import { View } from "react-native";
 import "@/styles/global.css";
 import { useFonts } from "expo-font";
 import {
@@ -7,8 +7,8 @@ import {
   Inter_400Regular,
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
-import { Menu } from "@/components/Menu";
 import { Loading } from "@/components/Loading";
+import { StatusBar } from "expo-status-bar";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -23,13 +23,8 @@ export default function Layout() {
 
   return (
     <View className="flex-1 bg-paleta-fundo">
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
-      <Slot />
-      <Menu />
+      <StatusBar translucent />
+      <Slot />    
     </View>
   );
 }

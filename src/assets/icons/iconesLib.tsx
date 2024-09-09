@@ -4,7 +4,6 @@ import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -15,13 +14,17 @@ export const iconesLib = {
     cadeado: <AntDesign name="lock1" size={20} color={cores.secundaria} />,
     email: <Fontisto name="email" size={20} color={cores.secundaria} />,
     lixeira: <Feather name="trash-2" size={14} color={cores.branco} />,
-    lupa2: <AntDesign name="search1" size={24} color={cores.secundaria} />,
+    lupa2: <AntDesign name="search1" size={28} color={cores.secundaria} />,
+    lupaAtiva: <Ionicons name="search" size={30} color={cores.secundaria} />,
     lupa: <AntDesign name="search1" size={20} color={cores.secundaria} />,
     pessoa: <Ionicons name="person" size={20} color={cores.secundaria} />,
     telefone: <MaterialCommunityIcons name="cellphone" size={20} color={cores.secundaria} />,
-    home: <FontAwesome6 name="house" size={24} color={cores.secundaria} />,
-    mapa: <Feather name="map-pin" size={24} color={cores.secundaria} />,
-    user: <FontAwesome5 name="user-circle" size={24} color={cores.secundaria} />,
+    home: <Ionicons name="home-outline" size={30} color={cores.secundaria} />,
+    homeAtivo: <Ionicons name="home-sharp" size={30} color={cores.secundaria} />,
+    mapa: <MaterialCommunityIcons name="map-marker-outline" size={30} color={cores.secundaria} />,
+    mapaAtivo: <MaterialCommunityIcons name="map-marker" size={30} color={cores.secundaria} />,
+    user: <FontAwesome5 name="user-circle" size={26} color={cores.secundaria} />,
+    userAtivo: <FontAwesome name="user-circle-o" size={26} color={cores.secundaria} />,
     X: <Feather name="x" size={24} color={cores.preto} />,
     circulo: <FontAwesome name="circle-thin" size={24} color={cores.secundaria} />,
     circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />
