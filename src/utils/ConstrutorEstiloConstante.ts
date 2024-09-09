@@ -24,6 +24,16 @@ class ConstrutorEstiloConstante {
     fontePP() { return this.adicionarEstilo({fontSize: fonte.tipo.pp}); }
     fonteXP() { return this.adicionarEstilo({fontSize: fonte.tipo.xp}); }
 
+    peso1() { return this.adicionarEstilo({fontWeight: 100}); }
+    peso2() { return this.adicionarEstilo({fontWeight: 200}); }
+    peso3() { return this.adicionarEstilo({fontWeight: 300}); }
+    peso4() { return this.adicionarEstilo({fontWeight: 400}); }
+    peso5() { return this.adicionarEstilo({fontWeight: 500}); }
+    peso6() { return this.adicionarEstilo({fontWeight: 600}); }
+    peso7() { return this.adicionarEstilo({fontWeight: 700}); }
+    peso8() { return this.adicionarEstilo({fontWeight: 800}); }
+    peso9() { return this.adicionarEstilo({fontWeight: 900}); }
+
     corPrimaria() { return this.adicionarEstilo({color: cores.primaria}); }
     corSecundaria() { return this.adicionarEstilo({color: cores.secundaria}); }
     corTerciaria() { return this.adicionarEstilo({color: cores.terciaria}); }

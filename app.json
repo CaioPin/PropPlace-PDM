@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "alugase",
-    "slug": "alugase",
-    "scheme": "alugase",
+    "name": "PropPlace",
+    "slug": "PropPlace",
+    "scheme": "PropPlace",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/imovelPadrao.png",
+    "icon": "./src/assets/images/logo.png",
     "userInterfaceStyle": "light",
     "plugins": [
       [
@@ -25,7 +25,7 @@
       {"fonts": ["./src/assets/fonts/SpaceMono-Regular.ttf"]}]
     ],
     "splash": {
-      "image": "./src/assets/images/imovelPadrao.png",
+      "image": "./src/assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -34,12 +34,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/imovelPadrao.png",
+        "foregroundImage": "./src/assets/images/logo.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./src/assets/images/imovelPadrao.png"
+      "favicon": "./src/assets/images/logo.png"
     }
   }
 }

@@ -16,6 +16,15 @@ module.exports = {
           destrutiva: "#D35252",
         }
       },
+      fontSize: {
+        xg: "1.25rem",
+        gg: "1.125rem",
+        g: "1rem",
+        m: "0.875rem",
+        p: "0.75rem",
+        pp: "0.625rem",
+        xp: "0.5rem"
+      },
       fontFamily
     },
   },

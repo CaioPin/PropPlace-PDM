@@ -29,14 +29,14 @@ function Modal({ titulo, subtitulo = "", onClose, children, ...rest }: Props) {
           )}
           {titulo && (
             <View className="a">
-              <Text className="text-paleta-secundaria font-semibold text-lg text-center ">
+              <Text className="text-paleta-secundaria font-semibold text-gg text-center ">
                 {titulo}
               </Text>
             </View>
           )}
 
           {subtitulo.trim().length > 0 && (
-            <Text className="text-paleta-secundaria font-regular text-lg leading-6  my-2 text-center">
+            <Text className="text-paleta-secundaria font-regular text-gg leading-6  my-2 text-center">
               {subtitulo}
             </Text>
           )}
