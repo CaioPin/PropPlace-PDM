@@ -8,7 +8,8 @@ export default function TabLayout() {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveBackgroundColor: cores.fundo,
+          tabBarInactiveBackgroundColor: cores.fundo,
+          tabBarActiveBackgroundColor: cores.primaria,
           tabBarLabelStyle: [estilo.texto, { fontWeight: "600" }],
           tabBarItemStyle: { borderTopWidth: 1, borderColor: cores.secundaria },
           tabBarStyle: { height: 55 },
