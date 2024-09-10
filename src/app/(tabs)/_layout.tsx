@@ -2,12 +2,10 @@ import { Tabs } from "expo-router";
 import { iconesLib } from "@/assets/icons/iconesLib";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { cores } from "@/constants/cores";
-import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
   return (
     <>
-      <StatusBar translucent />
       <Tabs
         screenOptions={{
           tabBarActiveBackgroundColor: cores.fundo,
@@ -41,16 +39,14 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="[user]"
+          name="perfil"
           options={{
             title: "Perfil",
             tabBarIcon: ({ focused }) =>
               focused ? iconesLib.userAtivo : iconesLib.user,
             href: {
-              pathname: "/[user]",
-              params: {
-                user: "mock_do_userId_1234123", // id do user logado
-              },
+              pathname: "/perfil",
+              params: { id: "" },
             },
           }}
         />

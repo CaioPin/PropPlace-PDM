@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, TextInput, KeyboardTypeOptions } from "react-native";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
@@ -17,6 +17,7 @@ interface CampoPropriedades {
     texto?: string,
     valorInicial?: string,
     ativo?: boolean,
+    atualizar?: number,
     icone?: CampoIcones,
     teclado?: KeyboardTypeOptions,
     formatacao?: (parametro:string) => string
@@ -26,9 +27,14 @@ function semFormatacao(valor:string) {
     return valor;
 }
 
-function Campo({ativo, aoMudar, titulo, texto = "", valorInicial = "", icone, teclado = "default", formatacao = semFormatacao}:CampoPropriedades) {
-    const [valor, definirValor] = useState(valorInicial);
-    const [valorFormatado, definirValorFormatado] = useState(formatacao(valorInicial));
+function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao}:CampoPropriedades) {
+    const [valor, definirValor] = useState("");
+    const [valorFormatado, definirValorFormatado] = useState("");
+
+    useEffect(() => {
+        definirValor(valorInicial);
+        definirValorFormatado(formatacao(valorInicial));
+    }, [valorInicial, atualizar]);
 
     function calculaCaracteresRemovidos(formatado:string, naoFormatado:string):number {
         if (formatacao(naoFormatado).length > formatado.length) {
