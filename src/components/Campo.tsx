@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { View, Text, TextInput, TextInputProps } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, TextInput, KeyboardTypeOptions, TextInputProps } from "react-native";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
 
@@ -12,78 +12,78 @@ enum CampoIcones {
 }
 
 interface CampoPropriedades extends TextInputProps {
-  titulo?: string;
-  texto?: string;
-  valorInicial?: string;
-  icone?: CampoIcones;
-  ativo: boolean;
+    aoMudar: (parametro:string) => void,
+    titulo?: string,
+    texto?: string,
+    valorInicial?: string,
+    ativo?: boolean,
+    atualizar?: number,
+    icone?: CampoIcones,
+    teclado?: KeyboardTypeOptions,
+    formatacao?: (parametro:string) => string
 }
 
-function Campo({
-  titulo,
-  texto = "", // textinput já tem a propriedade placeholder
-  valorInicial = "", // já tem a propriedade defaultValue
-  icone,
-  ativo, // já tem propriedade editable
-  className, // classname da chamada é passado pra dentro
-  ...rest // outras propriedades de textinput vão ser passadas
-}: CampoPropriedades) {
-  const [valor, definirValor] = useState(valorInicial); //value e onchangetext vem da tela
+function semFormatacao(valor:string) {
+    return valor;
+}
 
-  const tailwindConteiner = "w-full";
-  const tailwindTitulo = "mb-3";
-  const tailwindAreaCampo =
-    "flex flex-row justify-between items-center w-full p-3 " +
-    (ativo ? "border rounded-md" : "border-b");
-  const tailwindCampoTexto = "flex-1";
-  const tailwindImagem = "ml-3";
+function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao, className, ...rest}:CampoPropriedades) {
+    const [valor, definirValor] = useState("");
+    const [valorFormatado, definirValorFormatado] = useState("");
 
-  return (
-    <View className={tailwindConteiner}>
-      {titulo && (
-        <Text className={tailwindTitulo} style={estilo.titulo}>
-          {titulo}
-        </Text>
-      )}
+    useEffect(() => {
+        definirValor(valorInicial);
+        definirValorFormatado(formatacao(valorInicial));
+    }, [valorInicial, atualizar]);
 
-      <View
-        className={tailwindAreaCampo + " " + className}
-        style={ativo ? estilo.areaCampoAtivo : estilo.areaCampoInativo}>
-        <TextInput
-          className={tailwindCampoTexto}
-          style={ativo ? estilo.textoAtivo : estilo.textoInativo}
-          placeholder={texto}
-          value={valor}
-          onChangeText={definirValor}
-          editable={ativo}
-          {...rest}
-        />
+    function calculaCaracteresRemovidos(formatado:string, naoFormatado:string):number {
+        if (formatacao(naoFormatado).length > formatado.length) {
+            return 1 + calculaCaracteresRemovidos(formatado, naoFormatado.substring(0, naoFormatado.length - 1));
+        }
+    
+        return 0;
+    }
 
-        {icone && <View className={tailwindImagem}>{iconesLib[icone]}</View>}
-      </View>
-    </View>
-  );
+    function mudancaDeValor(novoValor:string) {
+        const novoValorFormatado = formatacao(novoValor);
+
+        if (valorFormatado.length > novoValorFormatado.length) {
+            const caracteresRemovidos = calculaCaracteresRemovidos(novoValorFormatado, valor);
+            const novoValorSemFormatacao = valor.substring(0, valor.length - caracteresRemovidos);
+
+            definirValor(novoValorSemFormatacao);
+            aoMudar(novoValorSemFormatacao);
+        } else if (novoValorFormatado.length > valorFormatado.length) {
+            const novoValorSemFormatacao = valor + novoValor.charAt(novoValor.length - 1);
+
+            definirValor(novoValorSemFormatacao);
+            aoMudar(novoValorSemFormatacao);
+        }
+
+        definirValorFormatado(novoValorFormatado);
+    }
+    
+    const tailwindAreaCampo = "flex flex-row justify-between items-center w-full p-3 " + (ativo ? "border border-paleta-primaria rounded-md" : "border-b border-paleta-auxiliar");
+    
+    return(
+        <View className="w-full">
+            { titulo && <Text className="mb-3" style={estilo.titulo}>{titulo}</Text> }
+            
+            <View className={tailwindAreaCampo + " " + className}>
+                <TextInput className="flex-1" style={ativo ? estilo.textoAtivo : estilo.textoInativo}
+                    placeholder={texto} editable={ativo} keyboardType={teclado}
+                    value={valorFormatado} onChangeText={mudancaDeValor} {...rest}/>
+
+                { icone && <View className="ml-3">{iconesLib[icone]}</View> }
+            </View>
+        </View>
+    );
 }
 
 const estilo = {
-  titulo: ConstrutorEstiloConstante.construtor()
-    .fonteG()
-    .corSecundaria()
-    .construir(),
-  textoAtivo: ConstrutorEstiloConstante.construtor()
-    .fonteM()
-    .corSecundaria()
-    .construir(),
-  textoInativo: ConstrutorEstiloConstante.construtor()
-    .fonteM()
-    .corAuxiliar()
-    .construir(),
-  areaCampoAtivo: ConstrutorEstiloConstante.construtor()
-    .bordaPrimaria()
-    .construir(),
-  areaCampoInativo: ConstrutorEstiloConstante.construtor()
-    .bordaAuxiliar()
-    .construir(),
+    titulo: ConstrutorEstiloConstante.construtor().fonteG().corSecundaria().construir(),
+    textoAtivo: ConstrutorEstiloConstante.construtor().fonteM().corSecundaria().construir(),
+    textoInativo: ConstrutorEstiloConstante.construtor().fonteM().corAuxiliar().construir()
 };
 
 export { CampoIcones, Campo };
