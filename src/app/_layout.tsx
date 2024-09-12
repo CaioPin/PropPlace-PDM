@@ -8,7 +8,6 @@ import {
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
 import { Loading } from "@/components/Loading";
-import { StatusBar } from "expo-status-bar";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -23,7 +22,6 @@ export default function Layout() {
 
   return (
     <View className="flex-1 bg-paleta-fundo">
-      <StatusBar translucent />
       <Slot />    
     </View>
   );
