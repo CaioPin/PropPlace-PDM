@@ -19,13 +19,13 @@ module.exports = {
         }
       },
       fontSize: {
-        xg: "1.25rem",
-        gg: "1.125rem",
-        g: "1rem",
-        m: "0.875rem",
-        p: "0.75rem",
-        pp: "0.625rem",
-        xp: "0.5rem"
+        xg: "20px",
+        gg: "18px",
+        g: "16px",
+        m: "14px",
+        p: "12px",
+        pp: "10px",
+        xp: "8px"
       },
       fontFamily
     },

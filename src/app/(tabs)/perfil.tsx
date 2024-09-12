@@ -10,7 +10,6 @@ import { Loading } from "@/components/Loading";
 import { Modal } from "@/components/Modal";
 import { ModeloImovelPerfil, ModeloUsuarioPerfil } from "@/models/modelosPerfil";
 import { cores } from "@/constants/cores";
-import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { permissaoGaleria } from "@/utils/permissoes";
 import { formataTelefone } from "@/utils/formatacoes";
 import { validacoesUsuario } from "@/utils/validacoes";
@@ -181,7 +180,7 @@ export default function Perfil() {
                             alt={textoAlternativo} progressiveRenderingEnabled/>
                     }
                 </TouchableOpacity>
-                <Text className="flex-1" style={estilos.nome} numberOfLines={2}>{usuario?.nomeCompleto}</Text>
+                <Text className="flex-1 text-paleta-secundaria text-g" numberOfLines={2}>{usuario?.nomeCompleto}</Text>
             </View>
         );
     }
@@ -239,7 +238,3 @@ export default function Perfil() {
         </SafeAreaView>
     );
 }
-
-const estilos = {
-    nome: ConstrutorEstiloConstante.construtor().fonteG().corSecundaria().construir()
-};
