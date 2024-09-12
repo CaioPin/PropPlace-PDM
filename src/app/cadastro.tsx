@@ -29,6 +29,7 @@ const Cadastro = () => {
     defineFalhaModalAberto(true);
   };
 
+  // TODO: atualizar estilo da fonte
   return (
     <>
       <View className="flex-1 justify-center p-4 gap-4">
@@ -39,21 +40,21 @@ const Cadastro = () => {
           <Campo
             ativo
             value={nome}
-            onChangeText={definirNome}
+            aoMudar={definirNome}
             icone={CampoIcones.PESSOA}
             placeholder="Nome"
           />
           <Campo
             ativo
             value={telefone}
-            onChangeText={definirTelefone}
+            aoMudar={definirTelefone}
             icone={CampoIcones.TELEFONE}
             placeholder="Telefone"
           />
           <Campo
             ativo
             value={email}
-            onChangeText={definirEmail}
+            aoMudar={definirEmail}
             icone={CampoIcones.EMAIL}
             placeholder="E-mail"
           />
@@ -61,7 +62,7 @@ const Cadastro = () => {
             ativo
             secureTextEntry
             value={senha}
-            onChangeText={definirSenha}
+            aoMudar={definirSenha}
             icone={CampoIcones.CADEADO}
             placeholder="Senha forte"
           />
@@ -69,7 +70,7 @@ const Cadastro = () => {
             ativo
             secureTextEntry
             value={senhaRepete}
-            onChangeText={definirSenhaRepete}
+            aoMudar={definirSenhaRepete}
             icone={CampoIcones.CADEADO}
             placeholder="Repita a senha"
           />

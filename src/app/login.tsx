@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { Campo, CampoIcones } from "@/components/Campo";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { Modal } from "@/components/Modal";
 
 const estilo = {
@@ -37,6 +37,7 @@ export default function Login() {
     defineRecuperaSenhaModalAberto(true);
   };
 
+  // TODO: atualizar estilo da fonte
   return (
     <>
       <View className="flex-1 justify-center p-4 gap-4">
@@ -47,7 +48,7 @@ export default function Login() {
           <Campo
             ativo
             value={email}
-            onChangeText={definirEmail}
+            aoMudar={definirEmail}
             icone={CampoIcones.EMAIL}
             placeholder="E-mail ou nome de usuário"
           />
@@ -55,7 +56,7 @@ export default function Login() {
             ativo
             secureTextEntry
             value={senha}
-            onChangeText={definirSenha}
+            aoMudar={definirSenha}
             icone={CampoIcones.CADEADO}
             placeholder="Senha"
           />
@@ -85,7 +86,7 @@ export default function Login() {
           <Campo
             ativo
             value={emailRecuperacao}
-            onChangeText={defineEmailRecuperacao}
+            aoMudar={defineEmailRecuperacao}
             icone={CampoIcones.CADEADO}
             placeholder="E-mail de recuperação"
             className="mt-2"
