@@ -1,53 +1,89 @@
 import { useState } from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, TextInputProps } from "react-native";
 import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
 
 enum CampoIcones {
-    CADEADO = "cadeado",
-    EMAIL = "email",
-    LUPA = "lupa",
-    PESSOA = "pessoa",
-    TELEFONE = "telefone"
+  CADEADO = "cadeado",
+  EMAIL = "email",
+  LUPA = "lupa",
+  PESSOA = "pessoa",
+  TELEFONE = "telefone",
 }
 
-interface CampoPropriedades {
-    titulo?: string,
-    texto?: string,
-    valorInicial?: string,
-    icone?: CampoIcones,
-    ativo: boolean
+interface CampoPropriedades extends TextInputProps {
+  titulo?: string;
+  texto?: string;
+  valorInicial?: string;
+  icone?: CampoIcones;
+  ativo: boolean;
 }
 
-function Campo({titulo, texto = "", valorInicial = "", icone, ativo}:CampoPropriedades) {
-    const [valor, definirValor] = useState(valorInicial);
-    
-    const tailwindConteiner = "w-full";
-    const tailwindTitulo = "mb-3";
-    const tailwindAreaCampo = "flex flex-row justify-between items-center w-full p-3 " + (ativo ? "border rounded-md" : "border-b");
-    const tailwindCampoTexto = "flex-1";
-    const tailwindImagem = "ml-3";
-    
-    return(
-        <View className={tailwindConteiner}>
-            { titulo && <Text className={tailwindTitulo} style={estilo.titulo}>{titulo}</Text> }
-            
-            <View className={tailwindAreaCampo} style={ativo ? estilo.areaCampoAtivo : estilo.areaCampoInativo}>
-                <TextInput className={tailwindCampoTexto} style={ativo ? estilo.textoAtivo : estilo.textoInativo}
-                    placeholder={texto} value={valor} onChangeText={definirValor} editable={ativo} />
+function Campo({
+  titulo,
+  texto = "", // textinput já tem a propriedade placeholder
+  valorInicial = "", // já tem a propriedade defaultValue
+  icone,
+  ativo, // já tem propriedade editable
+  className, // classname da chamada é passado pra dentro
+  ...rest // outras propriedades de textinput vão ser passadas
+}: CampoPropriedades) {
+  const [valor, definirValor] = useState(valorInicial); //value e onchangetext vem da tela
 
-                { icone && <View className={tailwindImagem}>{iconesLib[icone]}</View> }
-            </View>
-        </View>
-    );
+  const tailwindConteiner = "w-full";
+  const tailwindTitulo = "mb-3";
+  const tailwindAreaCampo =
+    "flex flex-row justify-between items-center w-full p-3 " +
+    (ativo ? "border rounded-md" : "border-b");
+  const tailwindCampoTexto = "flex-1";
+  const tailwindImagem = "ml-3";
+
+  return (
+    <View className={tailwindConteiner}>
+      {titulo && (
+        <Text className={tailwindTitulo} style={estilo.titulo}>
+          {titulo}
+        </Text>
+      )}
+
+      <View
+        className={tailwindAreaCampo + " " + className}
+        style={ativo ? estilo.areaCampoAtivo : estilo.areaCampoInativo}>
+        <TextInput
+          className={tailwindCampoTexto}
+          style={ativo ? estilo.textoAtivo : estilo.textoInativo}
+          placeholder={texto}
+          value={valor}
+          onChangeText={definirValor}
+          editable={ativo}
+          {...rest}
+        />
+
+        {icone && <View className={tailwindImagem}>{iconesLib[icone]}</View>}
+      </View>
+    </View>
+  );
 }
 
 const estilo = {
-    titulo: ConstrutorEstiloConstante.construtor().fonteG().corSecundaria().construir(),
-    textoAtivo: ConstrutorEstiloConstante.construtor().fonteM().corSecundaria().construir(),
-    textoInativo: ConstrutorEstiloConstante.construtor().fonteM().corAuxiliar().construir(),
-    areaCampoAtivo: ConstrutorEstiloConstante.construtor().bordaPrimaria().construir(),
-    areaCampoInativo: ConstrutorEstiloConstante.construtor().bordaAuxiliar().construir()
+  titulo: ConstrutorEstiloConstante.construtor()
+    .fonteG()
+    .corSecundaria()
+    .construir(),
+  textoAtivo: ConstrutorEstiloConstante.construtor()
+    .fonteM()
+    .corSecundaria()
+    .construir(),
+  textoInativo: ConstrutorEstiloConstante.construtor()
+    .fonteM()
+    .corAuxiliar()
+    .construir(),
+  areaCampoAtivo: ConstrutorEstiloConstante.construtor()
+    .bordaPrimaria()
+    .construir(),
+  areaCampoInativo: ConstrutorEstiloConstante.construtor()
+    .bordaAuxiliar()
+    .construir(),
 };
 
 export { CampoIcones, Campo };
