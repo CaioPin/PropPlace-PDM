@@ -2,15 +2,14 @@ import { Tabs } from "expo-router";
 import { iconesLib } from "@/assets/icons/iconesLib";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { cores } from "@/constants/cores";
-import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
   return (
     <>
-      <StatusBar translucent />
       <Tabs
         screenOptions={{
-          tabBarActiveBackgroundColor: cores.fundo,
+          tabBarInactiveBackgroundColor: cores.fundo,
+          tabBarActiveBackgroundColor: cores.primaria,
           tabBarLabelStyle: [estilo.texto, { fontWeight: "600" }],
           tabBarItemStyle: { borderTopWidth: 1, borderColor: cores.secundaria },
           tabBarStyle: { height: 55 },
@@ -41,16 +40,14 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="[user]"
+          name="perfil"
           options={{
             title: "Perfil",
             tabBarIcon: ({ focused }) =>
               focused ? iconesLib.userAtivo : iconesLib.user,
             href: {
-              pathname: "/[user]",
-              params: {
-                user: "fulano exemplar",
-              },
+              pathname: "/perfil",
+              params: { id: "" },
             },
           }}
         />

@@ -57,7 +57,7 @@ function Titulo({ children }: TextProps) {
     <Text
       className={clsx("text-g font-regular", {
         "text-paleta-secundaria": variante === "inativo",
-        "text-paleta-branco": variante !== "inativo",
+        "text-paleta-branca": variante !== "inativo",
       })}>
       {children}
     </Text>

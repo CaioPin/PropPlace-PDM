@@ -1,5 +1,5 @@
 import { Image, ImageSourcePropType, Text, TouchableOpacity, View } from "react-native";
-import { formataMoeda } from "@/utils/formataMoeda";
+import { formataMoeda } from "@/utils/formatacoes";
 
 interface ImovelPropriedades {
     imagem: ImageSourcePropType,

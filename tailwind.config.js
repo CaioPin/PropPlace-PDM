@@ -14,6 +14,8 @@ module.exports = {
           fundo: "#E6FFFF",
           construtiva: "#83AB63",
           destrutiva: "#D35252",
+          branca: "#FFFFFF",
+          preta: "#000000"
         }
       },
       fontSize: {

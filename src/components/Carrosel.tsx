@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, ImageSourcePropType, Modal, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
@@ -50,6 +50,8 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
 
     const [renderizaveis, definirRenderizaveis] = useState(itens);
     const [itemFocado, definirItemFocado] = useState(itemFocadoInicial);
+
+    useEffect(() => definirRenderizaveis(itens), [itens]);
 
     function visualizacaoTelaToda() {
         const imagens = renderizaveis.map(renderizavel => ({url: renderizavel.caminho || "", props: {source: renderizavel.imagem}}));
