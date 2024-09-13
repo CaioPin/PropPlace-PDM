@@ -10,6 +10,3 @@ export const fonte = {
     }
 };
 
-export const fontFamily = {
-    
-}

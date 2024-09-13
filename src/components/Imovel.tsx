@@ -1,4 +1,3 @@
-import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { Image, ImageSourcePropType, Text, TouchableOpacity, View } from "react-native";
 import { formataMoeda } from "@/utils/formatacoes";
 
@@ -22,15 +21,15 @@ function Imovel({imagem, nome, endereco, preco, disponivel, redirecionamento}:Im
                 progressiveRenderingEnabled/>
 
             <View className="flex flex-1 justify-between">
-                <Text className="color-paleta-secundaria font-black" style={estilo.nome} numberOfLines={1}>
+                <Text className="text-paleta-secundaria text-g font-black" numberOfLines={1}>
                     {nome}
                 </Text>
 
-                <Text className="color-paleta-secundaria" style={estilo.endereco} numberOfLines={1}>
+                <Text className="text-paleta-secundaria text-g" numberOfLines={1}>
                     {endereco}
                 </Text>
 
-                <Text className="color-paleta-secundaria font-medium" style={estilo.preco} numberOfLines={1}>
+                <Text className="text-paleta-secundaria text-m font-medium" numberOfLines={1}>
                     {formataMoeda(preco)}
                 </Text>
 
@@ -38,13 +37,13 @@ function Imovel({imagem, nome, endereco, preco, disponivel, redirecionamento}:Im
                     <View className="flex flex-row items-center gap-x-1">
                         <View className={tailwindIndicadorDisponibilidade} />
 
-                        <Text className="color-paleta-secundaria font-medium" style={estilo.disponibilidade}>
+                        <Text className="text-paleta-secundaria text-p font-medium">
                             {disponivel ? "Disponível" : "Indisponível"}
                         </Text>
                     </View>
 
                     <TouchableOpacity onPress={redirecionamento}>
-                        <Text className="color-paleta-auxiliar underline decoration-paleta-auxiliar" style={estilo.redirecionamento}>
+                        <Text className="text-paleta-auxiliar text-p underline decoration-paleta-auxiliar">
                             Mais detalhes
                         </Text>
                     </TouchableOpacity>
@@ -52,14 +51,6 @@ function Imovel({imagem, nome, endereco, preco, disponivel, redirecionamento}:Im
             </View>
         </View>
     );
-}
-
-const estilo = {
-    nome: ConstrutorEstiloConstante.construtor().fonteG().construir(),
-    endereco: ConstrutorEstiloConstante.construtor().fonteG().construir(),
-    preco: ConstrutorEstiloConstante.construtor().fonteM().construir(),
-    disponibilidade: ConstrutorEstiloConstante.construtor().fonteP().construir(),
-    redirecionamento: ConstrutorEstiloConstante.construtor().fonteP().construir(),
 }
 
 export { Imovel };

@@ -31,7 +31,7 @@ function Checkbox({opcoes, separador, titulo}: CheckboxPropriedades){
 
         return(
             <View>
-                <Text className="font-black mb-2 pl-6" style={estilo.tituloEstilo}>{titulo}</Text>
+                <Text className="text-paleta-secundaria text-xg font-black mb-2 pl-6">{titulo}</Text>
                 {opcoes.map((opcaoNome, index) => (
                     <CheckBox
                     containerStyle={index === quantidade -1 || 
@@ -55,7 +55,6 @@ const estilo = {
     containerComLinha: {paddingTop: 0, minWidth:320, 
         borderBottomWidth: 2, borderColor: cores.secundaria},
     textoEstilo: ConstrutorEstiloConstante.construtor().fonteGG().corSecundaria().construir(),
-    tituloEstilo: ConstrutorEstiloConstante.construtor().fonteXG().corSecundaria().construir(),
 }
 
 export {Checkbox, CheckboxOpcoes, CheckboxTitulo};

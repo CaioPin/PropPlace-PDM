@@ -64,13 +64,14 @@ function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar
     }
     
     const tailwindAreaCampo = "flex flex-row justify-between items-center w-full p-3 " + (ativo ? "border border-paleta-primaria rounded-md" : "border-b border-paleta-auxiliar");
+    const tailwindTexto = "flex-1 text-m " + (ativo ? "text-paleta-secundaria" : "text-paleta-auxiliar");
     
     return(
         <View className="w-full">
-            { titulo && <Text className="mb-3" style={estilo.titulo}>{titulo}</Text> }
+            { titulo && <Text className="text-paleta-secundaria text-g mb-3">{titulo}</Text> }
             
-            <View className={tailwindAreaCampo + " " + className}>
-                <TextInput className="flex-1" style={ativo ? estilo.textoAtivo : estilo.textoInativo}
+            <View className={tailwindAreaCampo}>
+                <TextInput className={tailwindTexto}
                     placeholder={texto} editable={ativo} keyboardType={teclado}
                     value={valorFormatado} onChangeText={mudancaDeValor} {...rest}/>
 
@@ -79,11 +80,5 @@ function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar
         </View>
     );
 }
-
-const estilo = {
-    titulo: ConstrutorEstiloConstante.construtor().fonteG().corSecundaria().construir(),
-    textoAtivo: ConstrutorEstiloConstante.construtor().fonteM().corSecundaria().construir(),
-    textoInativo: ConstrutorEstiloConstante.construtor().fonteM().corAuxiliar().construir()
-};
 
 export { CampoIcones, Campo };

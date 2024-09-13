@@ -3,7 +3,6 @@ import { Image, ImageSourcePropType, Modal, ScrollView, Text, TouchableOpacity, 
 import ImageViewer from "react-native-image-zoom-viewer";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import { iconesLib } from "../assets/icons/iconesLib";
-import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { permissaoGaleria } from "../utils/permissoes";
 
 import imovelPadrao from "../assets/images/imovelPadrao.png";
@@ -107,10 +106,8 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
     }
 
     function adicaoDeImagem() {
-        const tailwindAdicao = "flex justify-center items-center rounded-md w-24 h-24 mr-5";
-
         return (
-            <View className={tailwindAdicao} style={estilos.adicao} onTouchStart={adicionarImagem}>
+            <View className="flex justify-center items-center rounded-md w-24 h-24 mr-5 bg-paleta-primaria" onTouchStart={adicionarImagem}>
                 {iconesLib.adicionarFoto}
             </View>
         );
@@ -123,17 +120,14 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
     function renderizarItem(item:CarrosselItem, indice:number) {
         const textoAlternativo = item.titulo || "Imagem do imóvel";
         const tailwindContainer = "relative " + (tamanho === CarrosselTamanho.GRANDE ? "mr-8" : "mr-3 mb-3");
-        const tailwindIcone = "flex justify-center items-center absolute top-0 right-0 rounded-full w-5 h-5 z-10";
         const tailwindImagem = "rounded-md";
-        const tailwindTitulo = "mt-3";
-        const tailwindSubtitulo = "mt-2";
 
                         {/* TODO: Colocar imagem default caso nao receba imagem */}
                         
         return (
             <View className={tailwindContainer} style={{width: tamanho}} key={indice}>
                 { editavel &&
-                    <View className={tailwindIcone} style={estilos.icone} onTouchStart={() => removerItem(item)}>
+                    <View className="flex justify-center items-center absolute top-0 right-0 rounded-full w-5 h-5 z-10 bg-paleta-destrutiva" onTouchStart={() => removerItem(item)}>
                         {iconesLib.lixeira}
                     </View> }
                     
@@ -147,9 +141,9 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
                             defaultSource={imovelPadrao} progressiveRenderingEnabled /> }
 
                     { mostrarTexto && item.titulo &&
-                        <Text className={tailwindTitulo} style={estilos.titulo} numberOfLines={2}>{item.titulo}</Text> }
+                        <Text className="text-paleta-secundaria text-m mt-3" numberOfLines={2}>{item.titulo}</Text> }
                     { mostrarTexto && item.subtitulo &&
-                        <Text className={tailwindSubtitulo} style={estilos.subtitulo} numberOfLines={1}>{item.subtitulo}</Text> }
+                        <Text className="text-paleta-secundaria text-pp mt-2" numberOfLines={1}>{item.subtitulo}</Text> }
                 </TouchableOpacity>
             </View>
         );
@@ -170,12 +164,5 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
         </View>
     );
 }
-
-const estilos = {
-    adicao: ConstrutorEstiloConstante.construtor().fundoPrimario().construir(),
-    icone: ConstrutorEstiloConstante.construtor().fundoDestrutivo().construir(),
-    titulo: ConstrutorEstiloConstante.construtor().fonteM().corSecundaria().construir(),
-    subtitulo: ConstrutorEstiloConstante.construtor().fontePP().corSecundaria().construir()
-};
 
 export { CarrosselTamanho, CarrosselVisualizacao, Carrossel };

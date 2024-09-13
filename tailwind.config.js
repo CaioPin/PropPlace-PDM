@@ -18,6 +18,15 @@ module.exports = {
           preta: "#000000"
         }
       },
+      fontSize: {
+        xg: "20px",
+        gg: "18px",
+        g: "16px",
+        m: "14px",
+        p: "12px",
+        pp: "10px",
+        xp: "8px"
+      },
       fontFamily
     },
   },
