@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, KeyboardTypeOptions } from "react-native";
+import { View, Text, TextInput, KeyboardTypeOptions, TextInputProps } from "react-native";
+import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
 
 enum CampoIcones {
-    CADEADO = "cadeado",
-    EMAIL = "email",
-    LUPA = "lupa",
-    PESSOA = "pessoa",
-    TELEFONE = "telefone"
+  CADEADO = "cadeado",
+  EMAIL = "email",
+  LUPA = "lupa",
+  PESSOA = "pessoa",
+  TELEFONE = "telefone",
 }
 
-interface CampoPropriedades {
+interface CampoPropriedades extends TextInputProps {
     aoMudar: (parametro:string) => void,
     titulo?: string,
     texto?: string,
@@ -26,7 +27,7 @@ function semFormatacao(valor:string) {
     return valor;
 }
 
-function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao}:CampoPropriedades) {
+function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao, className, ...rest}:CampoPropriedades) {
     const [valor, definirValor] = useState("");
     const [valorFormatado, definirValorFormatado] = useState("");
 
@@ -72,7 +73,7 @@ function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar
             <View className={tailwindAreaCampo}>
                 <TextInput className={tailwindTexto}
                     placeholder={texto} editable={ativo} keyboardType={teclado}
-                    value={valorFormatado} onChangeText={mudancaDeValor} />
+                    value={valorFormatado} onChangeText={mudancaDeValor} {...rest}/>
 
                 { icone && <View className="ml-3">{iconesLib[icone]}</View> }
             </View>

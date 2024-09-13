@@ -14,9 +14,9 @@ type Props = ModalProps & {
   onClose?: () => void;
 };
 
-function Modal({ titulo, subtitulo = "", onClose, children, ...rest }: Props) {
+function Modal({ titulo, subtitulo = "", onClose, children, className, ...rest }: Props) {
   return (
-    <RNModal transparent animationType="slide" {...rest}>
+    <RNModal transparent animationType="fade" {...rest}>
       <View className="flex-1 justify-center bg-black/60 px-4">
         <View className="bg-paleta-fundo px-5 pt-5 pb-10 rounded-xl max-h-96">
           {onClose && (
@@ -34,10 +34,9 @@ function Modal({ titulo, subtitulo = "", onClose, children, ...rest }: Props) {
               </Text>
             </View>
           )}
-
           {subtitulo.trim().length > 0 && (
             <Text className="text-paleta-secundaria font-regular text-gg leading-6  my-2 text-center">
-              {subtitulo}
+              {subtitulo}   
             </Text>
           )}
           <ScrollView showsVerticalScrollIndicator={false}>
