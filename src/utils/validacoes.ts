@@ -16,11 +16,17 @@ function validaContato(valor:string) {
     return valor.match(regex)?.join("").length === 11;
 }
 
+function validaSenha(senha: string) {
+    return senha.trim().length >= 8 // minimo de caracteres
+        && senha.trim() === senha; // sem espacos vazios
+}
+
 function validacoesUsuario(usuario:Objeto) {
     const validacoes: Objeto = {
         nomeCompleto: validaValorPresente,
         email: validaEmail,
         contato: validaContato,
+        senha: validaSenha,
         nomeUsuario: validaValorPresente
     };
 

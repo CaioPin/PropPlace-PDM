@@ -1,9 +1,21 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { iconesLib } from "@/assets/icons/iconesLib";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { cores } from "@/constants/cores";
+import { useAuthContext } from "@/hooks/useAuthContext";
+import { Loading } from "@/components/Loading";
 
 export default function TabLayout() {
+  const { isLoading, username: userLogado } = useAuthContext();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!userLogado) {
+    return <Redirect href={"/login"} />; // comentar essa linha pra não ter que logar toda vez
+  }
+
   return (
     <>
       <Tabs
