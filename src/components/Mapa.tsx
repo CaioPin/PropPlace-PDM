@@ -19,9 +19,10 @@ interface MapaPropriedades {
     marcarCentro?: boolean,
     selecionavel?: boolean,
     realizarRequisicoes?: boolean
+    aoMudar?: (valor:MapaCoordenadas) => void
 }
 
-function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaPropriedades) {
+function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes, aoMudar = ()=>{}}:MapaPropriedades) {
     const coordenadaPadrao = {latitude: -22.970228680657357, longitude: -43.18134420587482};
     const imovelPadrao = {nome: "", coordenadas: {latitude: 0, longitude: 0}, alugado: false, pagina: ""};
 
@@ -36,7 +37,7 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaProp
             if (centro) {
                 definirCentroMapa(centro);
                 definirLocalizacao(centro);
-                if (marcarCentro) definirMarcadorCentro(centro);
+                if (marcarCentro) definirMarcadorCentro(coordenadaPadrao);
 
                 return;
             }
@@ -48,7 +49,7 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaProp
             definirCentroMapa({latitude, longitude});
             definirLocalizacao({latitude, longitude});
         })();
-    }, []);
+    }, [centro]);
 
     useEffect(() => {
         (async () => {
@@ -91,6 +92,7 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes}:MapaProp
         const coordenadas = evento.nativeEvent.coordinate;
         definirCentroMapa(coordenadas);
         definirLocalizacao(coordenadas);
+        aoMudar(coordenadas);
 
         if (selecionavel) definirMarcadorToque(coordenadas);
     }

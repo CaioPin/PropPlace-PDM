@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { View, Text, TextInput, KeyboardTypeOptions, TextInputProps } from "react-native";
-import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
 import { iconesLib } from "../assets/icons/iconesLib";
 
 enum CampoIcones {
@@ -27,7 +26,7 @@ function semFormatacao(valor:string) {
     return valor;
 }
 
-function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao, className, ...rest}:CampoPropriedades) {
+function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao, ...rest}:CampoPropriedades) {
     const [valor, definirValor] = useState("");
     const [valorFormatado, definirValorFormatado] = useState("");
 
