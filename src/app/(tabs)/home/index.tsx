@@ -16,7 +16,7 @@ export default function Home() {
     <View className="flex-1 justify-center items-center px-5 bg-paleta-fundo">
       <Text>Home Screen</Text>
       <Text className="bg-red-400" onPress={sair}>
-        Deslogar
+        Clique para deslogar
       </Text>
     </View>
   );

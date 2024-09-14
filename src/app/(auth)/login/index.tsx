@@ -8,9 +8,9 @@ import { validacoesUsuario } from "@/utils/validacoes";
 import { Botao } from "@/components/Botao";
 import { Campo, CampoIcones } from "@/components/Campo";
 import { Modal } from "@/components/Modal";
+import { Loading } from "@/components/Loading";
 
 import { useAuthContext } from "@/hooks/useAuthContext";
-import { Loading } from "@/components/Loading";
 
 const estilo = {
   bemVindo: ConstrutorEstiloConstante.construtor()
