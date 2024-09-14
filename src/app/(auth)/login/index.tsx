@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import { Link, router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 
@@ -19,10 +19,8 @@ const estilo = {
     .construir(),
 };
 
-export const logouContexto = createContext(false)
 
 export default function Login() {
-  const logou = useContext(logouContexto)
   const { logar, isLoading } = useAuthContext();
   const [username, definirUsername] = useState("");
   const [senha, definirSenha] = useState("");

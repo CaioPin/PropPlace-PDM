@@ -1,14 +1,8 @@
 import { View, Text } from "react-native";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Redirect } from "expo-router";
-import { Modal } from "@/components/Modal";
-import { Botao } from "@/components/Botao";
-import { useContext, useState } from "react";
-import { logouContexto } from "@/app/(auth)/login";
 
 export default function Home() {
-  const logou = useContext(logouContexto);
-  const [sucessoModalAberto, defineSucessoModalAberto] = useState(logou);
 
   const { deslogar } = useAuthContext();
   const sair = () => {
@@ -24,19 +18,6 @@ export default function Home() {
       <Text className="bg-red-400" onPress={sair}>
         Deslogar
       </Text>
-
-      <Modal
-        visible={sucessoModalAberto}
-        titulo="Login realizado com sucesso"
-        onRequestClose={() => defineSucessoModalAberto(false)}>
-        <View className="flex justify-center items-center">
-          <Botao
-            variante="enviar"
-            onPress={() => defineSucessoModalAberto(false)}>
-            <Botao.Titulo>Continuar</Botao.Titulo>
-          </Botao>
-        </View>
-      </Modal>
     </View>
   );
 }
