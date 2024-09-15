@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Carrossel, CarrosselTamanho } from "@/components/Carrosel";
 import { Mapa } from "@/components/Mapa";
+import { Loading } from "@/components/Loading";
 import { ModeloImovelHome, ModeloProprietarioHome } from "@/models/modelosHome";
 import { cores } from "@/constants/cores";
 
@@ -14,11 +15,14 @@ export default function Home() {
     const [nome, definirNome] = useState("");
     const [imoveis, definirImoveis] = useState<ModeloImovelHome[]>();
     const [proprietarios, definirProprietarios] = useState<ModeloProprietarioHome[]>();
+    const [carregando, definirCarregando] = useState(false);
 
     useEffect(() => {
         (async () => {
+            definirCarregando(true);
+
             // TODO: adicionar requisição à API
-            const dados = {
+            const mock = {
                 nome: "Bruno Mars",
                 imoveis: [
                     { id: "1", imagem: imovelPadrao, nome: "Mansão 1", endereco: "Rio de Janeiro - RJ" },
@@ -34,16 +38,18 @@ export default function Home() {
                 ]
             };
 
-            const modelosImoveis = dados.imoveis?.map((imovel) => (
+            const modelosImoveis = mock.imoveis?.map((imovel) => (
                 new ModeloImovelHome(imovel.imagem, imovel.nome, imovel.endereco, () => router.navigate({pathname: "/", params: {id: imovel.id}}))
             ));
-            const modelosProprietarios = dados.proprietarios.map((proprietario => (
+            const modelosProprietarios = mock.proprietarios.map((proprietario => (
                 new ModeloProprietarioHome(proprietario.id, proprietario.imagem, proprietario.nomeCompleto)
             )));
 
-            definirNome(dados.nome.split(" ")[0]);
-            definirImoveis(modelosImoveis);
+            definirNome(mock.nome.split(" ")[0]);
+            if (modelosImoveis?.length > 0) definirImoveis(modelosImoveis);
             definirProprietarios(modelosProprietarios);
+
+            definirCarregando(false);
         })();
     }, []);
 
@@ -67,7 +73,8 @@ export default function Home() {
     const tailwindTexto = "font-semibold text-g text-paleta-secundaria";
     const tailwindSecao = "flex gap-y-3";
 
-    return (
+    return ( carregando ?
+        <Loading /> :
         <SafeAreaView style={{backgroundColor: cores.fundo, flexGrow: 1}}>
             <ScrollView>
                 <View className="flex justify-center gap-y-8 px-8">
