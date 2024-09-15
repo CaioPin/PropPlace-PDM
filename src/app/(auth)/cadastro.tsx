@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { Link, router } from "expo-router";
 
 import { Campo, CampoIcones } from "@/components/Campo";
@@ -118,7 +118,7 @@ const Cadastro = () => {
       {carregando ? (
         <Loading />
       ) : (
-        <View className="flex-1 justify-center p-4 gap-4 bg-paleta-fundo">
+        <ScrollView className="flex-1 justify-center p-4 gap-4 bg-paleta-fundo">
           <Text className="py-4 font-semibold" style={estilo.registrese}>
             Registre-se
           </Text>
@@ -224,7 +224,7 @@ const Cadastro = () => {
               </Botao>
             </View>
           </Modal>
-        </View>
+        </ScrollView>
       )}
     </>
   );
