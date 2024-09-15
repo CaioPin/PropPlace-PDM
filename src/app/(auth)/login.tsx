@@ -24,6 +24,7 @@ export default function Login() {
   const [username, definirUsername] = useState("");
   const [senha, definirSenha] = useState("");
   const [falhaModalAberto, defineFalhaModalAberto] = useState(false);
+  const [mensagemFalha, defineMensagemFalha] = useState("Preencha os campos corretamente");
 
   const realizaLogin = async () => {
     const usuario = { nomeUsuario: username, senha };
@@ -36,9 +37,11 @@ export default function Login() {
     }
 
     const resultado = await logar(username, senha);
-    console.log(resultado);
 
     if (resultado === "erro") {
+      defineMensagemFalha(
+        "Verifique se seu nome de usuário e senha estão corretos"
+      );
       defineFalhaModalAberto(true);
     }
   };
@@ -58,6 +61,7 @@ export default function Login() {
               ativo
               autoComplete="username"
               autoCapitalize="none"
+              returnKeyType="next"
               autoFocus
               value={username}
               onChangeText={definirUsername}
@@ -70,6 +74,7 @@ export default function Login() {
               secureTextEntry
               autoComplete="password"
               autoCapitalize="none"
+              returnKeyType="done"
               value={senha}
               onChangeText={definirSenha}
               icone={CampoIcones.CADEADO}
@@ -79,7 +84,7 @@ export default function Login() {
           </View>
           <View className="flex-row justify-end">
             <TouchableOpacity
-              onPress={() => router.push("/recuperarAcesso")}>
+              onPress={() => router.navigate("/recuperarAcesso")}>
               <Text className="text-blue-700">Esqueceu a senha?</Text>
             </TouchableOpacity>
           </View>
@@ -98,7 +103,7 @@ export default function Login() {
 
           <Modal
             titulo="Falha de autenticação"
-            subtitulo="tente novamente"
+            subtitulo={mensagemFalha}
             visible={falhaModalAberto}
             onRequestClose={() => {
               defineFalhaModalAberto(false);

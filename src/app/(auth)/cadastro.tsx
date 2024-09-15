@@ -6,7 +6,6 @@ import { Campo, CampoIcones } from "@/components/Campo";
 import { Botao } from "@/components/Botao";
 import { Modal } from "@/components/Modal";
 
-import { formataTelefone } from "@/utils/formatacoes";
 import { validacoesUsuario } from "@/utils/validacoes";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { api } from "@/api";
@@ -29,6 +28,7 @@ const Cadastro = () => {
   const [senha, definirSenha] = useState("");
   const [senhaRepetida, definirSenhaRepete] = useState("");
   const [falhaModalAberto, defineFalhaModalAberto] = useState(false);
+  const [mensagemFalha, defineMensagemFalha] = useState("");
   const [sucessoModalAberto, defineSucessoModalAberto] = useState(false);
   const [carregando, defineCarregando] = useState(false);
 
@@ -47,7 +47,6 @@ const Cadastro = () => {
       };
       return status;
     } catch (erro) {
-      console.error(erro);
       const resposta = pegaStatusDeErro(erro);
 
       return resposta?.status;
@@ -62,27 +61,56 @@ const Cadastro = () => {
       contato: telefone,
       email,
     });
+    const haPreenchidoIncorretamente =
+      validacao.includes("nomeCompleto") ||
+      validacao.includes("nomeUsuario") ||
+      validacao.includes("email");
 
-    const haCamposInvalidos = validacao.length > 0;
-
-    if (haCamposInvalidos || senha !== senhaRepetida) {
+    if (haPreenchidoIncorretamente) {
+      defineMensagemFalha("Preencha todos os campos corretamente.");
       defineFalhaModalAberto(true);
-
       return;
     }
+
+    if (validacao.includes("contato")) {
+      defineMensagemFalha("Preencha os 11 numeros do telefone corretamente.");
+      defineFalhaModalAberto(true);
+      return;
+    }
+    if (validacao.includes("senha")) {
+      defineMensagemFalha("Preencha as senhas novamente com no mínimo 8 caracteres.");
+      defineFalhaModalAberto(true);
+      return;
+    }
+    if (senha !== senhaRepetida) {
+      defineMensagemFalha("As senhas preenchidas devem ser iguais.");
+      defineFalhaModalAberto(true);
+      return;
+    }
+
     defineCarregando(true);
     const respostaStatus = await chamaApiCadastro();
     defineCarregando(false);
+
     if (respostaStatus === 201) {
       defineSucessoModalAberto(true);
-    } else {
+      return;
+    }
+    if (respostaStatus === 400) {
+      defineMensagemFalha("Bad Request: Campos preenchidos incorretamente.");
       defineFalhaModalAberto(true);
+      return;
+    }
+    if (respostaStatus === 409) {
+      defineMensagemFalha("Conflito: Email ou nome de usuário já cadastrado");
+      defineFalhaModalAberto(true);
+      return;
     }
   };
 
   function redirecionaParaLogin() {
     defineSucessoModalAberto(false);
-    router.push("/login");
+    router.navigate("/login");
   }
   // TODO: atualizar estilo da fonte
   return (
@@ -99,6 +127,8 @@ const Cadastro = () => {
               ativo
               autoFocus
               autoComplete="name"
+              inputMode="text"
+              returnKeyType="next"
               value={nome}
               onChangeText={definirNome}
               icone={CampoIcones.PESSOA}
@@ -109,6 +139,7 @@ const Cadastro = () => {
               ativo
               autoCapitalize="none"
               autoComplete="username-new"
+              returnKeyType="next"
               value={username}
               onChangeText={definirUsername}
               icone={CampoIcones.PESSOA}
@@ -118,16 +149,20 @@ const Cadastro = () => {
             <Campo
               ativo
               keyboardType="phone-pad"
-              autoComplete="tel-national"
+              autoComplete="tel-device"
+              returnKeyType="next"
+              maxLength={11}
               value={telefone}
-              aoMudar={definirTelefone}
-              formatacao={formataTelefone}
+              onChangeText={definirTelefone}
               icone={CampoIcones.TELEFONE}
               placeholder="Telefone"
+              aoMudar={() => {}}
             />
             <Campo
               ativo
               autoComplete="email"
+              inputMode="email"
+              returnKeyType="next"
               value={email}
               onChangeText={definirEmail}
               icone={CampoIcones.EMAIL}
@@ -138,6 +173,7 @@ const Cadastro = () => {
               ativo
               secureTextEntry
               autoComplete="new-password"
+              returnKeyType="next"
               value={senha}
               onChangeText={definirSenha}
               icone={CampoIcones.CADEADO}
@@ -148,6 +184,7 @@ const Cadastro = () => {
               ativo
               secureTextEntry
               autoComplete="new-password"
+              returnKeyType="done"
               value={senhaRepetida}
               onChangeText={definirSenhaRepete}
               icone={CampoIcones.CADEADO}
@@ -170,7 +207,7 @@ const Cadastro = () => {
           </View>
           <Modal
             titulo="Falha no registro"
-            subtitulo="Tente novamente"
+            subtitulo={mensagemFalha}
             visible={falhaModalAberto}
             onClose={() => {
               defineFalhaModalAberto(false);

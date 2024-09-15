@@ -27,7 +27,7 @@ export default function Sucesso() {
         aoMudar={() => {}}
       />
       <View className="flex-row items-center justify-between mt-4 px-4">
-        <Text onPress={() => router.push("/login")} className="text-blue-700">
+        <Text onPress={() => router.navigate("/login")} className="text-blue-700">
           Voltar ao log-in
         </Text>
         <Botao variante="enviar">
