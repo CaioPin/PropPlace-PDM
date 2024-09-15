@@ -158,7 +158,7 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
             { focarItem() }
             { editavel && adicaoDeImagem() }
 
-            <Elemento className={tailwindCarrossel} horizontal>
+            <Elemento className={tailwindCarrossel} horizontal showsHorizontalScrollIndicator={false}>
                 { renderizaveis.map((item, indice) => renderizarItem(item, indice)) }
             </Elemento>
         </View>
