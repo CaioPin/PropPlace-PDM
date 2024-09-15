@@ -14,7 +14,7 @@ export default function App() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="recuperarAcesso"
-        options={{ presentation: "modal" }}
+        options={{ presentation: "transparentModal" }}
       />
       <Stack.Screen name="cadastro" />
       <Stack.Screen name="login" />

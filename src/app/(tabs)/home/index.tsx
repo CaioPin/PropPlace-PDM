@@ -7,7 +7,6 @@ export default function Home() {
   const { deslogar } = useAuthContext();
   const sair = () => {
     deslogar();
-    return <Redirect href={"/"} />;
   };
 
   // navega-se pra cá com router.push("/home") ou "/(tabs)/home"

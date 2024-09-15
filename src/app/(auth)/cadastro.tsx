@@ -78,7 +78,9 @@ const Cadastro = () => {
       return;
     }
     if (validacao.includes("senha")) {
-      defineMensagemFalha("Preencha as senhas novamente com no mínimo 8 caracteres.");
+      defineMensagemFalha(
+        "Preencha as senhas novamente com no mínimo 8 caracteres."
+      );
       defineFalhaModalAberto(true);
       return;
     }
@@ -118,7 +120,14 @@ const Cadastro = () => {
       {carregando ? (
         <Loading />
       ) : (
-        <ScrollView className="flex-1 justify-center p-4 gap-4 bg-paleta-fundo">
+        <ScrollView
+          className="bg-paleta-fundo"
+          contentContainerStyle={{
+            justifyContent: "center",
+            flex: 1,
+            gap: 16,
+            padding: 16,
+          }}>
           <Text className="py-4 font-semibold" style={estilo.registrese}>
             Registre-se
           </Text>
