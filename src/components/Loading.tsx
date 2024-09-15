@@ -2,6 +2,6 @@ import { ActivityIndicator } from "react-native"
 
 export function Loading() {
   return (
-    <ActivityIndicator className="flex-1 bg-paleta-primaria items-center justify-center text-slate-900" />
+    <ActivityIndicator className="flex-1 bg-paleta-fundo items-center justify-center text-slate-900" />
   )
 }

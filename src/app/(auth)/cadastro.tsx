@@ -11,6 +11,7 @@ import { validacoesUsuario } from "@/utils/validacoes";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { api } from "@/api";
 import { pegaStatusDeErro } from "@/utils/pegaStatusDeErro";
+import { Loading } from "@/components/Loading";
 
 const estilo = {
   registrese: ConstrutorEstiloConstante.construtor()
@@ -29,6 +30,7 @@ const Cadastro = () => {
   const [senhaRepetida, definirSenhaRepete] = useState("");
   const [falhaModalAberto, defineFalhaModalAberto] = useState(false);
   const [sucessoModalAberto, defineSucessoModalAberto] = useState(false);
+  const [carregando, defineCarregando] = useState(false);
 
   async function chamaApiCadastro() {
     try {
@@ -43,12 +45,12 @@ const Cadastro = () => {
       const { status } = resposta.data as {
         status: number;
       };
-      return { status };
+      return status;
     } catch (erro) {
       console.error(erro);
       const resposta = pegaStatusDeErro(erro);
 
-      return resposta;
+      return resposta?.status;
     }
   }
 
@@ -68,14 +70,13 @@ const Cadastro = () => {
 
       return;
     }
-
-    const resposta = await chamaApiCadastro();
-    if (resposta) {
-      if (resposta.status === 201) {
-        defineSucessoModalAberto(true);
-      } else {
-        defineFalhaModalAberto(true);
-      }
+    defineCarregando(true);
+    const respostaStatus = await chamaApiCadastro();
+    defineCarregando(false);
+    if (respostaStatus === 201) {
+      defineSucessoModalAberto(true);
+    } else {
+      defineFalhaModalAberto(true);
     }
   };
 
@@ -86,105 +87,108 @@ const Cadastro = () => {
   // TODO: atualizar estilo da fonte
   return (
     <>
-      <View className="flex-1 justify-center p-4 gap-4">
-        <Text className="py-4 font-semibold" style={estilo.registrese}>
-          Registre-se
-        </Text>
-        <View className="flex gap-6 items-center">
-          <Campo
-            ativo
-            autoFocus
-            autoComplete="name"
-            value={nome}
-            onChangeText={definirNome}
-            icone={CampoIcones.PESSOA}
-            placeholder="Nome"
-            aoMudar={() => {}}
-          />
-          <Campo
-            ativo
-            autoCapitalize="none"
-            autoComplete="username-new"
-            value={username}
-            onChangeText={definirUsername}
-            icone={CampoIcones.PESSOA}
-            placeholder="Nome de usuário"
-            aoMudar={() => {}}
-          />
-          <Campo
-            ativo
-            keyboardType="phone-pad"
-            autoComplete="tel-national"
-            value={telefone}
-            aoMudar={definirTelefone}
-            formatacao={formataTelefone}
-            icone={CampoIcones.TELEFONE}
-            placeholder="Telefone"
-          />
-          <Campo
-            ativo
-            autoComplete="email"
-            value={email}
-            onChangeText={definirEmail}
-            icone={CampoIcones.EMAIL}
-            placeholder="E-mail"
-            aoMudar={() => {}}
-          />
-          <Campo
-            ativo
-            secureTextEntry
-            autoComplete="new-password"
-            value={senha}
-            onChangeText={definirSenha}
-            icone={CampoIcones.CADEADO}
-            placeholder="Senha forte"
-            aoMudar={() => {}}
-          />
-          <Campo
-            ativo
-            secureTextEntry
-            autoComplete="new-password"
-            value={senhaRepetida}
-            onChangeText={definirSenhaRepete}
-            icone={CampoIcones.CADEADO}
-            placeholder="Repita a senha"
-            aoMudar={() => {}}
-          />
-        </View>
+      {carregando ? (
+        <Loading />
+      ) : (
+        <View className="flex-1 justify-center p-4 gap-4">
+          <Text className="py-4 font-semibold" style={estilo.registrese}>
+            Registre-se
+          </Text>
+          <View className="flex gap-6 items-center">
+            <Campo
+              ativo
+              autoFocus
+              autoComplete="name"
+              value={nome}
+              onChangeText={definirNome}
+              icone={CampoIcones.PESSOA}
+              placeholder="Nome"
+              aoMudar={() => {}}
+            />
+            <Campo
+              ativo
+              autoCapitalize="none"
+              autoComplete="username-new"
+              value={username}
+              onChangeText={definirUsername}
+              icone={CampoIcones.PESSOA}
+              placeholder="Nome de usuário"
+              aoMudar={() => {}}
+            />
+            <Campo
+              ativo
+              keyboardType="phone-pad"
+              autoComplete="tel-national"
+              value={telefone}
+              aoMudar={definirTelefone}
+              formatacao={formataTelefone}
+              icone={CampoIcones.TELEFONE}
+              placeholder="Telefone"
+            />
+            <Campo
+              ativo
+              autoComplete="email"
+              value={email}
+              onChangeText={definirEmail}
+              icone={CampoIcones.EMAIL}
+              placeholder="E-mail"
+              aoMudar={() => {}}
+            />
+            <Campo
+              ativo
+              secureTextEntry
+              autoComplete="new-password"
+              value={senha}
+              onChangeText={definirSenha}
+              icone={CampoIcones.CADEADO}
+              placeholder="Senha forte"
+              aoMudar={() => {}}
+            />
+            <Campo
+              ativo
+              secureTextEntry
+              autoComplete="new-password"
+              value={senhaRepetida}
+              onChangeText={definirSenhaRepete}
+              icone={CampoIcones.CADEADO}
+              placeholder="Repita a senha"
+              aoMudar={() => {}}
+            />
+          </View>
 
-        <View className="flex items-center">
-          <Botao variante="enviar" onPress={realizaCadastro}>
-            <Botao.Titulo>Enviar</Botao.Titulo>
-          </Botao>
-        </View>
+          <View className="flex items-center">
+            <Botao variante="enviar" onPress={realizaCadastro}>
+              <Botao.Titulo>Enviar</Botao.Titulo>
+            </Botao>
+          </View>
 
-        <View className="flex-row items-center py-2 justify-center gap-2">
-          <Text>Já tem registro?</Text>
-          <Link href="/login" className="text-blue-700">
-            Faça log-in
-          </Link>
-        </View>
-      </View>
+          <View className="flex-row items-center py-2 justify-center gap-2">
+            <Text>Já tem registro?</Text>
+            <Link href="/login" className="text-blue-700">
+              Faça log-in
+            </Link>
+          </View>
+          <Modal
+            titulo="Falha no registro"
+            subtitulo="Tente novamente"
+            visible={falhaModalAberto}
+            onClose={() => {
+              defineFalhaModalAberto(false);
+            }}
+          />
 
-      <Modal
-        titulo="Falha no registro"
-        subtitulo="Tente novamente"
-        visible={falhaModalAberto}
-        onClose={() => {
-          defineFalhaModalAberto(false);
-        }}
-      />
-
-      <Modal
-        visible={sucessoModalAberto}
-        titulo="Registro realizado com sucesso"
-        onRequestClose={redirecionaParaLogin}>
-        <View className="flex justify-center items-center">
-          <Botao variante="enviar" onPress={redirecionaParaLogin}>
-            <Botao.Titulo>Continuar</Botao.Titulo>
-          </Botao>
+          <Modal
+            visible={sucessoModalAberto}
+            titulo="Registro realizado com sucesso"
+            onRequestClose={redirecionaParaLogin}>
+            <View className="flex justify-center items-center">
+              <Botao variante="enviar" onPress={redirecionaParaLogin}>
+                <Botao.Titulo>Continuar</Botao.Titulo>
+              </Botao>
+            </View>
+          </Modal>
         </View>
-      </Modal>
+      )}
     </>
   );
 };
