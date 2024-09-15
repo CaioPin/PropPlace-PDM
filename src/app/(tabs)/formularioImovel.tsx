@@ -152,7 +152,10 @@ export default function FormularioImovel() {
 
                         <Campo titulo={campos.capacidade} texto="0" valorInicial={imovel.capacidade?.toString()}
                             aoMudar={(capacidade) => definirImovel({capacidade})} teclado="numeric" ativo />
+                        
 
+{/*                         TODO: Mudar campo para adicionar vírgula automaticamente no valor */}
+                        
                         <Campo titulo={campos.preco} texto="R$ 0,00" valorInicial={preco} formatacao={formataMoedaString}
                             aoMudar={(preco) => definirImovel({preco})} atualizar={atualizar} teclado="numeric" ativo />
 
