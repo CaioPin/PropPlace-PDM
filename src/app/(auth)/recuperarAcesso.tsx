@@ -18,6 +18,8 @@ export default function Sucesso() {
         className="mt-2"
         ativo
         autoComplete="email"
+        autoCapitalize="none"
+        autoFocus
         value={emailRecuperacao}
         onChangeText={defineEmailRecuperacao}
         icone={CampoIcones.CADEADO}

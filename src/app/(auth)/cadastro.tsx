@@ -90,7 +90,7 @@ const Cadastro = () => {
       {carregando ? (
         <Loading />
       ) : (
-        <View className="flex-1 justify-center p-4 gap-4">
+        <View className="flex-1 justify-center p-4 gap-4 bg-paleta-fundo">
           <Text className="py-4 font-semibold" style={estilo.registrese}>
             Registre-se
           </Text>

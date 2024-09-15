@@ -57,6 +57,8 @@ export default function Login() {
             <Campo
               ativo
               autoComplete="username"
+              autoCapitalize="none"
+              autoFocus
               value={username}
               onChangeText={definirUsername}
               icone={CampoIcones.PESSOA}
@@ -67,6 +69,7 @@ export default function Login() {
               ativo
               secureTextEntry
               autoComplete="password"
+              autoCapitalize="none"
               value={senha}
               onChangeText={definirSenha}
               icone={CampoIcones.CADEADO}
@@ -76,7 +79,7 @@ export default function Login() {
           </View>
           <View className="flex-row justify-end">
             <TouchableOpacity
-              onPress={() => router.push("/login/recuperarAcesso")}>
+              onPress={() => router.push("/recuperarAcesso")}>
               <Text className="text-blue-700">Esqueceu a senha?</Text>
             </TouchableOpacity>
           </View>

@@ -1,4 +1,4 @@
-import { Redirect, Slot } from "expo-router";
+import { Redirect, Slot, Stack } from "expo-router";
 import { useAuthContext } from "@/hooks/useAuthContext";
 
 export default function App() {
@@ -10,5 +10,14 @@ export default function App() {
     // as telas de autenticacao
   }
 
-  return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="recuperarAcesso"
+        options={{ presentation: "modal" }}
+      />
+      <Stack.Screen name="cadastro" />
+      <Stack.Screen name="login" />
+    </Stack>
+  );
 }
