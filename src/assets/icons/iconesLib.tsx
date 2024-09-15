@@ -27,5 +27,6 @@ export const iconesLib = {
     userAtivo: <FontAwesome name="user-circle-o" size={26} color={cores.secundaria} />,
     X: <Feather name="x" size={24} color={cores.preto} />,
     circulo: <FontAwesome name="circle-thin" size={24} color={cores.secundaria} />,
-    circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />
+    circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />,
+    filtro: <Ionicons name="filter" size={28} color={cores.secundaria} />
 }
