@@ -13,15 +13,15 @@ enum CheckboxTitulo{
 }
 
 const CheckboxOpcoes: { [key in CheckboxTitulo]: string[] } = {
-    [CheckboxTitulo.tiposImovel]: ["Apartamento", "Casa", "Kitnet", "República"],
-    [CheckboxTitulo.filtroPessoa]: ["Inquilino", "Proprietário"],
+    [CheckboxTitulo.tiposImovel]: ["Apartamento", "Casa", "Kitnet", "Estúdio", "República", "Todos"],
+    [CheckboxTitulo.filtroPessoa]: ["Inquilino", "Proprietário", "Todos"],
     [CheckboxTitulo.tempoContrato]: ["1 ano", "Personalizado"],
-    [CheckboxTitulo.filtroImovel]: ["Livre", "Alugado"]
+    [CheckboxTitulo.filtroImovel]: ["Livre", "Alugado", "Todos"]
 };
 
 interface CheckboxPropriedades{
     opcoes: string[],
-    separador: boolean,
+    separador?: boolean,
     titulo: CheckboxTitulo,
 }
 
@@ -31,7 +31,7 @@ function Checkbox({opcoes, separador, titulo}: CheckboxPropriedades){
 
         return(
             <View>
-                <Text className="text-paleta-secundaria text-xg font-black mb-2 pl-6">{titulo}</Text>
+                <Text className="text-paleta-secundaria text-xg font-black mb-2 pl-6 pt-0">{titulo}</Text>
                 {opcoes.map((opcaoNome, index) => (
                     <CheckBox
                     containerStyle={index === quantidade -1 || 
@@ -51,9 +51,11 @@ function Checkbox({opcoes, separador, titulo}: CheckboxPropriedades){
 }
 
 const estilo = {
-    containerSemLinha: {paddingTop: 0, minWidth:320},
+    containerSemLinha: {paddingTop: 0, minWidth:320, 
+        backgroundColor: cores.fundo, paddingBottom: 12},
     containerComLinha: {paddingTop: 0, minWidth:320, 
-        borderBottomWidth: 2, borderColor: cores.secundaria},
+        backgroundColor: cores.fundo, borderBottomWidth: 2, 
+        borderColor: cores.secundaria, paddingBottom: 6},
     textoEstilo: ConstrutorEstiloConstante.construtor().fonteGG().corSecundaria().construir(),
 }
 
