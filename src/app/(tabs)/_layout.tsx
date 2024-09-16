@@ -58,6 +58,12 @@ export default function TabLayout() {
             },
           }}
         />
+        <Tabs.Screen
+          name="formularioImovel"
+          options={{
+            href: null,
+          }}
+        />
       </Tabs>
     </>
   );
