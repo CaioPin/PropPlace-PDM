@@ -1,20 +1,33 @@
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text, ImageSourcePropType } from "react-native";
 import { api } from "@/api";
 import { Campo, CampoIcones } from "@/components/Campo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { cores } from "@/constants/cores";
 import { iconesLib } from "@/assets/icons/iconesLib";
-import { Button } from "@rneui/base";
+import { Button, Image } from "@rneui/base";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { useEffect, useState } from "react";
 import { Usuario } from "@/components/Usuario";
 import { Imovel } from "@/components/Imovel";
+import { Modal } from "@/components/Modal";
+import { Checkbox, CheckboxOpcoes, CheckboxTitulo } from "@/components/Checkbox";
+import { Botao } from "@/components/Botao";
 
 export default function Pesquisa() {
   const [pressed, setPressed] = useState<number | null>(0);
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [inquilinos, setInquilinos] = useState<any[]>([]);
+  const [imagens, setImagens] = useState<{ [key: string]: ImageSourcePropType }>({});
+  const [imagem, setImagem] = useState<{[key: string]: ImageSourcePropType}>({});
+  const [texto, setTexto] = useState("");
+  const [modal, defineModal] = useState(false);
+
+
+
+  const handleChangeText = (novoTexto: string) => {
+    setTexto(novoTexto);
+  };
 
 
   async function listaImoveis() {
@@ -25,16 +38,43 @@ export default function Pesquisa() {
     if (imoveisLista && imoveisLista.data) {
       setImoveis(imoveisLista.data); 
     }else {
-      console.error('Dados de imóveis não encontrados');
+      console.error("Dados de imóveis não encontrados");
     }
     
     }
     catch(error){
-      console.error('Erro ao buscar imóveis:', error);
+      console.error("Erro ao buscar imóveis:", error);
     }
     finally {
       setLoading(false);
     }
+  }
+
+  async function listaImagens(id: string) {
+    try{
+      setLoading(true);
+      const imagensLista = await api.get(`/${id}/imagens`,{
+        headers:{
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+        },
+      });
+
+      if (imagensLista && imagensLista.data) {
+        setImagem(imagensLista.data.imagens[0]);
+      }else {
+        console.error("Imagens de imóvel não encontradas");
+      }
+
+      return imagem;
+
+    }
+    catch(error){
+      console.error("Erro ao buscar imagens:", error);
+    }
+    finally{
+      setLoading(false);
+    }
+    
   }
 
   async function listaInquilinos() {
@@ -42,7 +82,7 @@ export default function Pesquisa() {
     setLoading(true);
     const inquilinosLista = await api.get("/users", {
       headers:{
-        Authorization: `Bearer ${"token"}`
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
         //TODO: token de usuario
       }
     });
@@ -62,6 +102,42 @@ export default function Pesquisa() {
     }
   }
 
+  async function buscaImoveis(nome: string) {
+    try{
+      setLoading(true);
+      const imoveisResultado = await api.get(`/imoveis/nome/${nome}`, {
+        headers:{
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+        }
+      })
+      console.log(imoveisResultado)
+      setImoveis(imoveisResultado.data);
+    }catch(error){
+        console.error('Erro ao buscar imóvel:', error);
+     }
+    finally {
+        setLoading(false);
+    }
+  }
+
+  async function buscaInquilinos(nome: string) {
+    try{
+      setLoading(true);
+      const inquilinosResultado = await api.get(`/users/${nome}`, {
+        headers:{
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+        }
+      })
+      console.log(inquilinosResultado)
+      setInquilinos(inquilinosResultado.data);
+    }catch(error){
+        console.error('Erro ao buscar inquilino:', error);
+     }
+    finally {
+        setLoading(false);
+    }
+  }
+
   useEffect(() => {
       listaImoveis(); 
   }, []);
@@ -78,6 +154,31 @@ export default function Pesquisa() {
     }
   }, [pressed]);
 
+  useEffect(() => {
+    if (texto) {
+      if (pressed === 0) {
+        buscaImoveis(texto);
+      } else if (pressed === 1) {
+        buscaInquilinos(texto);
+      }
+    }
+  }, [texto, pressed]);
+
+  useEffect(() => {
+    if (imoveis.length > 0) {
+      imoveis.forEach(async (imovel) => {
+        const BASE_URL_IMAGENS = `http://192.168.0.194:3000/${imovel.id}/imagens/`;
+        const imagem = await listaImagens(imovel.id); 
+        if (imagem) {
+          setImagens((prevImagens) => ({
+            ...prevImagens,
+            [imovel.id]: { uri: BASE_URL_IMAGENS },
+          }));
+        }
+      });
+    }
+  }, [imoveis]);
+
   const buttonStyle = (buttonId: number) => ({
     flexGrow: 1,
     borderBottomWidth: pressed === buttonId ? 2 : 0, 
@@ -93,11 +194,13 @@ export default function Pesquisa() {
 
             <View className="flex flex-row">
               <View className="grow">
-                <Campo 
+                <Campo
                 ativo
                 icone={CampoIcones.LUPA} 
                 placeholder="Pesquisar" 
+                titulo={texto}
                 aoMudar={() => {}}
+                //TODO colocar pesquisa para funcionar
                 />
               </View>
 
@@ -105,6 +208,7 @@ export default function Pesquisa() {
               icon={iconesLib.filtro}
               type="clear"
               titleStyle={estilo.texto}
+              onPress={() => {defineModal(true)}}
               />
             </View>
 
@@ -134,15 +238,17 @@ export default function Pesquisa() {
             <ScrollView>
 
               {imoveis.map((imovel, index) => (
+    
                 <Imovel key={index} 
-                imagem={0} 
+                imagem={imagem.nomeImagem} 
+                //TODO: mostrar imagem
                 nome={imovel.nome} 
                 endereco={imovel.latitude} 
                 preco={imovel.preco} 
                 disponivel={imovel.disponivel} 
                 redirecionamento={function (): void {
                 throw new Error("Function not implemented.");
-              }}></Imovel>
+                }}></Imovel>
               ))}
               
             </ScrollView>
@@ -165,6 +271,30 @@ export default function Pesquisa() {
           )}
         </View>
       )}
+
+      <View className="h-max">
+        {/* // TODO: consertar modal */}
+        <Modal visible={modal} onClose={() => {defineModal(false)}}>
+          <Checkbox
+            opcoes={CheckboxOpcoes["Filtrar usuários:"]}
+            titulo={CheckboxTitulo.filtroPessoa} separador={true}
+          />
+           <Checkbox
+            opcoes={CheckboxOpcoes["Filtrar imóveis por tipo:"]}
+            titulo={CheckboxTitulo.tiposImovel} separador={true}
+          />
+          <Checkbox 
+          opcoes={CheckboxOpcoes["Filtrar imóveis:"]}
+          titulo={CheckboxTitulo.filtroImovel} separador={true}/>
+          <View className="flex justify-center items-center">
+            <Botao variante="enviar"
+            onPress={() => {defineModal(false)}}>
+              <Botao.Titulo>Confirmar</Botao.Titulo>
+            </Botao>
+          </View>
+        </Modal>
+        </View>
+
 
     </SafeAreaView>
 }
