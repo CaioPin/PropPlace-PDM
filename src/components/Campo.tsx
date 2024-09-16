@@ -63,7 +63,7 @@ function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar
         definirValorFormatado(novoValorFormatado);
     }
     
-    const tailwindAreaCampo = "flex flex-row justify-between items-center w-full p-3 " + (ativo ? "border border-paleta-primaria rounded-md" : "border-b border-paleta-auxiliar");
+    const tailwindAreaCampo = "flex flex-row justify-between items-center p-3 " + (ativo ? "border border-paleta-primaria rounded-md" : "border-b border-paleta-auxiliar");
     const tailwindTexto = "flex-1 text-m " + (ativo ? "text-paleta-secundaria" : "text-paleta-auxiliar");
     
     return(
