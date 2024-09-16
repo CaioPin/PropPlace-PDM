@@ -23,7 +23,7 @@ export default function Pesquisa() {
   const [texto, setTexto] = useState("");
   const [modal, defineModal] = useState(false);
 
-
+  const BASE_URL_IMAGENS = `http://192.168.0.194:3000/images/`;
 
   const handleChangeText = (novoTexto: string) => {
     setTexto(novoTexto);
@@ -167,12 +167,11 @@ export default function Pesquisa() {
   useEffect(() => {
     if (imoveis.length > 0) {
       imoveis.forEach(async (imovel) => {
-        const BASE_URL_IMAGENS = `http://192.168.0.194:3000/${imovel.id}/imagens/`;
         const imagem = await listaImagens(imovel.id); 
         if (imagem) {
           setImagens((prevImagens) => ({
             ...prevImagens,
-            [imovel.id]: { uri: BASE_URL_IMAGENS },
+            [imovel.id]: { uri: `${BASE_URL_IMAGENS}${imagem.nomeImagem}` },
           }));
         }
       });
@@ -240,8 +239,7 @@ export default function Pesquisa() {
               {imoveis.map((imovel, index) => (
     
                 <Imovel key={index} 
-                imagem={imagem.nomeImagem} 
-                //TODO: mostrar imagem
+                imagem={{uri: `${BASE_URL_IMAGENS}${imagem.nomeImagem}`}} 
                 nome={imovel.nome} 
                 endereco={imovel.latitude} 
                 preco={imovel.preco} 
