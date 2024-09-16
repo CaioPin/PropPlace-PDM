@@ -42,7 +42,8 @@ export default function Pesquisa() {
     setLoading(true);
     const inquilinosLista = await api.get("/users", {
       headers:{
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY0NDc3NzksImV4cCI6MTcyNjQ2NTc3OSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.bc02WI1KaWRqJDbP7lI398LkLviczlLQQjCG_WO0bto"}`
+        Authorization: `Bearer ${"token"}`
+        //TODO: token de usuario
       }
     });
 
