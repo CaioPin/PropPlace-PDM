@@ -8,6 +8,7 @@ import {
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
 import { Loading } from "@/components/Loading";
+import { SessionProvider } from "@/context/authContext";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -21,8 +22,10 @@ export default function Layout() {
   }
 
   return (
-    <View className="flex-1 bg-paleta-fundo">
-      <Slot />    
-    </View>
+    <SessionProvider>
+      <View className="flex-1 bg-paleta-fundo">
+        <Slot />
+      </View>
+    </SessionProvider>
   );
 }
