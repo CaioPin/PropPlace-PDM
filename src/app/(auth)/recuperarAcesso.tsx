@@ -7,11 +7,11 @@ import { Text, View } from "react-native";
 export default function Sucesso() {
   const [emailRecuperacao, defineEmailRecuperacao] = useState("");
   return (
-    <View className="flex-1 justify-center bg-paleta-fundo p-4">
-      <Text className="text-paleta-secundaria font-semibold text-gg text-left pb-2">
+    <View className="flex-1 justify-center bg-paleta-fundo p-8">
+      <Text className="text-paleta-secundaria font-extrabold text-xg text-left pb-2">
         Recupere seu acesso
       </Text>
-      <Text className="text-paleta-secundaria font-regular text-gg leading-6 text-left pb-4">
+      <Text className="text-paleta-secundaria font-regular text-xg leading-6 text-left pb-4">
         Insira email cadastrado
       </Text>
       <Campo
@@ -27,7 +27,7 @@ export default function Sucesso() {
         aoMudar={() => {}}
       />
       <View className="flex-row items-center justify-between mt-4 px-4">
-        <Text onPress={() => router.navigate("/login")} className="text-blue-700">
+        <Text onPress={() => router.navigate("/login")} className="text-p text-blue-700">
           Voltar ao log-in
         </Text>
         <Botao variante="enviar">
