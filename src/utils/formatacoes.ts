@@ -22,6 +22,17 @@ function formataTelefone(valor:string) {
     return formatacaoNumerica(telefoneSemFormatacao, formatacaoTelefone, tamanhoTelefone);
 }
 
+function formataMoedaString(valor:string) {
+    const prefixo = "R$ ";
+    const moeda = valor.replace("R", "").replace("$", "").replace(" ", "").replaceAll(".", ",");
+
+    if (moeda.split(",").length > 2 || moeda.split(",")[1]?.length > 2) {
+        return prefixo + moeda.substring(0, moeda.length - 1);
+    }
+    
+    return prefixo + moeda;
+}
+
 function formataMoeda(valor: number) {
     return valor.toLocaleString('pt-BR', {
         style: 'currency',
@@ -33,4 +44,4 @@ function formataSenha(valor:string) {
     return valor.split("").map(() => "*").join("");
 }
 
-export { formataTelefone, formataMoeda, formataSenha };
+export { formataTelefone, formataMoedaString, formataMoeda, formataSenha };
