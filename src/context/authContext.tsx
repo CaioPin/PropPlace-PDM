@@ -47,7 +47,7 @@ function SessionProvider({ children }: IProps) {
 
       const { token, username, userId } = response.data as TRespostaLogin;
       
-      // IMPORTANTE
+      // IMPORTANTE 👇👇👇
       api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       await AsyncStorage.setItem("auth.token", token);
@@ -56,12 +56,12 @@ function SessionProvider({ children }: IProps) {
       defineToken(token);
       defineUsername(username);
       defineUserId(userId);
-      defineIsLoading(false);
       return "sucesso"
     } catch (error) {
       console.error("Falha ao logar", error);
-      defineIsLoading(false);
       return "erro";
+    } finally {
+      defineIsLoading(false);
     }
   }
 

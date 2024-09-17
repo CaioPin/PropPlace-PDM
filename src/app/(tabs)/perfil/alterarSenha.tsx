@@ -100,7 +100,6 @@ export default function AlterarSenha() {
           ativo
           autoCapitalize="none"
           autoFocus
-          secureTextEntry
           value={senhaAtual}
           onChangeText={defineSenhaAtual}
           icone={CampoIcones.CADEADO}
@@ -111,7 +110,6 @@ export default function AlterarSenha() {
         <Campo
           ativo
           autoCapitalize="none"
-          secureTextEntry
           value={novaSenha}
           onChangeText={defineNovaSenha}
           icone={CampoIcones.CADEADO}
@@ -122,7 +120,6 @@ export default function AlterarSenha() {
         <Campo
           ativo
           autoCapitalize="none"
-          secureTextEntry
           value={novaSenhaRepete}
           onChangeText={defineNovaSenhaRepete}
           icone={CampoIcones.CADEADO}

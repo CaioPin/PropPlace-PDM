@@ -172,7 +172,6 @@ const Cadastro = () => {
               />
               <Campo
                 ativo
-                secureTextEntry
                 autoComplete="new-password"
                 autoCapitalize="none"
                 returnKeyType="next"
@@ -184,7 +183,6 @@ const Cadastro = () => {
               />
               <Campo
                 ativo
-                secureTextEntry
                 autoComplete="new-password"
                 autoCapitalize="none"
                 returnKeyType="done"
