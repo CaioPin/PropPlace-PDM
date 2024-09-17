@@ -12,18 +12,19 @@ import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
 import { Checkbox, CheckboxOpcoes, CheckboxTitulo } from "@/components/Checkbox";
 import { Botao } from "@/components/Botao";
+import imovelPadrao from "../../assets/images/imovelPadrao.png"
 
 export default function Pesquisa() {
-  const [pressed, setPressed] = useState<number | null>(0);
+  const [pressed, setPressed] = useState<number>(0);
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [inquilinos, setInquilinos] = useState<any[]>([]);
-  const [imagens, setImagens] = useState<{ [key: string]: ImageSourcePropType }>({});
-  const [imagem, setImagem] = useState<{[key: string]: ImageSourcePropType}>({});
+  const [imagens, setImagens] = useState<{[key: string]: ImageSourcePropType}>({});
   const [texto, setTexto] = useState("");
   const [modal, defineModal] = useState(false);
 
   const BASE_URL_IMAGENS = `http://192.168.0.194:3000/images/`;
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1ODIxNDksImV4cCI6MTcyNjYwMDE0OSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.nKW_VXEbI66RAdaX6Pd9yCziHx3o-bfz2z1MLdFPPGU";
 
   const handleChangeText = (novoTexto: string) => {
     setTexto(novoTexto);
@@ -55,17 +56,16 @@ export default function Pesquisa() {
       setLoading(true);
       const imagensLista = await api.get(`/${id}/imagens`,{
         headers:{
-          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+          Authorization: `Bearer ${token}`
         },
       });
 
       if (imagensLista && imagensLista.data) {
-        setImagem(imagensLista.data.imagens[0]);
-      }else {
+        setImagens(imagensLista.data.imagens[0]) 
+        console.log(imagensLista.data.imagens[0].nomeImagem)
+      } else {
         console.error("Imagens de imóvel não encontradas");
       }
-
-      return imagem;
 
     }
     catch(error){
@@ -82,7 +82,7 @@ export default function Pesquisa() {
     setLoading(true);
     const inquilinosLista = await api.get("/users", {
       headers:{
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+        Authorization: `Bearer ${token}`
         //TODO: token de usuario
       }
     });
@@ -107,7 +107,7 @@ export default function Pesquisa() {
       setLoading(true);
       const imoveisResultado = await api.get(`/imoveis/nome/${nome}`, {
         headers:{
-          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+          Authorization: `Bearer ${token}`
         }
       })
       console.log(imoveisResultado)
@@ -125,7 +125,7 @@ export default function Pesquisa() {
       setLoading(true);
       const inquilinosResultado = await api.get(`/users/${nome}`, {
         headers:{
-          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1MDc1NTEsImV4cCI6MTcyNjUyNTU1MSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.w4JN33qHCWu_fdpFct0MgRMiJ2-X-E5k2qvlUsRVHTk"}`
+          Authorization: `Bearer ${token}`
         }
       })
       console.log(inquilinosResultado)
@@ -139,8 +139,8 @@ export default function Pesquisa() {
   }
 
   useEffect(() => {
-      listaImoveis(); 
-  }, []);
+    listaImoveis(); 
+}, []);
 
   useEffect(() => {
     if (pressed === 1) {
@@ -150,33 +150,25 @@ export default function Pesquisa() {
 
   useEffect(() => {
     if (pressed === 0) {
-      listaImoveis(); 
+      listaImoveis();
     }
   }, [pressed]);
 
   useEffect(() => {
-    if (texto) {
-      if (pressed === 0) {
-        buscaImoveis(texto);
-      } else if (pressed === 1) {
-        buscaInquilinos(texto);
-      }
-    }
-  }, [texto, pressed]);
-
-  useEffect(() => {
     if (imoveis.length > 0) {
       imoveis.forEach(async (imovel) => {
-        const imagem = await listaImagens(imovel.id); 
-        if (imagem) {
+        await listaImagens(imovel.id); 
+        if (imagens && imagens.nomeImagem) {
           setImagens((prevImagens) => ({
             ...prevImagens,
-            [imovel.id]: { uri: `${BASE_URL_IMAGENS}${imagem.nomeImagem}` },
+            [imovel.id]: imagens.nomeImagem,
           }));
+        }else{
+          console.log("Não foi possível carregar a imagem")
         }
       });
     }
-  }, [imoveis]);
+  },[imoveis]);
 
   const buttonStyle = (buttonId: number) => ({
     flexGrow: 1,
@@ -239,7 +231,7 @@ export default function Pesquisa() {
               {imoveis.map((imovel, index) => (
     
                 <Imovel key={index} 
-                imagem={{uri: `${BASE_URL_IMAGENS}${imagem.nomeImagem}`}} 
+                imagem={{uri: `${BASE_URL_IMAGENS}${imagens.nomeImagem}`}}
                 nome={imovel.nome} 
                 endereco={imovel.latitude} 
                 preco={imovel.preco} 
