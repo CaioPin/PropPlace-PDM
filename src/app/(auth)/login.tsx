@@ -62,7 +62,6 @@ export default function Login() {
             />
             <Campo
               ativo
-              secureTextEntry
               autoComplete="password"
               autoCapitalize="none"
               returnKeyType="done"

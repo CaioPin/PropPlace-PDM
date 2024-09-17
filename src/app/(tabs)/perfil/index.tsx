@@ -142,8 +142,7 @@ export default function Perfil() {
     }
 
     function acaoBotaoAlterarSenha() {
-        // TODO: adicionar redirecionamento para página de mudança de senha
-        router.navigate("/perfil");
+        router.navigate("/perfil/alterarSenha");
     }
 
     async function acaoImagem() {

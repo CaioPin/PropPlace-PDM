@@ -6,14 +6,22 @@ import { api } from "../api";
 interface AuthContexto {
   token: string | null;
   username?: string | null;
+  userId?: string | null;
   logar: (username: string, senha: string) => Promise<string>;
   deslogar: () => Promise<void>;
   isLoading: boolean;
 }
 
+type TRespostaLogin = {
+  token: string;
+  username: string;
+  userId: string
+}
+
 const AuthContext = createContext<AuthContexto>({
   token: null,
   username: null,
+  userId: null,
   logar: async (username: string, senha: string) => "",
   deslogar: async () => {},
   isLoading: false,
@@ -26,6 +34,7 @@ function SessionProvider({ children }: IProps) {
   const [isLoading, defineIsLoading] = useState<boolean>(false);
   const [token, defineToken] = useState<string | null>(null);
   const [username, defineUsername] = useState<string | null>(null);
+  const [userId, defineUserId] = useState<string | null>(null);
 
   async function logar(username: string, senha: string) {
     const dados = {
@@ -36,23 +45,23 @@ function SessionProvider({ children }: IProps) {
       defineIsLoading(true);
       const response = await api.post("users/login", dados);
 
-      const { token, username } = response.data as {
-        token: string;
-        username: string;
-      };
-
+      const { token, username, userId } = response.data as TRespostaLogin;
+      
+      // IMPORTANTE 👇👇👇
       api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       await AsyncStorage.setItem("auth.token", token);
       await AsyncStorage.setItem("auth.username", username);
+      await AsyncStorage.setItem("auth.userId", userId);
       defineToken(token);
       defineUsername(username);
-      defineIsLoading(false);
+      defineUserId(userId);
       return "sucesso"
     } catch (error) {
       console.error("Falha ao logar", error);
-      defineIsLoading(false);
       return "erro";
+    } finally {
+      defineIsLoading(false);
     }
   }
 
@@ -62,6 +71,7 @@ function SessionProvider({ children }: IProps) {
     defineUsername(null);
     await AsyncStorage.removeItem("auth.token");
     await AsyncStorage.removeItem("auth.username");
+    await AsyncStorage.removeItem("auth.userId");
     defineIsLoading(false);
   }
 
@@ -70,11 +80,13 @@ function SessionProvider({ children }: IProps) {
       defineIsLoading(true);
       const tokenStorage = await AsyncStorage.getItem("auth.token");
       const nameStorage = await AsyncStorage.getItem("auth.username");
+      const idStorage = await AsyncStorage.getItem("auth.userId");
       defineIsLoading(false);
       if (tokenStorage) {
         api.defaults.headers.common.Authorization = `Bearer ${tokenStorage}`;
         defineToken(tokenStorage);
         defineUsername(nameStorage);
+        defineUserId(idStorage);
       }
     }
     loadStorage();
@@ -82,7 +94,7 @@ function SessionProvider({ children }: IProps) {
 
   return (
     <AuthContext.Provider
-      value={{ token, username, logar, deslogar, isLoading }}>
+      value={{ token, username, userId, logar, deslogar, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

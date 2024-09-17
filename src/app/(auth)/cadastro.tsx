@@ -36,10 +36,7 @@ const Cadastro = () => {
         email,
       });
 
-      const { status } = resposta.data as {
-        status: number;
-      };
-      return status;
+      return resposta.status;
     } catch (erro) {
       const resposta = pegaStatusDeErro(erro);
 
@@ -164,6 +161,7 @@ const Cadastro = () => {
               <Campo
                 ativo
                 autoComplete="email"
+                autoCapitalize="none"
                 inputMode="email"
                 returnKeyType="next"
                 value={email}
@@ -174,8 +172,8 @@ const Cadastro = () => {
               />
               <Campo
                 ativo
-                secureTextEntry
                 autoComplete="new-password"
+                autoCapitalize="none"
                 returnKeyType="next"
                 value={senha}
                 onChangeText={definirSenha}
@@ -185,8 +183,8 @@ const Cadastro = () => {
               />
               <Campo
                 ativo
-                secureTextEntry
                 autoComplete="new-password"
+                autoCapitalize="none"
                 returnKeyType="done"
                 value={senhaRepetida}
                 onChangeText={definirSenhaRepete}
