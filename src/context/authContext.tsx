@@ -46,7 +46,6 @@ function SessionProvider({ children }: IProps) {
       const response = await api.post("users/login", dados);
 
       const { token, username, userId } = response.data as TRespostaLogin;
-      console.log(userId);
       
       // IMPORTANTE
       api.defaults.headers.common.Authorization = `Bearer ${token}`;
