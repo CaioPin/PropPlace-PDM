@@ -24,7 +24,7 @@ export default function Pesquisa() {
   const [modal, defineModal] = useState(false);
 
   const BASE_URL_IMAGENS = `http://192.168.0.194:3000/images/`;
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY1ODIxNDksImV4cCI6MTcyNjYwMDE0OSwic3ViIjoiOTQxYTA3YjItMmQwYi00MjczLWFkZWItMzJiNmIzODI2ZTZmIn0.nKW_VXEbI66RAdaX6Pd9yCziHx3o-bfz2z1MLdFPPGU";
+  const token = "";
 
   const handleChangeText = (novoTexto: string) => {
     setTexto(novoTexto);
