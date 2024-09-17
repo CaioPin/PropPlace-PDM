@@ -11,14 +11,19 @@ import { validacoesUsuario } from "@/utils/validacoes";
 import { api } from "@/api";
 import { pegaStatusDeErro } from "@/utils/pegaStatusDeErro";
 import { Modal } from "@/components/Modal";
+import { Loading } from "@/components/Loading";
 
 export default function AlterarSenha() {
-  const estaAberto = router.canGoBack();
   const [senhaAtual, defineSenhaAtual] = useState("");
   const [novaSenha, defineNovaSenha] = useState("");
   const [novaSenhaRepete, defineNovaSenhaRepete] = useState("");
   const [mensagemModal, defineMensagemModal] = useState("");
-  const { userId, isLoading, deslogar } = useAuthContext();
+  const [carregando, defineCarregando] = useState(false);
+
+  const { userId, deslogar } = useAuthContext();
+
+  const estaAberto = router.canGoBack();
+  const mensagemSucesso = "Senha atualizada com sucesso! Faça login novamente.";
 
   async function realizaAlteracao() {
     const validacaoNovaSenha = validacoesUsuario({
@@ -44,7 +49,9 @@ export default function AlterarSenha() {
       return;
     }
 
+    defineCarregando(true);
     const resultadoStatus = await patchSenha(userId!, senhaAtual, novaSenha);
+    defineCarregando(false);
 
     switch (resultadoStatus) {
       case 500:
@@ -57,9 +64,7 @@ export default function AlterarSenha() {
         defineMensagemModal("Senha atual incorreta.");
         break;
       case 200:
-        defineMensagemModal(
-          "Senha atualizada com sucesso! Faça login novamente."
-        );
+        defineMensagemModal(mensagemSucesso);
         break;
       default:
         break;
@@ -125,7 +130,6 @@ export default function AlterarSenha() {
           aoMudar={() => {}}
         />
 
-        {!isLoading && (
           <View className="flex-row items-center justify-between mt-4 px-2">
             {estaAberto && (
               <Text
@@ -138,17 +142,18 @@ export default function AlterarSenha() {
               <Botao.Titulo>Enviar</Botao.Titulo>
             </Botao>
           </View>
-        )}
 
         <Modal
           titulo={mensagemModal}
-          visible={!!mensagemModal}
-          onClose={() => {
+          visible={!!mensagemModal || carregando}
+          onRequestClose={() => {
             defineMensagemModal("");
-            if (mensagemModal.includes("sucesso")) {
+            if (mensagemModal === mensagemSucesso) {
               deslogar();
             }
-          }}/>
+          }}>
+          {carregando && <Loading />}
+        </Modal>
       </View>
     </View>
   );
