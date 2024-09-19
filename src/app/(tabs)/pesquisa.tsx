@@ -12,6 +12,8 @@ import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
 import { Checkbox, CheckboxOpcoes, CheckboxTitulo } from "@/components/Checkbox";
 import { Botao } from "@/components/Botao";
+
+import usuarioPadrao from "../../assets/images/usuario.png"
 import imovelPadrao from "../../assets/images/imovelPadrao.png"
 
 export default function Pesquisa() {
@@ -212,6 +214,9 @@ export default function Pesquisa() {
 
                {inquilinos.map((inquilino, index) => (
                 <Usuario key={index} 
+                ImagemUsuario={inquilino.imagem? 
+                { uri : `${EXPO_PUBLIC_API_URL}${inquilino.imagem}`}
+                : usuarioPadrao} 
                 NomeUsuario={inquilino.nome} 
                 NivelUsuario={""}></Usuario>
               ))}
