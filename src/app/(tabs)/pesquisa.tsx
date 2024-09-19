@@ -20,16 +20,13 @@ export default function Pesquisa() {
   const [pressed, setPressed] = useState<number>(0);
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [inquilinos, setInquilinos] = useState<any[]>([]);
-  const [texto, setTexto] = useState("");
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [pesquisa, setPesquisa] = useState("");
   const [modal, defineModal] = useState(false);
 
-  const EXPO_PUBLIC_API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3NjEyNDYsImV4cCI6MTcyNjc3OTI0Niwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.XIhQc3tI7srg4CN5wZJT6ab_deP4mZtz5yGwBxUmPhE";
 
-  const handleChangeText = (novoTexto: string) => {
-    setTexto(novoTexto);
-  };
+  const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3ODEwNTgsImV4cCI6MTcyNjc5OTA1OCwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.MrJxAWJdOZWLu_PZmeSyPMuNPXjdnQ3UXForGGmDAjE";
 
 
   async function listaImoveis() {
@@ -52,25 +49,24 @@ export default function Pesquisa() {
     }
   }
 
-  async function listaInquilinos() {
+  async function listaUsuarios() {
     try{
     setLoading(true);
-    const inquilinosLista = await api.get("/users", {
+    const usuariosLista = await api.get("/users", {
       headers:{
         Authorization: `Bearer ${token}`
         //TODO: token de usuario
       }
     });
 
-    if (inquilinosLista && inquilinosLista.data) {
-      const inquilinosAchados = inquilinosLista.data.flat(); 
-      setInquilinos(inquilinosAchados);
+    if (usuariosLista && usuariosLista.data) { 
+      setUsuarios(usuariosLista.data);
     }else {
-      console.error('Dados de inquilinos não encontrados');
+      console.error('Dados de usuários não encontrados');
     }
   }
     catch(error){
-      console.error('Erro ao buscar inquilinos:', error);
+      console.error('Erro ao buscar usuários:', error);
     }
     finally {
       setLoading(false);
@@ -85,7 +81,6 @@ export default function Pesquisa() {
           Authorization: `Bearer ${token}`
         }
       })
-      console.log(imoveisResultado)
       setImoveis(imoveisResultado.data);
     }catch(error){
         console.error('Erro ao buscar imóvel:', error);
@@ -95,18 +90,23 @@ export default function Pesquisa() {
     }
   }
 
-  async function buscaInquilinos(nome: string) {
+  async function buscaUsuarios(nome: string) {
     try{
       setLoading(true);
-      const inquilinosResultado = await api.get(`/users/${nome}`, {
+      const usuariosResultado = await api.get(`/users/${nome}`, {
         headers:{
           Authorization: `Bearer ${token}`
         }
       })
-      console.log(inquilinosResultado)
-      setInquilinos(inquilinosResultado.data);
+      console.log(usuariosResultado.data)
+      if (usuariosResultado.data.message == "Usuário não encontrado") {
+        setUsuarios([]);
+      } else {
+        setUsuarios(usuariosResultado.data);
+      }
     }catch(error){
-        console.error('Erro ao buscar inquilino:', error);
+        console.error('Erro ao buscar usuário:', error);
+
      }
     finally {
         setLoading(false);
@@ -114,12 +114,12 @@ export default function Pesquisa() {
   }
 
   useEffect(() => {
-    listaImoveis(); 
+    listaImoveis();
 }, []);
 
   useEffect(() => {
     if (pressed === 1) {
-      listaInquilinos(); 
+      listaUsuarios(); 
     }
   }, [pressed]);
 
@@ -128,6 +128,22 @@ export default function Pesquisa() {
       listaImoveis();
     }
   }, [pressed]);
+
+  useEffect(() => {
+    if (pesquisa.length > 0) {
+      if (pressed === 0) {
+        buscaImoveis(pesquisa);
+      } else {
+        buscaUsuarios(pesquisa);
+      }
+    } else {
+      if (pressed === 0) {
+        listaImoveis();
+      } else {
+        listaUsuarios();
+      }
+    }
+  }, [pesquisa, pressed]);
 
   const buttonStyle = (buttonId: number) => ({
     flexGrow: 1,
@@ -141,16 +157,16 @@ export default function Pesquisa() {
 
   return <SafeAreaView style={{backgroundColor: cores.fundo, 
                               flexGrow: 1, padding: 4}}>
-
+          <ScrollView>
             <View className="flex flex-row">
               <View className="grow">
                 <Campo
                 ativo
                 icone={CampoIcones.LUPA} 
                 placeholder="Pesquisar" 
-                titulo={texto}
-                aoMudar={() => {}}
-                //TODO colocar pesquisa para funcionar
+                value={pesquisa}
+                onChangeText={(text) => setPesquisa(text)}
+                aoMudar={(text) => setPesquisa(text)}
                 />
               </View>
 
@@ -173,7 +189,7 @@ export default function Pesquisa() {
 
               <Button buttonStyle={buttonStyle(1)}
               type="clear"
-              title="Inquilinos"
+              title="Usuários"
               titleStyle={titleStyle(1)}
               onPress={()=> setPressed(1)}
               /> 
@@ -181,50 +197,57 @@ export default function Pesquisa() {
             </View>
 
             {pressed === 0 ? (
-        <View>
-          {loading ? (
-            <Text style={estilo.texto}>Carregando imóveis...</Text>
-          ) : (
-            <ScrollView>
+              <View>
+                {loading ? (
+                  <Text style={estilo.texto}>Carregando imóveis...</Text>
+                ) : imoveis.length === 0? (
+                      <Text style={estilo.texto}>Não há imóveis no momento.</Text>
+                ) : ( 
+                  <ScrollView>
 
-              {imoveis.map((imovel, index) => (
-    
-                <Imovel key={index} 
-                imagem={imovel.imagens[0] ? 
-                {uri: `${EXPO_PUBLIC_API_URL}${imovel.imagens[0]?.nomeImagem}`}
-                : imovelPadrao}
-                nome={imovel.nome} 
-                endereco={imovel.latitude} 
-                preco={imovel.preco} 
-                disponivel={imovel.disponivel} 
-                redirecionamento={function (): void {
-                throw new Error("Function not implemented.");
-                }}></Imovel>
-              ))}
-              
-            </ScrollView>
-          )}
-        </View>
-      ) : (
-        <View>
-          {loading ? (
-            <Text style={estilo.texto}>Carregando inquilinos...</Text>
-          ) : (
-            <ScrollView>
+                    {imoveis.map((imovel, index) => (
+                    
+                      <Imovel key={index} 
+                      imagem={imovel.imagens[0] ? 
+                      {uri: `${API_URL}${imovel.imagens[0]?.nomeImagem}`}
+                      : imovelPadrao}
+                      nome={imovel.nome} 
+                      endereco={imovel.latitude} 
+                      preco={imovel.preco} 
+                      disponivel={imovel.disponivel} 
+                      redirecionamento={function (): void {
+                      throw new Error("Function not implemented.");
+                      }}/>
+                    
+                    ))}
 
-               {inquilinos.map((inquilino, index) => (
-                <Usuario key={index} 
-                ImagemUsuario={inquilino.imagem? 
-                { uri : `${EXPO_PUBLIC_API_URL}${inquilino.imagem}`}
-                : usuarioPadrao} 
-                NomeUsuario={inquilino.nome} 
-                NivelUsuario={""}></Usuario>
-              ))}
+                  </ScrollView>
+                )}
+              </View>
+            ) : (
+              <View>
+                {loading ? (
+                  <Text style={estilo.texto}>Carregando usuários...</Text>
+                ) : usuarios.length === 0 ? (
+                  <Text style={estilo.texto}>Não há usuários no momento.</Text>
+                ) :  (
+                  <ScrollView>
+                  
+                     {usuarios.map((usuario, index) => (
+                    
+                      <Usuario 
+                      key={index} 
+                      ImagemUsuario={usuario.imagem? 
+                      { uri : `${API_URL}${usuario.imagem.nomeImagem}`}
+                      : usuarioPadrao} 
+                      NomeUsuario={usuario.username} 
+                      NivelUsuario={""}/>
+                    ))}
 
-            </ScrollView>
-          )}
-        </View>
-      )}
+                  </ScrollView>
+                )}
+              </View>
+            )}
 
       <View className="h-max">
         {/* // TODO: consertar modal */}
@@ -248,7 +271,7 @@ export default function Pesquisa() {
           </View>
         </Modal>
         </View>
-
+      </ScrollView> 
 
     </SafeAreaView>
 }
