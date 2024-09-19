@@ -15,12 +15,12 @@ function Imovel({imagem, nome, endereco, preco, disponivel, redirecionamento}:Im
     const tailwindIndicadorDisponibilidade = "rounded-full w-3 h-3 " + (disponivel ? "bg-paleta-construtiva" : "bg-paleta-destrutiva");
     
     return (
-        <View className="flex flex-row gap-x-3">
+        <View className="flex flex-row gap-x-3 py-2">
             <Image source={imagem} alt={nome} className="rounded-md"
                 resizeMode="contain" style={{width: tamanho, height: tamanho}}
                 progressiveRenderingEnabled/>
 
-            <View className="flex flex-1 justify-between">
+            <View className="flex flex-1 justify-between px-2">
                 <Text className="text-paleta-secundaria text-g font-black" numberOfLines={1}>
                     {nome}
                 </Text>
