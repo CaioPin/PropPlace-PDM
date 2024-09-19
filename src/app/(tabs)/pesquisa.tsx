@@ -1,4 +1,4 @@
-import { View, ScrollView, Text, ImageSourcePropType } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import { api } from "@/api";
 import { Campo, CampoIcones } from "@/components/Campo";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,12 +19,11 @@ export default function Pesquisa() {
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [inquilinos, setInquilinos] = useState<any[]>([]);
-  const [imagens, setImagens] = useState<{[key: string]: ImageSourcePropType}>({});
   const [texto, setTexto] = useState("");
   const [modal, defineModal] = useState(false);
 
-  const BASE_URL_IMAGENS = `http://192.168.0.194:3000/images/`;
-  const token = "";
+  const EXPO_PUBLIC_API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3NjEyNDYsImV4cCI6MTcyNjc3OTI0Niwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.XIhQc3tI7srg4CN5wZJT6ab_deP4mZtz5yGwBxUmPhE";
 
   const handleChangeText = (novoTexto: string) => {
     setTexto(novoTexto);
@@ -37,7 +36,7 @@ export default function Pesquisa() {
     const imoveisLista = await api.get("/imoveis");
 
     if (imoveisLista && imoveisLista.data) {
-      setImoveis(imoveisLista.data); 
+      setImoveis(imoveisLista.data);
     }else {
       console.error("Dados de imóveis não encontrados");
     }
@@ -49,32 +48,6 @@ export default function Pesquisa() {
     finally {
       setLoading(false);
     }
-  }
-
-  async function listaImagens(id: string) {
-    try{
-      setLoading(true);
-      const imagensLista = await api.get(`/${id}/imagens`,{
-        headers:{
-          Authorization: `Bearer ${token}`
-        },
-      });
-
-      if (imagensLista && imagensLista.data) {
-        setImagens(imagensLista.data.imagens[0]) 
-        console.log(imagensLista.data.imagens[0].nomeImagem)
-      } else {
-        console.error("Imagens de imóvel não encontradas");
-      }
-
-    }
-    catch(error){
-      console.error("Erro ao buscar imagens:", error);
-    }
-    finally{
-      setLoading(false);
-    }
-    
   }
 
   async function listaInquilinos() {
@@ -154,22 +127,6 @@ export default function Pesquisa() {
     }
   }, [pressed]);
 
-  useEffect(() => {
-    if (imoveis.length > 0) {
-      imoveis.forEach(async (imovel) => {
-        await listaImagens(imovel.id); 
-        if (imagens && imagens.nomeImagem) {
-          setImagens((prevImagens) => ({
-            ...prevImagens,
-            [imovel.id]: imagens.nomeImagem,
-          }));
-        }else{
-          console.log("Não foi possível carregar a imagem")
-        }
-      });
-    }
-  },[imoveis]);
-
   const buttonStyle = (buttonId: number) => ({
     flexGrow: 1,
     borderBottomWidth: pressed === buttonId ? 2 : 0, 
@@ -231,7 +188,9 @@ export default function Pesquisa() {
               {imoveis.map((imovel, index) => (
     
                 <Imovel key={index} 
-                imagem={{uri: `${BASE_URL_IMAGENS}${imagens.nomeImagem}`}}
+                imagem={imovel.imagens[0] ? 
+                {uri: `${EXPO_PUBLIC_API_URL}${imovel.imagens[0]?.nomeImagem}`}
+                : imovelPadrao}
                 nome={imovel.nome} 
                 endereco={imovel.latitude} 
                 preco={imovel.preco} 
