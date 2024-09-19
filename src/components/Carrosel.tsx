@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Image, ImageSourcePropType, Modal, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
@@ -41,21 +41,19 @@ interface CarrosselPropriedades {
     visualizacao?: CarrosselVisualizacao,
     multilinhas?: boolean,
     editavel?: boolean,
-    mostrarTexto?: boolean
+    mostrarTexto?: boolean,
+    aoMudar?: (itens:CarrosselItem[]) => void
 }
 
-function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA, multilinhas, editavel, mostrarTexto}:CarrosselPropriedades) {
+function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA, multilinhas, editavel, mostrarTexto, aoMudar}:CarrosselPropriedades) {
     const itemExemplo = new CarrosselItemExemplo();
     const itemFocadoInicial = visualizacao === CarrosselVisualizacao.EXPANDIDA && itens.length > 0 ? itens[0] : itemExemplo;
 
-    const [renderizaveis, definirRenderizaveis] = useState(itens);
     const [itemFocado, definirItemFocado] = useState(itemFocadoInicial);
 
-    useEffect(() => definirRenderizaveis(itens), [itens]);
-
     function visualizacaoTelaToda() {
-        const imagens = renderizaveis.map(renderizavel => ({url: renderizavel.caminho || "", props: {source: renderizavel.imagem}}));
-        const indice = renderizaveis.indexOf(itemFocado);
+        const imagens = itens.map(renderizavel => ({url: renderizavel.caminho || "", props: {source: renderizavel.imagem}}));
+        const indice = itens.indexOf(itemFocado);
         
         return (
             <Modal visible transparent>
@@ -96,13 +94,14 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
         }
 
         const limiteDeImagens = 6;
-        const limiteDeSelecao = limiteDeImagens - renderizaveis.length;
+        const limiteDeSelecao = limiteDeImagens - itens.length;
         if (limiteDeSelecao < 1) return;
 
         const imagens = await launchImageLibraryAsync({mediaTypes: MediaTypeOptions.Images, allowsMultipleSelection: true, selectionLimit: limiteDeSelecao});
         if (!imagens.assets) return;
 
-        imagens.assets.forEach(imagem => definirRenderizaveis([...renderizaveis, {caminho: imagem.uri}]));
+        const novasImagens = imagens.assets.map(imagem => ({caminho: imagem.uri}));
+        if (aoMudar) aoMudar([...itens, ...novasImagens]);
     }
 
     function adicaoDeImagem() {
@@ -114,7 +113,7 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
     }
 
     function removerItem(item:CarrosselItem) {
-        definirRenderizaveis(renderizaveis.filter((itemRenderizavel) => itemRenderizavel !== item));
+        if (aoMudar) aoMudar(itens.filter((itemRenderizavel) => itemRenderizavel !== item));
     }
 
     function renderizarItem(item:CarrosselItem, indice:number) {
@@ -158,11 +157,11 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
             { focarItem() }
             { editavel && adicaoDeImagem() }
 
-            <Elemento className={tailwindCarrossel} horizontal>
-                { renderizaveis.map((item, indice) => renderizarItem(item, indice)) }
+            <Elemento className={tailwindCarrossel} horizontal showsHorizontalScrollIndicator={false}>
+                { itens.map((item, indice) => renderizarItem(item, indice)) }
             </Elemento>
         </View>
     );
 }
 
-export { CarrosselTamanho, CarrosselVisualizacao, Carrossel };
+export { CarrosselTamanho, CarrosselVisualizacao, CarrosselItem, Carrossel };

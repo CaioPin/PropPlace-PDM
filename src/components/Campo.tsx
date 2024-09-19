@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, KeyboardTypeOptions, TextInputProps } from "react-native";
-import { ConstrutorEstiloConstante } from "../utils/ConstrutorEstiloConstante";
+import { View, Text, TextInput, KeyboardTypeOptions, TextInputProps, Pressable } from "react-native";
 import { iconesLib } from "../assets/icons/iconesLib";
+import { useVisibilidadeSenha } from "@/hooks/useVisibilidadeSenha";
 
 enum CampoIcones {
   CADEADO = "cadeado",
@@ -27,7 +27,9 @@ function semFormatacao(valor:string) {
     return valor;
 }
 
-function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao, className, ...rest}:CampoPropriedades) {
+function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar, icone, teclado = "default", formatacao = semFormatacao, ...rest}:CampoPropriedades) {
+    const {iconeOlho, mudaVisibilidadeSenha, visibilidadeSenha} = useVisibilidadeSenha()
+    const campoEhSenha = icone === CampoIcones.CADEADO
     const [valor, definirValor] = useState("");
     const [valorFormatado, definirValorFormatado] = useState("");
 
@@ -73,8 +75,10 @@ function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar
             <View className={tailwindAreaCampo}>
                 <TextInput className={tailwindTexto}
                     placeholder={texto} editable={ativo} keyboardType={teclado}
-                    value={valorFormatado} onChangeText={mudancaDeValor} {...rest}/>
+                    value={valorFormatado} onChangeText={mudancaDeValor} secureTextEntry={ campoEhSenha && visibilidadeSenha } {...rest}/>
 
+                { campoEhSenha && 
+                <Pressable onPress={mudaVisibilidadeSenha}>{iconeOlho}</Pressable>}
                 { icone && <View className="ml-3">{iconesLib[icone]}</View> }
             </View>
         </View>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 
 import { Campo, CampoIcones } from "@/components/Campo";
@@ -7,17 +8,10 @@ import { Botao } from "@/components/Botao";
 import { Modal } from "@/components/Modal";
 
 import { validacoesUsuario } from "@/utils/validacoes";
-import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { api } from "@/api";
 import { pegaStatusDeErro } from "@/utils/pegaStatusDeErro";
 import { Loading } from "@/components/Loading";
-
-const estilo = {
-  registrese: ConstrutorEstiloConstante.construtor()
-    .fonteGG()
-    .corSecundaria()
-    .construir(),
-};
+import { cores } from "@/constants/cores";
 
 const Cadastro = () => {
   //campos
@@ -42,10 +36,7 @@ const Cadastro = () => {
         email,
       });
 
-      const { status } = resposta.data as {
-        status: number;
-      };
-      return status;
+      return resposta.status;
     } catch (erro) {
       const resposta = pegaStatusDeErro(erro);
 
@@ -114,126 +105,128 @@ const Cadastro = () => {
     defineSucessoModalAberto(false);
     router.navigate("/login");
   }
-  // TODO: atualizar estilo da fonte
+
   return (
     <>
       {carregando ? (
         <Loading />
       ) : (
-        <ScrollView
-          className="bg-paleta-fundo"
-          contentContainerStyle={{
-            justifyContent: "center",
-            flex: 1,
-            gap: 16,
-            padding: 16,
-          }}>
-          <Text className="py-4 font-semibold" style={estilo.registrese}>
-            Registre-se
-          </Text>
-          <View className="flex gap-6 items-center">
-            <Campo
-              ativo
-              autoFocus
-              autoComplete="name"
-              inputMode="text"
-              returnKeyType="next"
-              value={nome}
-              onChangeText={definirNome}
-              icone={CampoIcones.PESSOA}
-              placeholder="Nome"
-              aoMudar={() => {}}
-            />
-            <Campo
-              ativo
-              autoCapitalize="none"
-              autoComplete="username-new"
-              returnKeyType="next"
-              value={username}
-              onChangeText={definirUsername}
-              icone={CampoIcones.PESSOA}
-              placeholder="Nome de usuário"
-              aoMudar={() => {}}
-            />
-            <Campo
-              ativo
-              keyboardType="phone-pad"
-              autoComplete="tel-device"
-              returnKeyType="next"
-              maxLength={11}
-              value={telefone}
-              onChangeText={definirTelefone}
-              icone={CampoIcones.TELEFONE}
-              placeholder="Telefone"
-              aoMudar={() => {}}
-            />
-            <Campo
-              ativo
-              autoComplete="email"
-              inputMode="email"
-              returnKeyType="next"
-              value={email}
-              onChangeText={definirEmail}
-              icone={CampoIcones.EMAIL}
-              placeholder="E-mail"
-              aoMudar={() => {}}
-            />
-            <Campo
-              ativo
-              secureTextEntry
-              autoComplete="new-password"
-              returnKeyType="next"
-              value={senha}
-              onChangeText={definirSenha}
-              icone={CampoIcones.CADEADO}
-              placeholder="Senha forte"
-              aoMudar={() => {}}
-            />
-            <Campo
-              ativo
-              secureTextEntry
-              autoComplete="new-password"
-              returnKeyType="done"
-              value={senhaRepetida}
-              onChangeText={definirSenhaRepete}
-              icone={CampoIcones.CADEADO}
-              placeholder="Repita a senha"
-              aoMudar={() => {}}
-            />
-          </View>
+        <SafeAreaView style={{ backgroundColor: cores.fundo, flexGrow: 1 }}>
+          <ScrollView
+            contentContainerStyle={{
+              justifyContent: "center",
+              flex: 1,
+              gap: 16,
+              paddingHorizontal: 32,
+            }}>
+            <Text className="font-extrabold text-xg text-paleta-secundaria py-4">
+              Registre-se
+            </Text>
+            <View className="flex gap-6 items-center">
+              <Campo
+                ativo
+                autoFocus
+                autoComplete="name"
+                inputMode="text"
+                returnKeyType="next"
+                value={nome}
+                onChangeText={definirNome}
+                icone={CampoIcones.PESSOA}
+                placeholder="Nome"
+                aoMudar={() => {}}
+              />
+              <Campo
+                ativo
+                autoCapitalize="none"
+                autoComplete="username-new"
+                returnKeyType="next"
+                value={username}
+                onChangeText={definirUsername}
+                icone={CampoIcones.PESSOA}
+                placeholder="Nome de usuário"
+                aoMudar={() => {}}
+              />
+              <Campo
+                ativo
+                keyboardType="phone-pad"
+                autoComplete="tel-device"
+                returnKeyType="next"
+                maxLength={11}
+                value={telefone}
+                onChangeText={definirTelefone}
+                icone={CampoIcones.TELEFONE}
+                placeholder="Telefone"
+                aoMudar={() => {}}
+              />
+              <Campo
+                ativo
+                autoComplete="email"
+                autoCapitalize="none"
+                inputMode="email"
+                returnKeyType="next"
+                value={email}
+                onChangeText={definirEmail}
+                icone={CampoIcones.EMAIL}
+                placeholder="E-mail"
+                aoMudar={() => {}}
+              />
+              <Campo
+                ativo
+                autoComplete="new-password"
+                autoCapitalize="none"
+                returnKeyType="next"
+                value={senha}
+                onChangeText={definirSenha}
+                icone={CampoIcones.CADEADO}
+                placeholder="Senha forte"
+                aoMudar={() => {}}
+              />
+              <Campo
+                ativo
+                autoComplete="new-password"
+                autoCapitalize="none"
+                returnKeyType="done"
+                value={senhaRepetida}
+                onChangeText={definirSenhaRepete}
+                icone={CampoIcones.CADEADO}
+                placeholder="Repita a senha"
+                aoMudar={() => {}}
+              />
+            </View>
 
-          <View className="flex items-center">
-            <Botao variante="enviar" onPress={realizaCadastro}>
-              <Botao.Titulo>Enviar</Botao.Titulo>
-            </Botao>
-          </View>
-
-          <View className="flex-row items-center py-2 justify-center gap-2">
-            <Text>Já tem registro?</Text>
-            <Link href="/login" className="text-blue-700">
-              Faça log-in
-            </Link>
-          </View>
-          <Modal
-            titulo="Falha no registro"
-            subtitulo={mensagemFalha}
-            visible={falhaModalAberto}
-            onClose={() => {
-              defineFalhaModalAberto(false);
-            }}
-          />
-
-          <Modal
-            visible={sucessoModalAberto}
-            titulo="Registro realizado com sucesso"
-            onRequestClose={redirecionaParaLogin}>
-            <View className="flex justify-center items-center">
-              <Botao variante="enviar" onPress={redirecionaParaLogin}>
-                <Botao.Titulo>Continuar</Botao.Titulo>
+            <View className="flex items-center">
+              <Botao variante="enviar" onPress={realizaCadastro}>
+                <Botao.Titulo>Enviar</Botao.Titulo>
               </Botao>
             </View>
-          </Modal>
-        </ScrollView>
+
+            <View className="flex-row items-center py-2 justify-center gap-2">
+              <Text className="text-p">Já tem registro?</Text>
+              <Link href="/login" className="text-p text-blue-700">
+                Faça log-in
+              </Link>
+            </View>
+            <Modal
+              titulo="Falha no registro"
+              subtitulo={mensagemFalha}
+              visible={falhaModalAberto}
+              onClose={() => {
+                defineFalhaModalAberto(false);
+              }}
+            />
+
+            <Modal
+              visible={sucessoModalAberto}
+              titulo="Registro realizado com sucesso"
+              onRequestClose={redirecionaParaLogin}>
+              <View className="flex justify-center items-center">
+                <Botao variante="enviar" onPress={redirecionaParaLogin}>
+                  <Botao.Titulo>Continuar</Botao.Titulo>
+                </Botao>
+              </View>
+            </Modal>
+          </ScrollView>
+        </SafeAreaView>
       )}
     </>
   );

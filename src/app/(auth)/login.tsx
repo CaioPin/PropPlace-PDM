@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 
-import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { validacoesUsuario } from "@/utils/validacoes";
 
 import { Botao } from "@/components/Botao";
@@ -11,13 +10,6 @@ import { Modal } from "@/components/Modal";
 import { Loading } from "@/components/Loading";
 
 import { useAuthContext } from "@/hooks/useAuthContext";
-
-const estilo = {
-  bemVindo: ConstrutorEstiloConstante.construtor()
-    .fonteGG()
-    .corSecundaria()
-    .construir(),
-};
 
 export default function Login() {
   const { logar, isLoading } = useAuthContext();
@@ -46,14 +38,13 @@ export default function Login() {
     }
   };
 
-  // TODO: atualizar estilo da fonte
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
-        <View className="flex-1 justify-center p-4 gap-4 bg-paleta-fundo">
-          <Text style={estilo.bemVindo} className="font-semibold py-4">
+        <View className="flex-1 justify-center p-8 gap-4 bg-paleta-fundo">
+          <Text className="font-extrabold text-xg text-paleta-secundaria py-4">
             Bem vindo.{"\n"}Faça log-in para acessar sua conta
           </Text>
           <View className="flex gap-6 items-center">
@@ -71,7 +62,6 @@ export default function Login() {
             />
             <Campo
               ativo
-              secureTextEntry
               autoComplete="password"
               autoCapitalize="none"
               returnKeyType="done"
@@ -85,7 +75,7 @@ export default function Login() {
           <View className="flex-row justify-end">
             <TouchableOpacity
               onPress={() => router.navigate("/recuperarAcesso")}>
-              <Text className="text-blue-700">Esqueceu a senha?</Text>
+              <Text className="text-p text-blue-700">Esqueceu a senha?</Text>
             </TouchableOpacity>
           </View>
 
@@ -95,8 +85,8 @@ export default function Login() {
             </Botao>
           </View>
           <View className="flex-row items-center py-4 justify-center gap-2">
-            <Text>Novo usuário?</Text>
-            <Link href="/cadastro" className="text-blue-700">
+            <Text className="text-p">Novo usuário?</Text>
+            <Link href="/cadastro" className="text-p text-blue-700">
               Registre-se
             </Link>
           </View>

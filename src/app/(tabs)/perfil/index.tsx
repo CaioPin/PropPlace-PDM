@@ -3,6 +3,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFormulario } from "@/hooks/useFormulario";
 import { Campo } from "@/components/Campo";
 import { Carrossel, CarrosselTamanho } from "@/components/Carrosel";
 import { Botao } from "@/components/Botao";
@@ -27,9 +28,9 @@ export default function Perfil() {
     const [imoveis, definirImoveis] = useState<ModeloImovelPerfil[]>([]);
     const [editando, definirEditando] = useState(false);
     const [carregando, definirCarregando] = useState(true);
-    const [mensagemErro, deifnirMensagemErro] = useState("");
+    const [mensagemErro, definirMensagemErro] = useState("");
     const [caminhoImagem, definirCaminhoImagem] = useState("");
-    const [usuarioEditado, definirUsuarioEditado] = useState<Objeto>({});
+    const [usuarioEditado, definirUsuarioEditado] = useFormulario();
     const [atualizarCampos, definirAtualizarCampos] = useState(0);
     const { id }= useLocalSearchParams();
 
@@ -84,21 +85,16 @@ export default function Perfil() {
                     () => {})
                 ]
             };
-            // TODO: adicionar redirecionamento para página de adição de imóvel
-            const adicionarImovel = new ModeloImovelPerfil(adicionar, "Adicionar imóvel", "", () => router.navigate("/perfil"));
+            const adicionarImovel = new ModeloImovelPerfil(adicionar, "Adicionar imóvel",
+                "", () => router.push({pathname: "/formularioImovel", params: {id: ""}}));
 
             const usuarioMockado = new ModeloUsuarioPerfil(mock.imagem, mock.nomeCompleto, mock.email, mock.contato, mock.nomeUsuario, mock.imoveis);
-
             
             definirUsuario(usuarioMockado);
             definirImoveis([adicionarImovel, ...(usuarioMockado.imoveis || [])]);
         }
 
         definirCarregando(false);
-    }
-
-    function aoMudar(campo:string, valor:string) {
-        definirUsuarioEditado({...usuarioEditado, [campo]: valor.trim()});
     }
 
     function acaoBotaoCancelar() {
@@ -112,7 +108,7 @@ export default function Perfil() {
         const camposIncorretos = validacoesUsuario(usuarioEditado).map(campo => `"${campos[campo]}"`).join(", ");
 
         if (camposIncorretos.length > 0) {
-            deifnirMensagemErro(`O(s) campo(s) ${camposIncorretos} apresenta(m) informacoes incorretas. Por favor, reveja-as para poder prosseguir.`);
+            definirMensagemErro(`O(s) campo(s) ${camposIncorretos} apresenta(m) informacoes incorretas. Por favor, reveja-as para poder prosseguir.`);
             return;
         }
 
@@ -146,8 +142,7 @@ export default function Perfil() {
     }
 
     function acaoBotaoAlterarSenha() {
-        // TODO: adicionar redirecionamento para página de mudança de senha
-        router.navigate("/perfil");
+        router.navigate("/perfil/alterarSenha");
     }
 
     async function acaoImagem() {
@@ -155,7 +150,7 @@ export default function Perfil() {
 
         const permissao = await permissaoGaleria();
         if (!permissao) {
-            deifnirMensagemErro("Você precisa permitir o acesso à galeria para alterar a foto de perfil.");
+            definirMensagemErro("Você precisa permitir o acesso à galeria para alterar a foto de perfil.");
             return;
         }
 
@@ -189,21 +184,21 @@ export default function Perfil() {
         <Loading /> :
         <SafeAreaView style={{backgroundColor: cores.fundo, flexGrow: 1}}>
             <ScrollView>
-                <View className="flex justify-center gap-y-8 px-8">
+                <View className="flex justify-center gap-y-8 px-8 pb-8">
                     { cabecalhoUsuario() }
 
                     <View className="flex gap-y-8">
                         <Campo titulo={campos.nomeCompleto} texto={campos.nomeCompleto} valorInicial={usuario?.nomeCompleto} ativo={editando}
-                            aoMudar={(valor:string) => aoMudar("nomeCompleto", valor)} atualizar={atualizarCampos} />
+                            aoMudar={(nomeCompleto) => definirUsuarioEditado({nomeCompleto})} atualizar={atualizarCampos} />
 
                         <Campo titulo={campos.email} texto={campos.email} valorInicial={usuario?.email} ativo={editando} teclado="email-address"
-                            aoMudar={(valor:string) => aoMudar("email", valor)} atualizar={atualizarCampos} />
+                            aoMudar={(email) => definirUsuarioEditado({email})} atualizar={atualizarCampos} />
 
                         <Campo titulo={campos.contato} texto={campos.contato} valorInicial={usuario?.contato} ativo={editando} teclado="numeric"
-                            aoMudar={(valor:string) => aoMudar("contato", valor)} formatacao={formataTelefone} atualizar={atualizarCampos} />
+                            aoMudar={(contato) => definirUsuarioEditado({contato})} formatacao={formataTelefone} atualizar={atualizarCampos} />
 
                         { !id && <Campo titulo={campos.nomeUsuario} texto={campos.nomeUsuario} valorInicial={usuario?.nomeUsuario} ativo={editando}
-                            aoMudar={(valor:string) => aoMudar("nomeUsuario", valor)} atualizar={atualizarCampos} />}
+                            aoMudar={(nomeUsuario) => definirUsuarioEditado({nomeUsuario})} atualizar={atualizarCampos} />}
                     </View>
 
                     { !editando && <Carrossel itens={imoveis} tamanho={CarrosselTamanho.GRANDE} mostrarTexto /> }
@@ -232,7 +227,7 @@ export default function Perfil() {
                         
                     }
 
-                    <Modal titulo={mensagemErro} visible={!!mensagemErro} onClose={() => deifnirMensagemErro("")} />
+                    <Modal titulo={mensagemErro} visible={!!mensagemErro} onClose={() => definirMensagemErro("")} />
                 </View>
             </ScrollView>
         </SafeAreaView>

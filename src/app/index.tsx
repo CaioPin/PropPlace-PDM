@@ -1,16 +1,18 @@
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Link } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 
 export default function App() {
-  const { username } = useAuthContext();
+  const { username, userId, deslogar } = useAuthContext();
 
   return (
     <View className="flex-1 justify-center items-center px-5 bg-paleta-fundo gap-4">
       <Text>Root Screen acessível universalmente</Text>
       {username ? (
         <>
-          <Text>{username} está logado</Text>
+          <Text>
+            username: "{username + '"\n'}id: "{userId + '"\n'}está logado
+          </Text>
           <Link href="/home" className="text-blue-700">
             Ir pra home em (tabs)
           </Link>
@@ -23,7 +25,10 @@ export default function App() {
           </Link>
         </>
       )}
-      {/* rotas em diretorio com () no nome podem ter a parte entre parenteses omitida: router.push("(tabs)/home") dá na mesma*/}
+
+      <Pressable className="flex gap-y-3 bg-red-400" onPress={deslogar}>
+        <Text>Deslogar</Text>
+      </Pressable>
     </View>
   );
 }
