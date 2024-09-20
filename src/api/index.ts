@@ -5,3 +5,5 @@ export const api = axios.create({
   // mas com a porta da api
   baseURL: "http://192.168.1.68:3000",
 });
+
+export const IMAGE_API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;

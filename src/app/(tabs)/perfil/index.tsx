@@ -9,6 +9,7 @@ import { Carrossel, CarrosselTamanho } from "@/components/Carrosel";
 import { Botao } from "@/components/Botao";
 import { Loading } from "@/components/Loading";
 import { Modal } from "@/components/Modal";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import { ModeloImovelPerfil, ModeloUsuarioPerfil } from "@/models/modelosPerfil";
 import { cores } from "@/constants/cores";
 import { permissaoGaleria } from "@/utils/permissoes";
@@ -16,8 +17,8 @@ import { formataTelefone } from "@/utils/formatacoes";
 import { validacoesUsuario } from "@/utils/validacoes";
 
 import adicionar from "@/assets/images/adicionar.png";
-import imovelPadrao from "@/assets/images/imovelPadrao.png";
 import usuarioPadrao from "@/assets/images/usuario.png";
+import { constroiPerfilUsuario } from "@/utils/constroiModelo";
 
 interface Objeto {
     [key: string]: any
@@ -32,8 +33,11 @@ export default function Perfil() {
     const [caminhoImagem, definirCaminhoImagem] = useState("");
     const [usuarioEditado, definirUsuarioEditado] = useFormulario();
     const [atualizarCampos, definirAtualizarCampos] = useState(0);
-    const { id }= useLocalSearchParams();
+    const { id: paramId } = useLocalSearchParams(); // renomeando pra não confundir
+    const { userId } = useAuthContext()
 
+    const ehPerfilDoUserLogado = paramId === userId
+        // condição pro perfil ser do usuario logado ou de outro usuario
     const campos:Objeto = {
         imagem: "Foto de perfil",
         nomeCompleto: "Nome completo",
@@ -44,54 +48,24 @@ export default function Perfil() {
     
     useEffect(() => {
         (async () => await atualizarPerfil())();
-    }, [id]);
+    }, [paramId]);
 
     async function atualizarPerfil() {
         definirCarregando(true);
 
-        if (id) {
-            // TODO: adicionar requisicao para buscar usuario do ID
-            const mock = {
-                imagem: usuarioPadrao,
-                nomeCompleto: "Bruno Mars",
-                email: "bruno@mars.com",
-                contato: "99999999999",
-                nomeUsuario: "brunomars",
-                imoveis: [new ModeloImovelPerfil(
-                    imovelPadrao,
-                    "Mansão em Ipanema",
-                    "Rio de Janeiro - RJ",
-                    () => {})
-                ]
-            };
+        if (!ehPerfilDoUserLogado) {
             
-            const usuarioMockado = new ModeloUsuarioPerfil(mock.imagem, mock.nomeCompleto, mock.email, mock.contato, mock.nomeUsuario, mock.imoveis);
+            const usuarioAvulso = await constroiPerfilUsuario(paramId as string)
 
-
-            definirUsuario(usuarioMockado);
-            definirImoveis(usuarioMockado.imoveis || []);
+            definirUsuario(usuarioAvulso);
+            definirImoveis(usuarioAvulso.imoveis || []);
         } else {
-            // TODO: adicionar requisicao para buscar usuario logado
-            const mock = {
-                imagem: usuarioPadrao,
-                nomeCompleto: "Lady Gaga",
-                email: "lady@gaga.com",
-                contato: "00000000000",
-                nomeUsuario: "gaga",
-                imoveis: [new ModeloImovelPerfil(
-                    imovelPadrao,
-                    "Mansão em Copacabana",
-                    "Rio de Janeiro - RJ",
-                    () => {})
-                ]
-            };
+            const usuarioLogado = await constroiPerfilUsuario(userId as string)
             const adicionarImovel = new ModeloImovelPerfil(adicionar, "Adicionar imóvel",
                 "", () => router.push({pathname: "/formularioImovel", params: {id: ""}}));
-
-            const usuarioMockado = new ModeloUsuarioPerfil(mock.imagem, mock.nomeCompleto, mock.email, mock.contato, mock.nomeUsuario, mock.imoveis);
             
-            definirUsuario(usuarioMockado);
-            definirImoveis([adicionarImovel, ...(usuarioMockado.imoveis || [])]);
+            definirUsuario(usuarioLogado);
+            definirImoveis([adicionarImovel, ...(usuarioLogado.imoveis || [])]);
         }
 
         definirCarregando(false);
@@ -197,13 +171,13 @@ export default function Perfil() {
                         <Campo titulo={campos.contato} texto={campos.contato} valorInicial={usuario?.contato} ativo={editando} teclado="numeric"
                             aoMudar={(contato) => definirUsuarioEditado({contato})} formatacao={formataTelefone} atualizar={atualizarCampos} />
 
-                        { !id && <Campo titulo={campos.nomeUsuario} texto={campos.nomeUsuario} valorInicial={usuario?.nomeUsuario} ativo={editando}
+                        { ehPerfilDoUserLogado && <Campo titulo={campos.nomeUsuario} texto={campos.nomeUsuario} valorInicial={usuario?.nomeUsuario} ativo={editando}
                             aoMudar={(nomeUsuario) => definirUsuarioEditado({nomeUsuario})} atualizar={atualizarCampos} />}
                     </View>
 
                     { !editando && <Carrossel itens={imoveis} tamanho={CarrosselTamanho.GRANDE} mostrarTexto /> }
 
-                    { !id &&
+                    { ehPerfilDoUserLogado &&
                         <View className="flex flex-row justify-evenly w-full">
                             { editando ?
                                 <>

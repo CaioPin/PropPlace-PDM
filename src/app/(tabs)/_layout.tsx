@@ -5,9 +5,9 @@ import { cores } from "@/constants/cores";
 import { useAuthContext } from "@/hooks/useAuthContext";
 
 export default function TabLayout() {
-  const { username: userLogado } = useAuthContext();
+  const { userId: userLogadoId } = useAuthContext()
 
-  if (!userLogado) {
+  if (!userLogadoId) {
     return <Redirect href={"/login"} />; // comentar essa linha pra não ter que logar toda vez
   }
 
@@ -54,7 +54,7 @@ export default function TabLayout() {
               focused ? iconesLib.userAtivo : iconesLib.user,
             href: {
               pathname: "/perfil",
-              params: { id: "" },
+              params: { id: userLogadoId },
             },
           }}
         />
