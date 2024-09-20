@@ -12,9 +12,9 @@ import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
 import { Checkbox, CheckboxOpcoes, CheckboxTitulo } from "@/components/Checkbox";
 import { Botao } from "@/components/Botao";
-
-import usuarioPadrao from "../../assets/images/usuario.png"
-import imovelPadrao from "../../assets/images/imovelPadrao.png"
+import { IMAGE_API_URL } from "@/api";
+import usuarioPadrao from "@/assets/images/usuario.png"
+import imovelPadrao from "@/assets/images/imovelPadrao.png"
 
 export default function Pesquisa() {
   const [pressed, setPressed] = useState<number>(0);
@@ -26,8 +26,7 @@ export default function Pesquisa() {
   const [modalUser, defineModalUser] = useState(false);
   const [opcoesSelecionadas, setOpcoesSelecionadas] = useState<string[]>([]);
 
-  
-  const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;
+
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3ODEwNTgsImV4cCI6MTcyNjc5OTA1OCwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.MrJxAWJdOZWLu_PZmeSyPMuNPXjdnQ3UXForGGmDAjE";
 
 
@@ -221,26 +220,26 @@ export default function Pesquisa() {
                   <Text style={estilo.texto}>Carregando imóveis...</Text>
                 ) : imoveis.length === 0? (
                       <Text style={estilo.texto}>Não há imóveis no momento.</Text>
-                  ) : ( 
-                    <ScrollView>
+                ) : ( 
+                  <ScrollView>
+
+                    {imoveis.map((imovel, index) => (
                     
-                      {imoveis.map((imovel, index) => (
-                      
-                        <Imovel key={index} 
-                        imagem={imovel.imagens[0] ? 
-                        {uri: `${API_URL}${imovel.imagens[0]?.nomeImagem}`}
-                        : imovelPadrao}
-                        nome={imovel.nome} 
-                        endereco={imovel.latitude} 
-                        preco={imovel.preco} 
-                        disponivel={imovel.disponivel} 
-                        redirecionamento={function (): void {
-                        throw new Error("Function not implemented.");
-                        }}/>
-                      
-                      ))}
-  
-                    </ScrollView>
+                      <Imovel key={index} 
+                      imagem={imovel.imagens[0] ? 
+                      {uri: `${IMAGE_API_URL}${imovel.imagens[0]?.nomeImagem}`}
+                      : imovelPadrao}
+                      nome={imovel.nome} 
+                      endereco={imovel.latitude} 
+                      preco={imovel.preco} 
+                      disponivel={imovel.disponivel} 
+                      redirecionamento={function (): void {
+                      throw new Error("Function not implemented.");
+                      }}/>
+                    
+                    ))}
+
+                  </ScrollView>
                 )}
               </View>
             ) : (
@@ -249,20 +248,20 @@ export default function Pesquisa() {
                 {loading ? (
                   <Text style={estilo.texto}>Carregando usuários...</Text>
                 ) : usuarios.length === 0 ? (
-                    <Text style={estilo.texto}>Não há usuários no momento.</Text>
-                  ) :  (
-                    <ScrollView>
+                  <Text style={estilo.texto}>Não há usuários no momento.</Text>
+                ) :  (
+                  <ScrollView>
+                  
+                     {usuarios.map((usuario, index) => (
                     
-                       {usuarios.map((usuario, index) => (
-                      
-                        <Usuario 
-                        key={index} 
-                        ImagemUsuario={usuario.imagem? 
-                        { uri : `${API_URL}${usuario.imagem.nomeImagem}`}
-                        : usuarioPadrao} 
-                        NomeUsuario={usuario.username} 
-                        NivelUsuario={""}/>
-                      ))}
+                      <Usuario 
+                      key={index} 
+                      ImagemUsuario={usuario.imagem? 
+                      { uri : `${IMAGE_API_URL}${usuario.imagem.nomeImagem}`}
+                      : usuarioPadrao} 
+                      NomeUsuario={usuario.username} 
+                      NivelUsuario={""}/>
+                    ))}
 
                     </ScrollView>
                   )}
