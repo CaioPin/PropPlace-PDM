@@ -12,6 +12,6 @@ type Usuario = {
 export type UsuarioDTO = Usuario & {
   createdAt: Date;
   updatedAt: Date;
-  imoveis: ImovelDTO[];
+  imoveis: ImovelDTO[]
   imagem: Imagem;
 };
