@@ -7,7 +7,14 @@ import {
 } from "@/models/modelosPerfil";
 import { router } from "expo-router";
 
-export async function constroiPerfilUsuario(userId: string) {
+type constroiPerfilArgs = {
+  userId: string
+  imoveisSaoEditaveis?: boolean
+}
+
+export async function constroiPerfilUsuario(
+  { userId, imoveisSaoEditaveis = false} : constroiPerfilArgs
+) {
   const usuario: UsuarioDTO = await api
     .get("/users/id/" + userId)
     .then(({ data }) => data)
@@ -29,12 +36,21 @@ export async function constroiPerfilUsuario(userId: string) {
       const imagem = imagens[0]
         ? { uri: IMAGE_API_URL + imagens[0].nomeImagem }
         : imovelPadrao;
-      return new ModeloImovelPerfil(imagem, nome, descricao, () => {
-        router.navigate({
-          pathname: "/formularioImovel",
-          params: { id: idImovel },
-        });
-      });
+
+        const redirecionamento = imoveisSaoEditaveis ? () => {
+          router.navigate({
+            pathname: "/formularioImovel",
+            params: { id: idImovel },
+          });
+        } : () => {
+          router.navigate({
+            pathname: "/home",
+            // redirecionar pra outro canto
+            // pode ser uma tela que só mostra
+            // os atributos do imóvel estaticamente
+          });
+        }
+      return new ModeloImovelPerfil(imagem, nome, descricao, redirecionamento);
     }),
   };
   return perfil;

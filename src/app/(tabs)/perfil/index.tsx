@@ -55,12 +55,17 @@ export default function Perfil() {
 
         if (!ehPerfilDoUserLogado) {
             
-            const usuarioAvulso = await constroiPerfilUsuario(paramId as string)
+            const usuarioAvulso = await constroiPerfilUsuario({
+              userId: paramId as string,
+            });
 
             definirUsuario(usuarioAvulso);
             definirImoveis(usuarioAvulso.imoveis || []);
         } else {
-            const usuarioLogado = await constroiPerfilUsuario(userId as string)
+            const usuarioLogado = await constroiPerfilUsuario({
+              userId,
+              imoveisSaoEditaveis: true,
+            });
             const adicionarImovel = new ModeloImovelPerfil(adicionar, "Adicionar imóvel",
                 "", () => router.push({pathname: "/formularioImovel", params: {id: ""}}));
             
