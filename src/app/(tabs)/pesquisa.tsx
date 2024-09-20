@@ -12,9 +12,9 @@ import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
 import { Checkbox, CheckboxOpcoes, CheckboxTitulo } from "@/components/Checkbox";
 import { Botao } from "@/components/Botao";
-
-import usuarioPadrao from "../../assets/images/usuario.png"
-import imovelPadrao from "../../assets/images/imovelPadrao.png"
+import { IMAGE_API_URL } from "@/api";
+import usuarioPadrao from "@/assets/images/usuario.png"
+import imovelPadrao from "@/assets/images/imovelPadrao.png"
 
 export default function Pesquisa() {
   const [pressed, setPressed] = useState<number>(0);
@@ -25,7 +25,6 @@ export default function Pesquisa() {
   const [modal, defineModal] = useState(false);
 
 
-  const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3ODEwNTgsImV4cCI6MTcyNjc5OTA1OCwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.MrJxAWJdOZWLu_PZmeSyPMuNPXjdnQ3UXForGGmDAjE";
 
 
@@ -209,7 +208,7 @@ export default function Pesquisa() {
                     
                       <Imovel key={index} 
                       imagem={imovel.imagens[0] ? 
-                      {uri: `${API_URL}${imovel.imagens[0]?.nomeImagem}`}
+                      {uri: `${IMAGE_API_URL}${imovel.imagens[0]?.nomeImagem}`}
                       : imovelPadrao}
                       nome={imovel.nome} 
                       endereco={imovel.latitude} 
@@ -238,7 +237,7 @@ export default function Pesquisa() {
                       <Usuario 
                       key={index} 
                       ImagemUsuario={usuario.imagem? 
-                      { uri : `${API_URL}${usuario.imagem.nomeImagem}`}
+                      { uri : `${IMAGE_API_URL}${usuario.imagem.nomeImagem}`}
                       : usuarioPadrao} 
                       NomeUsuario={usuario.username} 
                       NivelUsuario={""}/>
