@@ -15,8 +15,8 @@ interface AuthContexto {
 type TRespostaLogin = {
   token: string;
   username: string;
-  userId: string
-}
+  userId: string;
+};
 
 const AuthContext = createContext<AuthContexto>({
   token: null,
@@ -46,17 +46,18 @@ function SessionProvider({ children }: IProps) {
       const response = await api.post("users/login", dados);
 
       const { token, username, userId } = response.data as TRespostaLogin;
-      
+
       // IMPORTANTE 👇👇👇
       api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       await AsyncStorage.setItem("auth.token", token);
       await AsyncStorage.setItem("auth.username", username);
       await AsyncStorage.setItem("auth.userId", userId);
+
       defineToken(token);
       defineUsername(username);
       defineUserId(userId);
-      return "sucesso"
+      return "sucesso";
     } catch (error) {
       console.error("Falha ao logar", error);
       return "erro";
@@ -69,6 +70,7 @@ function SessionProvider({ children }: IProps) {
     defineIsLoading(true);
     defineToken(null);
     defineUsername(null);
+    defineUserId(null);
     await AsyncStorage.removeItem("auth.token");
     await AsyncStorage.removeItem("auth.username");
     await AsyncStorage.removeItem("auth.userId");

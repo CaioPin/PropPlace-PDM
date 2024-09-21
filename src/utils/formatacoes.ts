@@ -1,3 +1,5 @@
+import axios from "axios";
+
 type ArrayFormatacao = {posicao:number, caractere:string, proximo:number}[];
 
 function formatacaoNumerica(numero:string, formatacao:ArrayFormatacao, tamanho:number) {
@@ -44,4 +46,22 @@ function formataSenha(valor:string) {
     return valor.split("").map(() => "*").join("");
 }
 
-export { formataTelefone, formataMoedaString, formataMoeda, formataSenha };
+async function formataEndereco(lat: number, lng: number) {
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=pt-BR&result_type=administrative_area_level_2&key=${process.env.EXPO_PUBLIC_MAPS_API_KEY}`;
+
+  const enderecoFormatado = await axios
+    .get(url)
+    .then((resp) => {
+      const resultado = resp.data.results[0]
+      const cidade = resultado.address_components[0].long_name;
+      const estado_sigla = resultado.address_components[1].short_name;
+      return `${cidade} - ${estado_sigla}`;
+    })
+    .catch((erro) => {
+      console.log(erro);
+    });
+
+  return enderecoFormatado ? enderecoFormatado : "";
+}
+
+export { formataTelefone, formataMoedaString, formataMoeda, formataSenha, formataEndereco };
