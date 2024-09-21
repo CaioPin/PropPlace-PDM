@@ -23,9 +23,10 @@ interface CheckboxPropriedades{
     opcoes: string[],
     separador?: boolean,
     titulo: CheckboxTitulo,
+    aoSelecionar: {}
 }
 
-function Checkbox({opcoes, separador, titulo}: CheckboxPropriedades){
+function Checkbox({opcoes, separador, titulo, aoSelecionar}: CheckboxPropriedades){
     const [check, setCheck] = useState<number | null>(0);
     const quantidade = opcoes.length;
 
