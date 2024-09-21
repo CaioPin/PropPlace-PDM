@@ -22,9 +22,11 @@ export default function Pesquisa() {
   const [loading, setLoading] = useState<boolean>(false);
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [pesquisa, setPesquisa] = useState("");
-  const [modal, defineModal] = useState(false);
+  const [modalImovel, defineModalImovel] = useState(false);
+  const [modalUser, defineModalUser] = useState(false);
+  const [opcoesSelecionadas, setOpcoesSelecionadas] = useState<string[]>([]);
 
-
+  
   const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/images/`;
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3ODEwNTgsImV4cCI6MTcyNjc5OTA1OCwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.MrJxAWJdOZWLu_PZmeSyPMuNPXjdnQ3UXForGGmDAjE";
 
@@ -98,7 +100,6 @@ export default function Pesquisa() {
           Authorization: `Bearer ${token}`
         }
       })
-      console.log(usuariosResultado.data)
       if (usuariosResultado.data.message == "Usuário não encontrado") {
         setUsuarios([]);
       } else {
@@ -155,6 +156,24 @@ export default function Pesquisa() {
     pressed === buttonId ? estilo.textoComPeso : estilo.texto
   );
 
+  const handleOpenModal = () => {
+    if (pressed === 0) {
+      defineModalImovel(true);
+    } else {
+      defineModalUser(true);
+    }
+  };
+
+  const aoSelecionarOpcao = (opcao: string) => {
+    setOpcoesSelecionadas((prevOpcoes) => {
+      if (prevOpcoes.includes(opcao)) {
+        return prevOpcoes.filter((item) => item !== opcao);
+      } else {
+        return [...prevOpcoes, opcao];
+      }
+    });
+  };
+
   return <SafeAreaView style={{backgroundColor: cores.fundo, 
                               flexGrow: 1, padding: 4}}>
           <ScrollView>
@@ -174,7 +193,7 @@ export default function Pesquisa() {
               icon={iconesLib.filtro}
               type="clear"
               titleStyle={estilo.texto}
-              onPress={() => {defineModal(true)}}
+              onPress={handleOpenModal}
               />
             </View>
 
@@ -202,74 +221,91 @@ export default function Pesquisa() {
                   <Text style={estilo.texto}>Carregando imóveis...</Text>
                 ) : imoveis.length === 0? (
                       <Text style={estilo.texto}>Não há imóveis no momento.</Text>
-                ) : ( 
-                  <ScrollView>
-
-                    {imoveis.map((imovel, index) => (
+                  ) : ( 
+                    <ScrollView>
                     
-                      <Imovel key={index} 
-                      imagem={imovel.imagens[0] ? 
-                      {uri: `${API_URL}${imovel.imagens[0]?.nomeImagem}`}
-                      : imovelPadrao}
-                      nome={imovel.nome} 
-                      endereco={imovel.latitude} 
-                      preco={imovel.preco} 
-                      disponivel={imovel.disponivel} 
-                      redirecionamento={function (): void {
-                      throw new Error("Function not implemented.");
-                      }}/>
-                    
-                    ))}
-
-                  </ScrollView>
+                      {imoveis.map((imovel, index) => (
+                      
+                        <Imovel key={index} 
+                        imagem={imovel.imagens[0] ? 
+                        {uri: `${API_URL}${imovel.imagens[0]?.nomeImagem}`}
+                        : imovelPadrao}
+                        nome={imovel.nome} 
+                        endereco={imovel.latitude} 
+                        preco={imovel.preco} 
+                        disponivel={imovel.disponivel} 
+                        redirecionamento={function (): void {
+                        throw new Error("Function not implemented.");
+                        }}/>
+                      
+                      ))}
+  
+                    </ScrollView>
                 )}
               </View>
             ) : (
+
               <View>
                 {loading ? (
                   <Text style={estilo.texto}>Carregando usuários...</Text>
                 ) : usuarios.length === 0 ? (
-                  <Text style={estilo.texto}>Não há usuários no momento.</Text>
-                ) :  (
-                  <ScrollView>
-                  
-                     {usuarios.map((usuario, index) => (
+                    <Text style={estilo.texto}>Não há usuários no momento.</Text>
+                  ) :  (
+                    <ScrollView>
                     
-                      <Usuario 
-                      key={index} 
-                      ImagemUsuario={usuario.imagem? 
-                      { uri : `${API_URL}${usuario.imagem.nomeImagem}`}
-                      : usuarioPadrao} 
-                      NomeUsuario={usuario.username} 
-                      NivelUsuario={""}/>
-                    ))}
+                       {usuarios.map((usuario, index) => (
+                      
+                        <Usuario 
+                        key={index} 
+                        ImagemUsuario={usuario.imagem? 
+                        { uri : `${API_URL}${usuario.imagem.nomeImagem}`}
+                        : usuarioPadrao} 
+                        NomeUsuario={usuario.username} 
+                        NivelUsuario={""}/>
+                      ))}
 
-                  </ScrollView>
-                )}
+                    </ScrollView>
+                  )}
               </View>
             )}
 
-      <View className="h-max">
+      <View>
         {/* // TODO: consertar modal */}
-        <Modal visible={modal} onClose={() => {defineModal(false)}}>
+        <Modal visible={modalUser} onClose={() => {defineModalUser(false)}}>
           <Checkbox
             opcoes={CheckboxOpcoes["Filtrar usuários:"]}
-            titulo={CheckboxTitulo.filtroPessoa} separador={true}
+            titulo={CheckboxTitulo.filtroPessoa}
+            separador={true}
+            aoSelecionar={aoSelecionarOpcao}
+            
           />
-           <Checkbox
-            opcoes={CheckboxOpcoes["Filtrar imóveis por tipo:"]}
-            titulo={CheckboxTitulo.tiposImovel} separador={true}
-          />
-          <Checkbox 
-          opcoes={CheckboxOpcoes["Filtrar imóveis:"]}
-          titulo={CheckboxTitulo.filtroImovel} separador={true}/>
           <View className="flex justify-center items-center">
             <Botao variante="enviar"
-            onPress={() => {defineModal(false)}}>
+            onPress={() => {defineModalUser(false)}}>
               <Botao.Titulo>Confirmar</Botao.Titulo>
             </Botao>
           </View>
         </Modal>
+
+        <Modal visible={modalImovel} onClose={() => {defineModalImovel(false)}}>
+        <Checkbox
+          opcoes={CheckboxOpcoes["Filtrar imóveis:"]}
+          titulo={CheckboxTitulo.filtroImovel} separador={true}
+          aoSelecionar={aoSelecionarOpcao}
+          />
+          <Checkbox
+            opcoes={CheckboxOpcoes["Filtrar imóveis por tipo:"]}
+            titulo={CheckboxTitulo.tiposImovel} separador={true}
+            aoSelecionar={aoSelecionarOpcao}
+          />
+          <View className="flex justify-center items-center">
+            <Botao variante="enviar"
+            onPress={() => {defineModalImovel(false)}}>
+              <Botao.Titulo>Confirmar</Botao.Titulo>
+            </Botao>
+          </View>
+        </Modal>
+
         </View>
       </ScrollView> 
 
