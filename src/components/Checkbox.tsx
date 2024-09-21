@@ -9,21 +9,19 @@ enum CheckboxTitulo{
     tiposImovel = "Filtrar imóveis por tipo:",
     filtroPessoa = "Filtrar usuários:",
     tempoContrato = "Tempo de contrato",
-    filtroImovel = "Filtrar imóveis:",
 }
 
 const CheckboxOpcoes: { [key in CheckboxTitulo]: string[] } = {
     [CheckboxTitulo.tiposImovel]: ["Apartamento", "Casa", "Kitnet", "Estúdio", "República", "Todos"],
     [CheckboxTitulo.filtroPessoa]: ["Inquilino", "Proprietário", "Todos"],
     [CheckboxTitulo.tempoContrato]: ["1 ano", "Personalizado"],
-    [CheckboxTitulo.filtroImovel]: ["Livre", "Alugado", "Todos"]
 };
 
 interface CheckboxPropriedades{
     opcoes: string[],
     separador?: boolean,
     titulo: CheckboxTitulo,
-    aoSelecionar: {}
+    aoSelecionar(opcao: string): void
 }
 
 function Checkbox({opcoes, separador, titulo, aoSelecionar}: CheckboxPropriedades){
@@ -44,7 +42,9 @@ function Checkbox({opcoes, separador, titulo, aoSelecionar}: CheckboxPropriedade
                     uncheckedIcon={iconesLib.circulo} 
                     iconType="FontAwesome"
                     checked={check === index}
-                    onPress={() => setCheck(index)}
+                    onPress={() => {setCheck(index)
+                    aoSelecionar(opcaoNome)}
+                    }
                     />
                 ))}
             </View>
