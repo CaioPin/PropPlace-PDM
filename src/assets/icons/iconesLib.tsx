@@ -27,5 +27,7 @@ export const iconesLib = {
     userAtivo: <FontAwesome name="user-circle-o" size={26} color={cores.secundaria} />,
     X: <Feather name="x" size={24} color={cores.preto} />,
     circulo: <FontAwesome name="circle-thin" size={24} color={cores.secundaria} />,
-    circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />
+    circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />,
+    olho: <Feather name='eye' size={20} color={cores.secundaria} />,
+    olhoFechado: <Feather name='eye-off' size={20} color={cores.secundaria} />
 }

@@ -1,9 +1,16 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { iconesLib } from "@/assets/icons/iconesLib";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { cores } from "@/constants/cores";
+import { useAuthContext } from "@/hooks/useAuthContext";
 
 export default function TabLayout() {
+  const { username: userLogado } = useAuthContext();
+
+  if (!userLogado) {
+    return <Redirect href={"/login"} />; // comentar essa linha pra não ter que logar toda vez
+  }
+
   return (
     <>
       <Tabs
@@ -49,6 +56,12 @@ export default function TabLayout() {
               pathname: "/perfil",
               params: { id: "" },
             },
+          }}
+        />
+        <Tabs.Screen
+          name="formularioImovel"
+          options={{
+            href: null,
           }}
         />
       </Tabs>
