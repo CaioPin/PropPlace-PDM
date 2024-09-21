@@ -4,19 +4,23 @@ import { Campo, CampoIcones } from "@/components/Campo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { cores } from "@/constants/cores";
 import { iconesLib } from "@/assets/icons/iconesLib";
-import { Button, Image } from "@rneui/base";
+import { Button } from "@rneui/base";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Usuario } from "@/components/Usuario";
 import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
 import { Checkbox, CheckboxOpcoes, CheckboxTitulo } from "@/components/Checkbox";
 import { Botao } from "@/components/Botao";
 import { IMAGE_API_URL } from "@/api";
+import { UsuarioDTO } from "@/models/Usuario";
 import usuarioPadrao from "@/assets/images/usuario.png"
 import imovelPadrao from "@/assets/images/imovelPadrao.png"
 
 export default function Pesquisa() {
+  const valorPadraoUser = "Inquilino";
+  const valorPadraoImovel = "Apartamento";
+
   const [pressed, setPressed] = useState<number>(0);
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,10 +28,12 @@ export default function Pesquisa() {
   const [pesquisa, setPesquisa] = useState("");
   const [modalImovel, defineModalImovel] = useState(false);
   const [modalUser, defineModalUser] = useState(false);
-  const [opcoesSelecionadas, setOpcoesSelecionadas] = useState<string[]>([]);
+  const [opcaoUser, setOpcaoUser] = useState<string>(valorPadraoUser);
+  const [opcaoImovel, setOpcaoImovel] = useState<string>(valorPadraoImovel);
 
 
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY3ODEwNTgsImV4cCI6MTcyNjc5OTA1OCwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.MrJxAWJdOZWLu_PZmeSyPMuNPXjdnQ3UXForGGmDAjE";
+
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY5NDgxMzYsImV4cCI6MTcyNjk2NjEzNiwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.j0O2GiIwK4dFJDhFPz6H01jBDduE4q4uXFaeYkMrq-U";
 
 
   async function listaImoveis() {
@@ -98,7 +104,7 @@ export default function Pesquisa() {
         headers:{
           Authorization: `Bearer ${token}`
         }
-      })
+      });
       if (usuariosResultado.data.message == "Usuário não encontrado") {
         setUsuarios([]);
       } else {
@@ -106,10 +112,69 @@ export default function Pesquisa() {
       }
     }catch(error){
         console.error('Erro ao buscar usuário:', error);
-
      }
     finally {
         setLoading(false);
+    }
+  }
+
+  async function buscaImoveisTipo (tipo: string) {
+    try{
+      setLoading(true);
+      if(tipo === "República"){
+        tipo = "republica";
+      }else if(tipo === "Estúdio"){
+        tipo = "estudio";
+      }else{
+        tipo = tipo.toLowerCase();
+      }
+      if(tipo === "todos"){
+        listaImoveis();
+        return
+      }
+      const imoveisTipoResultado = await api.get(`/imoveis/tipo/${tipo}`);
+      setImoveis(imoveisTipoResultado.data);
+    }catch(error){
+      console.error("Erro ao buscar imóveis por tipo: ", error);
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
+  async function buscaUserTipo(tipo: string) {
+    try{
+      setLoading(true);
+      const usuariosLista = await api.get("/users", {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const usuariosList: any[] = []; 
+      if (usuariosLista && usuariosLista.data) {
+        if(tipo === "Todos"){
+          setUsuarios(usuariosLista.data);
+          return;
+        }
+        usuariosLista.data.map((usuario: UsuarioDTO) => {
+          if(tipo === "Inquilino"){
+            if(usuario.imoveis.length === 0){
+              usuariosList.push(usuario);
+            }
+          }else if(tipo === "Proprietário"){
+            if(usuario.imoveis.length > 0){
+              usuariosList.push(usuario)
+            }
+          }
+        })
+        setUsuarios(usuariosList);
+      }else {
+        console.error('Dados de usuários não encontrados');
+      }
+    }catch(error){
+      console.error("Não foi possível filtrar usuários por tipo: ", error);
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -163,14 +228,34 @@ export default function Pesquisa() {
     }
   };
 
-  const aoSelecionarOpcao = (opcao: string) => {
-    setOpcoesSelecionadas((prevOpcoes) => {
-      if (prevOpcoes.includes(opcao)) {
-        return prevOpcoes.filter((item) => item !== opcao);
+  const confirmarSelecao = () => {
+    if(pressed === 0){
+      buscaImoveisTipo(opcaoImovel);
+      setOpcaoImovel(valorPadraoImovel);
+      defineModalImovel(false);
+    }else{
+      buscaUserTipo(opcaoUser);
+      setOpcaoUser(valorPadraoUser);
+      defineModalUser(false);
+    }
+  };
+
+  function aoSelecionarOpcao(opcao: string){
+    if(pressed === 0){
+      if (opcaoImovel === opcao) {
+        return opcaoImovel;
       } else {
-        return [...prevOpcoes, opcao];
+        setOpcaoImovel(opcao)
+        return opcaoImovel;
       }
-    });
+    }else{
+      if (opcaoUser === opcao) {
+        return opcaoUser;
+      } else {
+        setOpcaoUser(opcao)
+        return opcaoUser;
+      }
+    }
   };
 
   return <SafeAreaView style={{backgroundColor: cores.fundo, 
@@ -275,12 +360,11 @@ export default function Pesquisa() {
             opcoes={CheckboxOpcoes["Filtrar usuários:"]}
             titulo={CheckboxTitulo.filtroPessoa}
             separador={true}
-            aoSelecionar={aoSelecionarOpcao}
-            
+            aoSelecionar={aoSelecionarOpcao} 
           />
           <View className="flex justify-center items-center">
             <Botao variante="enviar"
-            onPress={() => {defineModalUser(false)}}>
+            onPress={confirmarSelecao}>
               <Botao.Titulo>Confirmar</Botao.Titulo>
             </Botao>
           </View>
@@ -288,18 +372,15 @@ export default function Pesquisa() {
 
         <Modal visible={modalImovel} onClose={() => {defineModalImovel(false)}}>
         <Checkbox
-          opcoes={CheckboxOpcoes["Filtrar imóveis:"]}
-          titulo={CheckboxTitulo.filtroImovel} separador={true}
+          opcoes={CheckboxOpcoes["Filtrar imóveis por tipo:"]}
+          titulo={CheckboxTitulo.tiposImovel} 
+          separador={true}
           aoSelecionar={aoSelecionarOpcao}
           />
-          <Checkbox
-            opcoes={CheckboxOpcoes["Filtrar imóveis por tipo:"]}
-            titulo={CheckboxTitulo.tiposImovel} separador={true}
-            aoSelecionar={aoSelecionarOpcao}
-          />
+          {/* TODO: Filtro por disponibilidade? */}
           <View className="flex justify-center items-center">
             <Botao variante="enviar"
-            onPress={() => {defineModalImovel(false)}}>
+            onPress={confirmarSelecao}>
               <Botao.Titulo>Confirmar</Botao.Titulo>
             </Botao>
           </View>
