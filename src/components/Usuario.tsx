@@ -12,10 +12,10 @@ interface UsuariosPropriedades{
 
 //TODO: Receber caminho para pagina do usuario 
 
-function Usuarios({ImagemUsuario, NomeUsuario, NivelUsuario}: UsuariosPropriedades){
+function Usuario({ImagemUsuario, NomeUsuario, NivelUsuario}: UsuariosPropriedades){
     return(
         <Button buttonStyle={estilo.botaoEstilo} type="clear">
-            <View className="w-full flex-row">
+            <View className="w-full flex-row py-2">
                 {/* TODO: Colocar imagem default caso nao receba imagem */}
                 <Image className="rounded-full border border-paleta-secundaria" source={ImagemUsuario} defaultSource={usuario} style={estilo.imagemEstilo} progressiveRenderingEnabled/>
                 <View className="ml-3 flex-1">
@@ -36,4 +36,4 @@ const estilo = {
     }
 }
 
-export {Usuarios};
+export {Usuario};
