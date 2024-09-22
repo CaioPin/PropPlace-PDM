@@ -3,17 +3,19 @@ import { iconesLib } from "@/assets/icons/iconesLib";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
 import { cores } from "@/constants/cores";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { DadosProvider } from "@/context/dadosContext";
 
 export default function TabLayout() {
   const { userId: userLogadoId } = useAuthContext()
 
   if (!userLogadoId) {
-    return <Redirect href={"/login"} />; // comentar essa linha pra não ter que logar toda vez
+    return <Redirect href={"/login"} />;
   }
 
   return (
-    <>
+    <DadosProvider>
       <Tabs
+        backBehavior="history"
         screenOptions={{
           tabBarInactiveBackgroundColor: cores.fundo,
           tabBarActiveBackgroundColor: cores.primaria,
@@ -65,7 +67,7 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </>
+    </DadosProvider>
   );
 }
 
