@@ -41,7 +41,7 @@ function Modal({
       {...rest}
       onRequestClose={onClose}>
       <View className="flex-1 justify-center bg-paleta-terciaria/60 px-4">
-        <View className="bg-paleta-fundo px-5 p-5 rounded-xl max-h-96">
+        <View className="bg-paleta-fundo px-5 p-5 rounded-xl max-h-100">
           {mostraX && (
             <TouchableOpacity
               className="-mt-2 flex flex-row-reverse"
