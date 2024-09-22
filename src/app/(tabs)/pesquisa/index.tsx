@@ -34,30 +34,15 @@ export default function Pesquisa() {
   const {todosImoveis, todosUsuarios, carregandoImoveis, carregandoUsuarios} = useContext(DadosContext)
 
   function listaImoveis() {
-    try {
-      setLoading(carregandoImoveis);
-      if (todosImoveis.length > 0) setImoveis(todosImoveis);
-      setLoading(carregandoImoveis)
-    } catch (error) {
-      console.error("Erro ao buscar imóveis:", error);
-    } finally {
-      setLoading(carregandoImoveis);
-    }
+    setLoading(carregandoImoveis);
+    setImoveis(todosImoveis);
+    setLoading(carregandoImoveis);
   }
 
   async function listaUsuarios() {
-    try {
-      setLoading(carregandoUsuarios);
-      if (todosUsuarios.length > 0) {
-        setUsuarios(todosUsuarios);
-      } else {
-        console.error("Dados de usuários não encontrados");
-      }
-    } catch (error) {
-      console.error("Erro ao buscar usuários:", error);
-    } finally {
-      setLoading(carregandoUsuarios);
-    }
+    setLoading(carregandoUsuarios);
+    setUsuarios(todosUsuarios);
+    setLoading(carregandoUsuarios);
   }
 
   async function buscaImoveis(nome: string) {

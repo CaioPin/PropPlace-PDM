@@ -34,19 +34,30 @@ function DadosProvider({ children }: IProps) {
 
   useEffect(() => {
     (async () => {
-      setCarregandoUsuarios(true);
       setCarregandoImoveis(true);
       try {
-        const respostaUsuarios = await api.get<UsuarioDTO[]>("/users");
         const respostaImoveis = await api.get<ImovelDTO[]>("/imoveis");
         const imoveisComEndereco = await enderecaImoveis(respostaImoveis.data)
-        setTodosUsuarios(respostaUsuarios.data);
         setTodosImoveis(imoveisComEndereco);
       } catch (error) {
         console.error(error);
       } finally {
-        setCarregandoUsuarios(false);
         setCarregandoImoveis(false);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      console.log("fez chamada")
+      setCarregandoUsuarios(true);
+      try {
+        const respostaUsuarios = await api.get<UsuarioDTO[]>("/users");
+        setTodosUsuarios(respostaUsuarios.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setCarregandoUsuarios(false);
       }
     })();
   }, []);
