@@ -31,11 +31,6 @@ export default function Pesquisa() {
   const [opcaoUser, setOpcaoUser] = useState<string>(valorPadraoUser);
   const [opcaoImovel, setOpcaoImovel] = useState<string>(valorPadraoImovel);
 
-
-
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFyaTEyMjMiLCJpYXQiOjE3MjY5NDgxMzYsImV4cCI6MTcyNjk2NjEzNiwic3ViIjoiZjcyMDEzM2ItODc3Ny00OTdiLTkyNDctNjNiOGVhYjVkNmM4In0.j0O2GiIwK4dFJDhFPz6H01jBDduE4q4uXFaeYkMrq-U";
-
-
   async function listaImoveis() {
     try{
     setLoading(true);
@@ -59,12 +54,7 @@ export default function Pesquisa() {
   async function listaUsuarios() {
     try{
     setLoading(true);
-    const usuariosLista = await api.get("/users", {
-      headers:{
-        Authorization: `Bearer ${token}`
-        //TODO: token de usuario
-      }
-    });
+    const usuariosLista = await api.get("/users");
 
     if (usuariosLista && usuariosLista.data) { 
       setUsuarios(usuariosLista.data);
@@ -83,11 +73,7 @@ export default function Pesquisa() {
   async function buscaImoveis(nome: string) {
     try{
       setLoading(true);
-      const imoveisResultado = await api.get(`/imoveis/nome/${nome}`, {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      })
+      const imoveisResultado = await api.get(`/imoveis/nome/${nome}`)
       setImoveis(imoveisResultado.data);
     }catch(error){
         console.error('Erro ao buscar imóvel:', error);
@@ -100,11 +86,7 @@ export default function Pesquisa() {
   async function buscaUsuarios(nome: string) {
     try{
       setLoading(true);
-      const usuariosResultado = await api.get(`/users/${nome}`, {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const usuariosResultado = await api.get(`/users/${nome}`);
       if (usuariosResultado.data.message == "Usuário não encontrado") {
         setUsuarios([]);
       } else {
@@ -145,11 +127,7 @@ export default function Pesquisa() {
   async function buscaUserTipo(tipo: string) {
     try{
       setLoading(true);
-      const usuariosLista = await api.get("/users", {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const usuariosLista = await api.get("/users");
       const usuariosList: any[] = []; 
       if (usuariosLista && usuariosLista.data) {
         if(tipo === "Todos"){
