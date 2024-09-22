@@ -1,12 +1,11 @@
 import { View, ScrollView, Text } from "react-native";
-import { api } from "@/api";
 import { Campo, CampoIcones } from "@/components/Campo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { cores } from "@/constants/cores";
 import { iconesLib } from "@/assets/icons/iconesLib";
 import { Button } from "@rneui/base";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
-import { SetStateAction, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Usuario } from "@/components/Usuario";
 import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
@@ -16,6 +15,8 @@ import { IMAGE_API_URL } from "@/api";
 import { UsuarioDTO } from "@/models/Usuario";
 import usuarioPadrao from "@/assets/images/usuario.png"
 import imovelPadrao from "@/assets/images/imovelPadrao.png"
+import { DadosContext } from "@/context/dadosContext";
+
 
 export default function Pesquisa() {
   const valorPadraoUser = "Inquilino";
@@ -30,74 +31,47 @@ export default function Pesquisa() {
   const [modalUser, defineModalUser] = useState(false);
   const [opcaoUser, setOpcaoUser] = useState<string>(valorPadraoUser);
   const [opcaoImovel, setOpcaoImovel] = useState<string>(valorPadraoImovel);
+  const {todosImoveis, todosUsuarios, carregandoImoveis, carregandoUsuarios} = useContext(DadosContext)
 
-  async function listaImoveis() {
-    try{
-    setLoading(true);
-    const imoveisLista = await api.get("/imoveis");
-
-    if (imoveisLista && imoveisLista.data) {
-      setImoveis(imoveisLista.data);
-    }else {
-      console.error("Dados de imóveis não encontrados");
-    }
-    
-    }
-    catch(error){
+  function listaImoveis() {
+    try {
+      setLoading(carregandoImoveis);
+      if (todosImoveis.length > 0) setImoveis(todosImoveis);
+      setLoading(carregandoImoveis)
+    } catch (error) {
       console.error("Erro ao buscar imóveis:", error);
-    }
-    finally {
-      setLoading(false);
+    } finally {
+      setLoading(carregandoImoveis);
     }
   }
 
   async function listaUsuarios() {
-    try{
-    setLoading(true);
-    const usuariosLista = await api.get("/users");
-
-    if (usuariosLista && usuariosLista.data) { 
-      setUsuarios(usuariosLista.data);
-    }else {
-      console.error('Dados de usuários não encontrados');
-    }
-  }
-    catch(error){
-      console.error('Erro ao buscar usuários:', error);
-    }
-    finally {
-      setLoading(false);
+    try {
+      setLoading(carregandoUsuarios);
+      if (todosUsuarios.length > 0) {
+        setUsuarios(todosUsuarios);
+      } else {
+        console.error("Dados de usuários não encontrados");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar usuários:", error);
+    } finally {
+      setLoading(carregandoUsuarios);
     }
   }
 
   async function buscaImoveis(nome: string) {
-    try{
-      setLoading(true);
-      const imoveisResultado = await api.get(`/imoveis/nome/${nome}`)
-      setImoveis(imoveisResultado.data);
-    }catch(error){
-        console.error('Erro ao buscar imóvel:', error);
-     }
-    finally {
-        setLoading(false);
-    }
+      const imoveisResultado = todosImoveis.filter(({ nome: nomeImovel }) =>
+        nomeImovel.toLowerCase().includes(nome.toLowerCase())
+      );
+      setImoveis(imoveisResultado);
   }
 
   async function buscaUsuarios(nome: string) {
-    try{
-      setLoading(true);
-      const usuariosResultado = await api.get(`/users/${nome}`);
-      if (usuariosResultado.data.message == "Usuário não encontrado") {
-        setUsuarios([]);
-      } else {
-        setUsuarios(usuariosResultado.data);
-      }
-    }catch(error){
-        console.error('Erro ao buscar usuário:', error);
-     }
-    finally {
-        setLoading(false);
-    }
+    const usuariosResultado = todosUsuarios.filter(({ username: nomeUsuario }) =>
+      nomeUsuario.toLowerCase().includes(nome.toLowerCase())
+    );
+    setUsuarios(usuariosResultado);
   }
 
   async function buscaImoveisTipo (tipo: string) {
@@ -114,8 +88,8 @@ export default function Pesquisa() {
         listaImoveis();
         return
       }
-      const imoveisTipoResultado = await api.get(`/imoveis/tipo/${tipo}`);
-      setImoveis(imoveisTipoResultado.data);
+      const imoveisTipoResultado = todosImoveis.filter(({tipo: tipoImovel}) => tipo === tipoImovel)
+      setImoveis(imoveisTipoResultado);
     }catch(error){
       console.error("Erro ao buscar imóveis por tipo: ", error);
     }
@@ -127,14 +101,14 @@ export default function Pesquisa() {
   async function buscaUserTipo(tipo: string) {
     try{
       setLoading(true);
-      const usuariosLista = await api.get("/users");
+      const usuariosLista = todosUsuarios
       const usuariosList: any[] = []; 
-      if (usuariosLista && usuariosLista.data) {
+      if (usuariosLista) {
         if(tipo === "Todos"){
-          setUsuarios(usuariosLista.data);
+          setUsuarios(usuariosLista);
           return;
         }
-        usuariosLista.data.map((usuario: UsuarioDTO) => {
+        usuariosLista.map((usuario: UsuarioDTO) => {
           if(tipo === "Inquilino"){
             if(usuario.imoveis.length === 0){
               usuariosList.push(usuario);
@@ -158,7 +132,7 @@ export default function Pesquisa() {
 
   useEffect(() => {
     listaImoveis();
-}, []);
+}, [carregandoImoveis]);
 
   useEffect(() => {
     if (pressed === 1) {
@@ -293,7 +267,7 @@ export default function Pesquisa() {
                       {uri: `${IMAGE_API_URL}${imovel.imagens[0]?.nomeImagem}`}
                       : imovelPadrao}
                       nome={imovel.nome} 
-                      endereco={imovel.latitude} 
+                      endereco={imovel.endereco}
                       preco={imovel.preco} 
                       disponivel={imovel.disponivel} 
                       redirecionamento={function (): void {
@@ -322,8 +296,8 @@ export default function Pesquisa() {
                       ImagemUsuario={usuario.imagem? 
                       { uri : `${IMAGE_API_URL}${usuario.imagem.nomeImagem}`}
                       : usuarioPadrao} 
-                      NomeUsuario={usuario.username} 
-                      NivelUsuario={""}/>
+                      NomeUsuario={usuario.nome} 
+                      NivelUsuario={usuario.username}/>
                     ))}
 
                     </ScrollView>
