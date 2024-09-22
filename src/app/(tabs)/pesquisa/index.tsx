@@ -16,6 +16,7 @@ import { UsuarioDTO } from "@/models/Usuario";
 import usuarioPadrao from "@/assets/images/usuario.png"
 import imovelPadrao from "@/assets/images/imovelPadrao.png"
 import { DadosContext } from "@/context/dadosContext";
+import { router } from "expo-router";
 
 
 export default function Pesquisa() {
@@ -25,7 +26,7 @@ export default function Pesquisa() {
   const [pressed, setPressed] = useState<number>(0);
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
   const [pesquisa, setPesquisa] = useState("");
   const [modalImovel, defineModalImovel] = useState(false);
   const [modalUser, defineModalUser] = useState(false);
@@ -272,17 +273,24 @@ export default function Pesquisa() {
                 ) : usuarios.length === 0 ? (
                   <Text style={estilo.texto}>Não há usuários no momento.</Text>
                 ) :  (
-                  <ScrollView>
+                  <ScrollView scrollEnabled>
                   
-                     {usuarios.map((usuario, index) => (
+                     {usuarios.map((usuario) => (
                     
                       <Usuario 
-                      key={index} 
-                      ImagemUsuario={usuario.imagem? 
-                      { uri : `${IMAGE_API_URL}${usuario.imagem.nomeImagem}`}
-                      : usuarioPadrao} 
-                      NomeUsuario={usuario.nome} 
-                      NivelUsuario={usuario.username}/>
+                        key={usuario.id} 
+                        ImagemUsuario={usuario.imagem? 
+                        { uri : `${IMAGE_API_URL}${usuario.imagem.nomeImagem}`}
+                        : usuarioPadrao} 
+                        NomeUsuario={usuario.nome} 
+                        NivelUsuario={usuario.username}
+                        onPress={() => 
+                          router.push({
+                            pathname: "/perfil",
+                            params: { id: usuario.id }
+                          })
+                        }
+                        />
                     ))}
 
                     </ScrollView>
