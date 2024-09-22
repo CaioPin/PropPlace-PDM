@@ -10,7 +10,6 @@ interface UsuariosPropriedades extends ButtonProps {
     NivelUsuario: string,
 }
 
-
 function Usuario({ImagemUsuario, NomeUsuario, NivelUsuario, ...rest}: UsuariosPropriedades){
     return(
         <Button buttonStyle={estilo.botaoEstilo} type="clear" {...rest}>

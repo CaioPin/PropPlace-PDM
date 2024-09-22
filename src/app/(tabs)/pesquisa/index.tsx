@@ -19,6 +19,7 @@ import { DadosContext } from "@/context/dadosContext";
 import { router } from "expo-router";
 
 
+
 export default function Pesquisa() {
   const valorPadraoUser = "Inquilino";
   const valorPadraoImovel = "Apartamento";
@@ -27,6 +28,7 @@ export default function Pesquisa() {
   const [imoveis, setImoveis] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
+
   const [pesquisa, setPesquisa] = useState("");
   const [modalImovel, defineModalImovel] = useState(false);
   const [modalUser, defineModalUser] = useState(false);
@@ -299,7 +301,6 @@ export default function Pesquisa() {
             )}
 
       <View>
-        {/* // TODO: consertar modal */}
         <Modal visible={modalUser} onClose={() => {defineModalUser(false)}}>
           <Checkbox
             opcoes={CheckboxOpcoes["Filtrar usuários:"]}
