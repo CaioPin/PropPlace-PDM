@@ -39,7 +39,7 @@ export default function Home() {
             };
 
             const modelosImoveis = mock.imoveis?.map((imovel) => (
-                new ModeloImovelHome(imovel.imagem, imovel.nome, imovel.endereco, () => router.navigate({pathname: "/", params: {id: imovel.id}}))
+                new ModeloImovelHome(imovel.imagem, imovel.nome, imovel.endereco, () => router.navigate({pathname: "../informacaoImovel", params: {id: imovel.id}}))
             ));
             const modelosProprietarios = mock.proprietarios.map((proprietario => (
                 new ModeloProprietarioHome(proprietario.id, proprietario.imagem, proprietario.nomeCompleto)
