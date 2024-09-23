@@ -65,7 +65,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="informacaoImovel"
+          name="imovel"
           options={{
             href: null,
         }}
