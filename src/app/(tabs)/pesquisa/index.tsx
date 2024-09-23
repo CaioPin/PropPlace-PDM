@@ -16,6 +16,7 @@ import { UsuarioDTO } from "@/models/Usuario";
 import usuarioPadrao from "@/assets/images/usuario.png"
 import imovelPadrao from "@/assets/images/imovelPadrao.png"
 import { DadosContext } from "@/context/dadosContext";
+import { router } from "expo-router";
 
 
 export default function Pesquisa() {
@@ -255,9 +256,8 @@ export default function Pesquisa() {
                       endereco={imovel.endereco}
                       preco={imovel.preco} 
                       disponivel={imovel.disponivel} 
-                      redirecionamento={function (): void {
-                      throw new Error("Function not implemented.");
-                      }}/>
+                      redirecionamento={() => router.navigate({pathname: "../imovel", 
+                        params: {id: imovel.id}})}/>
                     
                     ))}
 
