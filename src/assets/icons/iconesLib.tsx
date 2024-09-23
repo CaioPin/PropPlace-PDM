@@ -30,5 +30,6 @@ export const iconesLib = {
     circulo2: <FontAwesome name="circle" size={24} color={cores.secundaria} />,
     filtro: <Ionicons name="filter" size={32} color={cores.secundaria} />,
     olho: <Feather name='eye' size={20} color={cores.secundaria} />,
-    olhoFechado: <Feather name='eye-off' size={20} color={cores.secundaria} />
+    olhoFechado: <Feather name='eye-off' size={20} color={cores.secundaria} />,
+    setaVoltar: <AntDesign name="arrowleft" size={40} color={cores.secundaria} />
 }
