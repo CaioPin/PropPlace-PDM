@@ -1,5 +1,7 @@
 export const fonte = {
     tipo: {
+        xxxg: 28,
+        xxg: 22,
         xg: 20,
         gg: 18,
         g: 16,
