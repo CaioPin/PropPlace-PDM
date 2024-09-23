@@ -12,20 +12,32 @@ import { router, useLocalSearchParams } from "expo-router";
 import { IMAGE_API_URL } from "@/api";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Botao } from "@/components/Botao";
+import { Modal } from "@/components/Modal";
 
 export default function informacaoImovel(){
     const { id } = useLocalSearchParams(); 
     const { userId } = useAuthContext();
-    const {todosImoveis, carregandoImoveis} = useContext(DadosContext);
+    const {todosImoveis, carregandoImoveis, excluirImovel} = useContext(DadosContext);
     const [loading, setLoading] = useState<boolean>(true);
     const [imovel, setImovel] = useState<any>();
     const [imagens, defineImagens] = useState<CarrosselItem[]>([]);
-
+    const [modal, setModal] = useState(false);
+    const [sucessoModal, setSucessoModal] = useState(false);
+    const [falhaModal, setFalhaModal] = useState(false);
 
     function defineImovel(){
         setLoading(carregandoImoveis);
         setImovel(todosImoveis.find((imovel) => imovel.id === id))
-        setLoading(carregandoImoveis);
+    }
+
+    function excluiImovel(id: string){
+        excluirImovel(id);
+        setImovel(todosImoveis.find((imovel) => imovel.id === id));
+        if(imovel){
+            setFalhaModal(true);
+        }else {
+            setSucessoModal(true);
+        }
     }
 
     function listaImagem(){
@@ -89,7 +101,7 @@ export default function informacaoImovel(){
                                 <Botao variante="generico" onPress={() => router.navigate({pathname: "../formularioImovel", params: {id: imovel.id}})}>
                                     <Botao.Titulo>Editar</Botao.Titulo>
                                 </Botao>
-                                <Botao variante="cancelar" onPress={() => router.navigate({pathname: "", params: {id: ""}})}>
+                                <Botao variante="cancelar" onPress={() => setModal(true)}>
                                     <Botao.Titulo>Deletar</Botao.Titulo>
                                 </Botao>
                             </View>
@@ -104,6 +116,36 @@ export default function informacaoImovel(){
                 ) : (
                 <Text className="justify-center self-center" style={estilo.texto}>Não foi possível encontrar o imóvel.</Text>
                 )}
+                
+                <Modal visible={modal}
+                onClose={() => setModal(false)}
+                titulo="Deseja deletar o imóvel?">
+                    <View className="flex flex-row justify-evenly pt-4">
+                        <Botao variante="enviar" 
+                         onPress={() => {{excluiImovel(imovel.id)
+                            setModal(false);
+                         }}} 
+                         style={{width: 80}}>
+                            <Botao.Titulo>Sim</Botao.Titulo>
+                        </Botao>
+                        <Botao variante="cancelar"
+                         onPress={() => setModal(false)} 
+                         style={{width: 80}}>
+                            <Botao.Titulo>Não</Botao.Titulo>
+                        </Botao>
+                    </View>
+                </Modal>
+
+                <Modal visible={sucessoModal}
+                onClose={() => {setSucessoModal(false)
+                    router.back();
+                }}
+                titulo="Imóvel deletado com sucesso!"/>
+
+                <Modal visible={falhaModal}
+                onClose={() => setFalhaModal(false)}
+                titulo="Não foi possível deletar o imóvel"></Modal>
+            
             </View>
         </ScrollView>
     </SafeAreaView>
