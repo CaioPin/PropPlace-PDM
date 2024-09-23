@@ -3,6 +3,7 @@ import { Imagem } from "./Imagem";
 type ImovelBase = {
   id: string;
   nome: string;
+  userId: string; // id do dono do imóvel
   tipo: string;
   descricao: string;
   disponivel: boolean,
