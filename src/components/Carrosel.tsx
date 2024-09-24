@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, ImageSourcePropType, Modal, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
@@ -6,14 +6,6 @@ import { iconesLib } from "../assets/icons/iconesLib";
 import { permissaoGaleria } from "../utils/permissoes";
 
 import imovelPadrao from "../assets/images/imovelPadrao.png";
-
-class CarrosselItemExemplo implements CarrosselItem {
-    imagem?: ImageSourcePropType = imovelPadrao;
-    caminho?: string = "";
-    titulo?: string = "";
-    subtitulo?: string = "";
-    redirecionamento?: () => void = () => {};
-}
 
 interface CarrosselItem {
     imagem?: ImageSourcePropType,
@@ -46,18 +38,23 @@ interface CarrosselPropriedades {
 }
 
 function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA, multilinhas, editavel, mostrarTexto, aoMudar}:CarrosselPropriedades) {
-    const itemExemplo = new CarrosselItemExemplo();
-    const itemFocadoInicial = visualizacao === CarrosselVisualizacao.EXPANDIDA && itens.length > 0 ? itens[0] : itemExemplo;
+    const [itemFocado, definirItemFocado] = useState<CarrosselItem>();
 
-    const [itemFocado, definirItemFocado] = useState(itemFocadoInicial);
+    useEffect(() => {
+        if (visualizacao === CarrosselVisualizacao.EXPANDIDA && itens.length > 0) {
+            definirItemFocado(itens[0]);
+        } else {
+            definirItemFocado(undefined);
+        }
+    }, [itens, visualizacao]);
 
     function visualizacaoTelaToda() {
         const imagens = itens.map(renderizavel => ({url: renderizavel.caminho || "", props: {source: renderizavel.imagem}}));
-        const indice = itens.indexOf(itemFocado);
+        const indice = itens.indexOf(itemFocado || {});
         
         return (
             <Modal visible transparent>
-                <TouchableWithoutFeedback onPress={() => definirItemFocado(itemExemplo)}>
+                <TouchableWithoutFeedback onPress={() => definirItemFocado(undefined)}>
                     <ImageViewer imageUrls={imagens} index={indice} />
                 </TouchableWithoutFeedback>
             </Modal>
@@ -65,20 +62,20 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
     }
 
     function visualizacaoExpandida() {
-        const textoAlternativo = itemFocado.titulo || "Imagem do imóvel";
+        const textoAlternativo = itemFocado?.titulo || "Imagem do imóvel";
         const tailwindView = "h-64 flex justify-center items-center";
         const tailwindImagem = "max-h-64 max-w-full mb-3";
 
         return (
             <View className={tailwindView} style={{height: 268}}>
-                <Image source={itemFocado.imagem} alt={textoAlternativo} className={tailwindImagem}
+                <Image source={itemFocado?.imagem} alt={textoAlternativo} className={tailwindImagem}
                     resizeMode="contain" defaultSource={imovelPadrao} progressiveRenderingEnabled  />
             </View>
         );
     }
 
     function focarItem() {
-        if (JSON.stringify(itemFocado) === JSON.stringify(itemExemplo)) return <></>;
+        if (!itemFocado) return <></>;
 
         if (visualizacao === CarrosselVisualizacao.TELA_TODA) return visualizacaoTelaToda();
         if (visualizacao === CarrosselVisualizacao.EXPANDIDA) return visualizacaoExpandida();
@@ -119,10 +116,7 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
     function renderizarItem(item:CarrosselItem, indice:number) {
         const textoAlternativo = item.titulo || "Imagem do imóvel";
         const tailwindContainer = "relative " + (tamanho === CarrosselTamanho.GRANDE ? "mr-8" : "mr-3 mb-3");
-        const tailwindImagem = "rounded-md";
-
-                        {/* TODO: Colocar imagem default caso nao receba imagem */}
-                        
+        
         return (
             <View className={tailwindContainer} style={{width: tamanho}} key={indice}>
                 { editavel &&
@@ -131,13 +125,10 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
                     </View> }
                     
                 <TouchableOpacity onPress={item.redirecionamento || (() => definirItemFocado(item))}>
-                    { item.imagem ? 
-                        <Image source={item.imagem} alt={textoAlternativo} className={tailwindImagem}
-                            resizeMode="contain" style={{width: tamanho, height: tamanho}}
-                            defaultSource={imovelPadrao} progressiveRenderingEnabled /> :
-                        <Image src={item.caminho} alt={textoAlternativo} className={tailwindImagem}
-                            resizeMode="contain" style={{width: tamanho, height: tamanho}}
-                            defaultSource={imovelPadrao} progressiveRenderingEnabled /> }
+                    <Image source={item.imagem || imovelPadrao} src={item.caminho}
+                        alt={textoAlternativo} className="rounded-md"
+                        resizeMode="contain" style={{width: tamanho, height: tamanho}}
+                        progressiveRenderingEnabled />
 
                     { mostrarTexto && item.titulo &&
                         <Text className="text-paleta-secundaria text-m mt-3" numberOfLines={2}>{item.titulo}</Text> }
