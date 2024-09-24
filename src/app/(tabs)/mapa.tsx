@@ -68,11 +68,12 @@ export default function TelaMapa() {
           aoMudar={() => {}}
         />
 
-        {coordenadas ? (
-          <Mapa centro={coordenadas} realizarRequisicoes />
-        ) : (
-          <Mapa />
-        )}
+        <Mapa
+          centro={coordenadas}
+          selecionavel
+        >
+          <Mapa.AdicionaImovel/>
+        </Mapa>
         <View className="absolute left-8 bottom-0 bg-paleta-fundo w-full h-8"></View>
 
         <Modal
