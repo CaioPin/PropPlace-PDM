@@ -70,7 +70,7 @@ function Campo({aoMudar, titulo, texto = "", valorInicial = "", ativo, atualizar
     
     return(
         <View className="w-full">
-            { titulo && <Text className="text-paleta-secundaria text-g mb-3">{titulo}</Text> }
+            { titulo && <Text className="text-paleta-secundaria font-medium text-g mb-3">{titulo}</Text> }
             
             <View className={tailwindAreaCampo}>
                 <TextInput className={tailwindTexto}
