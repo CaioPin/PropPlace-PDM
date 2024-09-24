@@ -5,6 +5,7 @@ import { UsuarioDTO } from "@/models/Usuario";
 import { ImovelDTO, ImovelEnderecado } from "@/models/Imovel";
 import { enderecaImoveis } from "@/utils/enderecaImovel";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { pegaStatusDeErro } from "@/utils/pegaStatusDeErro";
 
 interface UsuariosContext {
   todosUsuarios: UsuarioDTO[];
@@ -30,12 +31,11 @@ interface IProps {
 }
 
 function DadosProvider({ children }: IProps) {
-  const [carregandoUsuarios, setCarregandoUsuarios] = useState<boolean>(false);
-  const [carregandoImoveis, setCarregandoImoveis] = useState<boolean>(false);
+  const [carregandoUsuarios, setCarregandoUsuarios] = useState<boolean>(true);
+  const [carregandoImoveis, setCarregandoImoveis] = useState<boolean>(true);
   const [todosUsuarios, setTodosUsuarios] = useState<UsuarioDTO[]>([]);
   const [todosImoveis, setTodosImoveis] = useState<ImovelEnderecado[]>([]);
-  const { token } = useAuthContext();
-
+  const { token, deslogar } = useAuthContext();
 
   useEffect(() => {
     (async () => {
@@ -46,6 +46,10 @@ function DadosProvider({ children }: IProps) {
         setTodosImoveis(imoveisComEndereco);
       } catch (error) {
         console.error("Erro ao carregar imóveis: ", error);
+        const { status } = pegaStatusDeErro(error)!
+        if (status === 403) {
+          deslogar()
+        }
       } finally {
         setCarregandoImoveis(false);
       }
@@ -60,6 +64,10 @@ function DadosProvider({ children }: IProps) {
         setTodosUsuarios(respostaUsuarios.data);
       } catch (error) {
         console.error("Erro ao carregar usuários: ",error);
+        const { status } = pegaStatusDeErro(error)!
+        if (status === 403) {
+          deslogar()
+        }
       } finally {
         setCarregandoUsuarios(false);
       }

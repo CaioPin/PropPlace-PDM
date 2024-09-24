@@ -31,7 +31,7 @@ export default function Home() {
                     { id: "4", imagem: imovelPadrao, nome: "Mansão 4", endereco: "Rio de Janeiro - RJ" }
                 ],
                 proprietarios: [
-                    { id: "1", imagem: usuarioPadrao, nomeCompleto: "Pessoa 1" },
+                    { id: "32a43786-1413-4f24-ae58-71df0ea890fd", imagem: usuarioPadrao, nomeCompleto: "Pessoa 1" },
                     { id: "2", imagem: usuarioPadrao, nomeCompleto: "Pessoa 2" },
                     { id: "3", imagem: usuarioPadrao, nomeCompleto: "Pessoa 3" },
                     { id: "4", imagem: usuarioPadrao, nomeCompleto: "Pessoa 4" }
