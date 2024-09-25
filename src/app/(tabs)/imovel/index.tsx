@@ -13,6 +13,7 @@ import { IMAGE_API_URL } from "@/api";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Botao } from "@/components/Botao";
 import { Modal } from "@/components/Modal";
+import { formataMoeda } from "@/utils/formatacoes";
 
 export default function informacaoImovel(){
     const { id } = useLocalSearchParams(); 
@@ -80,21 +81,28 @@ export default function informacaoImovel(){
                         tamanho={CarrosselTamanho.MEDIO}
                         visualizacao={CarrosselVisualizacao.EXPANDIDA}
                         ></Carrossel>
-                        <Text style={estilo.textoComPeso2}>R${imovel.preco}</Text>
+                        <Text style={estilo.textoComPeso2}>{formataMoeda(imovel.preco)}</Text>
                         <Text className="pt-4 pb-2" style={estilo.texto}>{imovel.descricao}</Text>
                         <Text style={estilo.textoComPeso1}>Max. pessoas: {imovel.numInquilinos}</Text>
                         <View className="h-64 py-4" style={{ position: 'relative' }}>
-                            <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
-                                <Mapa realizarRequisicoes/>
+                                {imovel.endereco? (
                                 <View style={{
                                     position: 'absolute',
                                     bottom: 5,
                                     right: 5,
                                     alignItems: 'center'
-                                }}>
-                                    <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
+                                }}>  
+                                    <Mapa centro={imovel.endereco} marcarCentro/>               
+                                    <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
+                                        <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
+                                    </TouchableOpacity>                      
                                 </View>  
-                            </TouchableOpacity>                      
+                                ) : (
+                                    <View className="flex-1 align-center justify-center">
+                                      <Text style={estilo.texto}>Não foi possível localizar o imóvel no mapa.</Text>
+                                    </View>                                
+                                )}
+                                
                             </View>
                         {imovel.userId === userId ? (
                             <View className="flex flex-row justify-evenly pb-4">
