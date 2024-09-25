@@ -87,10 +87,10 @@ export default function informacaoImovel(){
                        
                                 {imovel.endereco? (
                                 <View className="h-64 py-4" style={{ position: 'relative' }}>                                        
-                                <Mapa centro={imovel.endereco} marcarCentro/>
+                                <Mapa centro={{latitude: imovel.latitude, longitude: imovel.longitude}} marcarCentro/>
                                     <View style={{
                                         position: 'absolute',
-                                        bottom: 5,
+                                        bottom: 15,
                                         right: 5,
                                         alignItems: 'center'
                                     }}>  
@@ -100,12 +100,11 @@ export default function informacaoImovel(){
                                     </View> 
                                 </View>
                                 ) : (
-                                    <View className="flex-1 align-center justify-center">
+                                    <View className="flex-1 items-center justify-center my-20">
                                       <Text style={estilo.texto}>Não foi possível localizar o imóvel no mapa.</Text>
                                     </View>                                
                                 )}
                                 
-                            
                         {imovel.userId === userId ? (
                             <View className="flex flex-row justify-evenly pb-4">
                                 <Botao variante="generico" onPress={() => router.navigate({pathname: "../formularioImovel", params: {id: imovel.id}})}>
