@@ -31,5 +31,7 @@ export const iconesLib = {
     filtro: <Ionicons name="filter" size={32} color={cores.secundaria} />,
     olho: <Feather name='eye' size={20} color={cores.secundaria} />,
     olhoFechado: <Feather name='eye-off' size={20} color={cores.secundaria} />,
-    setaVoltar: <AntDesign name="arrowleft" size={40} color={cores.secundaria} />
+    setaVoltar: <AntDesign name="arrowleft" size={40} color={cores.secundaria} />,
+    quadrado: <FontAwesome name="square-o" size={24} color={cores.secundaria} />,
+    quadradoCheck: <FontAwesome name="check-square" size={24} color={cores.secundaria} />
 }
