@@ -84,26 +84,28 @@ export default function informacaoImovel(){
                         <Text style={estilo.textoComPeso2}>{formataMoeda(imovel.preco)}</Text>
                         <Text className="pt-4 pb-2" style={estilo.texto}>{imovel.descricao}</Text>
                         <Text style={estilo.textoComPeso1}>Max. pessoas: {imovel.numInquilinos}</Text>
-                        <View className="h-64 py-4" style={{ position: 'relative' }}>
+                       
                                 {imovel.endereco? (
-                                <View style={{
-                                    position: 'absolute',
-                                    bottom: 5,
-                                    right: 5,
-                                    alignItems: 'center'
-                                }}>  
-                                    <Mapa centro={imovel.endereco} marcarCentro/>               
-                                    <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
-                                        <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
-                                    </TouchableOpacity>                      
-                                </View>  
+                                <View className="h-64 py-4" style={{ position: 'relative' }}>                                        
+                                <Mapa centro={imovel.endereco} marcarCentro/>
+                                    <View style={{
+                                        position: 'absolute',
+                                        bottom: 5,
+                                        right: 5,
+                                        alignItems: 'center'
+                                    }}>  
+                                        <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
+                                            <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
+                                        </TouchableOpacity>                      
+                                    </View> 
+                                </View>
                                 ) : (
                                     <View className="flex-1 align-center justify-center">
                                       <Text style={estilo.texto}>Não foi possível localizar o imóvel no mapa.</Text>
                                     </View>                                
                                 )}
                                 
-                            </View>
+                            
                         {imovel.userId === userId ? (
                             <View className="flex flex-row justify-evenly pb-4">
                                 <Botao variante="generico" onPress={() => router.navigate({pathname: "../formularioImovel", params: {id: imovel.id}})}>
