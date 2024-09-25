@@ -14,9 +14,9 @@ import { ListaSuspensa } from "@/components/ListaSuspensa";
 import { Modal } from "@/components/Modal";
 import { validacoesImovel } from "@/utils/validacoes";
 
-import imovelPadrao from "../../assets/images/imovelPadrao.png";
-import logo from "../../assets/images/logo.png";
-import usuario from "../../assets/images/usuario.png";
+import imovelPadrao from "@/assets/images/imovelPadrao.png";
+import logo from "@/assets/images/logo.png";
+import usuario from "@/assets/images/usuario.png";
 
 interface Coordenadas {
     latitude: number,
@@ -28,6 +28,7 @@ interface Objeto {
 }
 
 export default function FormularioImovel() {
+    const { id, longitude, latitude } = useLocalSearchParams();
     const [imovel, definirImovel] = useFormulario({});
     const [imagens, definirImagens] = useState<CarrosselItem[]>([]);
     const [coordenadas, definirCoordenadas] = useState<Coordenadas>();
@@ -35,7 +36,6 @@ export default function FormularioImovel() {
     const [preco, definirPreco] = useState("");
     const [mensagemErro, definirMensagemErro] = useState("");
     const [atualizar, definirAtualizar] = useState(0);
-    const { id } = useLocalSearchParams();
 
     const campos:Objeto = {
         imagens: "Fotos do imóvel",
@@ -77,6 +77,17 @@ export default function FormularioImovel() {
             }
         })();
     }, [id]);
+
+    useEffect(() => {
+      (async () => {
+        if (latitude && longitude) {
+          definirCoordenadas({
+            longitude: Number(longitude as string),
+            latitude: Number(latitude as string),
+          });
+        }
+      })();
+    }, [latitude, longitude]);
 
     function resetarInformacoes() {
         definirImovel({nome: "", tipo: "", descricao: "", capacidade: "", preco: "", alugado: false, endereco: ""});
@@ -167,7 +178,7 @@ export default function FormularioImovel() {
                     </View>
 
                     <View className="h-64">
-                        <Mapa centro={coordenadas} selecionavel marcarCentro={!!coordenadas} aoMudar={definirCoordenadas} />
+                        <Mapa centro={coordenadas} selecionavel marcarCentro={!!coordenadas} aoMudar={definirCoordenadas} isFormInput/>
                     </View>
                     
                     <View className="flex flex-row justify-center gap-8 w-full">
