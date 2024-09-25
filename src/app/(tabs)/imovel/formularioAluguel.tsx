@@ -17,12 +17,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function formularioAluguel(){
     const { id } = useLocalSearchParams();
     const { userId } = useAuthContext();
-    const { todosUsuarios, carregandoUsuarios, todosImoveis } = useContext(DadosContext);
+    const { todosUsuarios, carregandoUsuarios, todosImoveis, enviaEmail } = useContext(DadosContext);
     const [ usuario, setUsuario ] = useState<any>();
     const [ imovel, setImovel ] = useState<any>();
     const [loading, setLoading] = useState<boolean>(true);
     const [ modal, setModal ] = useState<boolean>(false);
+    const [ modalErro, setModalErro ] = useState<boolean>(false);
     const [ calendario, setCalendario ] = useState<boolean>(false);
+    const [ nome, setNome ] = useState("");
+    const [ telefone, setTelefone ] = useState("");
+    const [ quantPessoas, setQuantPessoas ] =useState("");
+    const [ tempo, setTempo ] = useState("");
+    const informacoes = { nome, telefone, quantPessoas, tempo };
+
 
     function encontraUser(){
         setLoading(carregandoUsuarios);
@@ -36,6 +43,19 @@ export default function formularioAluguel(){
     function aoSelecionarOpcao(opcao: string){
         if(opcao === "Personalizado"){
             setCalendario(true);
+        }else{
+            setTempo(opcao);
+        }
+    }
+
+    async function enviarEmail(){
+        const destinatario = usuario.email;
+        const resposta = await enviaEmail(destinatario, informacoes);
+
+        if (resposta.error) {
+            setModalErro(true);
+        } else {
+            setModal(true);
         }
     }
 
@@ -53,7 +73,6 @@ export default function formularioAluguel(){
                 type="clear"
                 titleStyle={estilo.texto}
                 onPress={() => router.back()}></Button>
-                {/* TODO: corrigir router.back q impede de voltar na pagina dps q sai */}
             </View>
             {loading? (
                 <Text className="justify-center self-center align-center" style={estilo.texto}>Carregando...</Text>
@@ -63,20 +82,25 @@ export default function formularioAluguel(){
                     <Campo aoMudar={() => {}} 
                         autoFocus
                         titulo="Nome completo"
-                        texto={usuario.nome}
+                        inputMode="text"
+                        value={nome}
+                        onChangeText={setNome}
                         ativo
                     />
                     <Campo aoMudar={() => {}}
                         titulo="Telefone"
-                        texto={usuario.telefone}
+                        value={telefone}
                         keyboardType="phone-pad"
                         autoComplete="tel-device"
+                        onChangeText={setTelefone}
                         maxLength={11}
                         ativo
                     />
                     <Campo aoMudar={() => {}}
                         titulo="Quantidade de pessoas"
                         keyboardType="phone-pad"
+                        value={quantPessoas}
+                        onChangeText={setQuantPessoas}
                         ativo
                     />
                     <Checkbox aoSelecionar={aoSelecionarOpcao}
@@ -87,7 +111,7 @@ export default function formularioAluguel(){
                     {calendario? (<Calendario/>) : (null)}
                     
                     <View className="flex flex-row justify-center mb-4">
-                        <Botao variante="enviar" onPress={() => {setModal(true)}}>
+                        <Botao variante="enviar" onPress={() => enviarEmail()}>
                             <Botao.Titulo>Enviar</Botao.Titulo>
                         </Botao>
                     </View>
@@ -99,6 +123,12 @@ export default function formularioAluguel(){
                 onClose={() => {{setModal(false)}
                 router.back()}} 
                  titulo="Solicitação enviada. O proprietário avaliará a solicitação e retornará o contato."/>
+            </View>
+            <View>
+                <Modal visible={modalErro}
+                onClose={() => {{setModalErro(false)}
+                router.back()}} 
+                 titulo="Não foi possível enviar a solicitação, tente novamente mais tarde."/>
             </View>
             
         </ScrollView>

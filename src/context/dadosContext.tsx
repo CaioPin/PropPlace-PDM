@@ -7,9 +7,15 @@ import { enderecaImoveis } from "@/utils/enderecaImovel";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { pegaStatusDeErro } from "@/utils/pegaStatusDeErro";
 
+interface RespostaEnvioEmail {
+  message?: string;
+  error?: string;
+}
+
 interface UsuariosContext {
   todosUsuarios: UsuarioDTO[];
   carregandoUsuarios: boolean;
+  enviaEmail: (destinatario: string, informacoes: Object) => Promise<RespostaEnvioEmail>
 }
 
 interface ImoveisContext {
@@ -24,6 +30,7 @@ const DadosContext = createContext<UsuariosContext & ImoveisContext>({
   carregandoUsuarios: false,
   carregandoImoveis: false,
   excluirImovel: async () => {},
+  enviaEmail: async () => ({}),
 });
 
 interface IProps {
@@ -35,7 +42,7 @@ function DadosProvider({ children }: IProps) {
   const [carregandoImoveis, setCarregandoImoveis] = useState<boolean>(true);
   const [todosUsuarios, setTodosUsuarios] = useState<UsuarioDTO[]>([]);
   const [todosImoveis, setTodosImoveis] = useState<ImovelEnderecado[]>([]);
-  const { token, deslogar } = useAuthContext();
+  const { deslogar } = useAuthContext();
 
   useEffect(() => {
     (async () => {
@@ -76,11 +83,7 @@ function DadosProvider({ children }: IProps) {
 
    async function excluirImovel(id: string){
     try{
-      await api.delete(`/imoveis/${id}`, {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      });
+      await api.delete(`/imoveis/${id}`)
       setTodosImoveis((prevImoveis) =>
         prevImoveis.filter((imovel) => imovel.id !== id));
     }
@@ -88,6 +91,19 @@ function DadosProvider({ children }: IProps) {
       console.error("Erro ao excluir imóvel: ", error);
     }
   }
+
+  async function enviaEmail(destinatario: string, informacoes: Object){
+    try{
+      await api.post(`/users/enviaEmail`,{
+        destinatario,
+        informacoes
+      });
+      return ({ message: 'Email enviado com sucesso!' });
+  } catch (erro) {
+    console.error(erro);
+    return ({ error: 'Erro ao enviar email' });
+  }
+}
 
   return (
     <DadosContext.Provider
@@ -97,6 +113,7 @@ function DadosProvider({ children }: IProps) {
         carregandoImoveis,
         todosImoveis,
         excluirImovel,
+        enviaEmail,
       }}>
       {children}
     </DadosContext.Provider>

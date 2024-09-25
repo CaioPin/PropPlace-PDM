@@ -116,7 +116,11 @@ export default function informacaoImovel(){
                             </View>
                         ) : (
                             <View className="flex flex-row justify-center pb-4">
-                                <Botao variante="enviar" onPress={() => router.navigate({pathname: "./formularioAluguel", params: {id: imovel.id}})}>
+                                <Botao variante={imovel.disponivel === true?
+                                                "enviar" 
+                                                : "inativo"} 
+                                     onPress={() => router.navigate({pathname: "./formularioAluguel", 
+                                     params: {id: imovel.id}})}>
                                     <Botao.Titulo>Alugar</Botao.Titulo>
                                 </Botao>
                             </View>
