@@ -199,7 +199,7 @@ export default function Pesquisa() {
   return <SafeAreaView style={{backgroundColor: cores.fundo, 
                               flexGrow: 1, padding: 4}}>
           <ScrollView>
-            <View className="flex flex-row">
+            <View className="flex flex-row px-2">
               <View className="grow">
                 <Campo
                 ativo
@@ -238,7 +238,7 @@ export default function Pesquisa() {
             </View>
 
             {pressed === 0 ? (
-              <View>
+              <View className="px-2">
                 {loading ? (
                   <Text style={estilo.texto}>Carregando imóveis...</Text>
                 ) : imoveis.length === 0? (
