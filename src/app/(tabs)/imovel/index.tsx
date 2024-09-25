@@ -53,7 +53,7 @@ export default function informacaoImovel(){
 
     useEffect(() => {
         defineImovel();
-    }, [carregandoImoveis]);
+    }, [carregandoImoveis, id]);
 
     useEffect(() => {
         listaImagem();

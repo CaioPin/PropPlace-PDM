@@ -238,7 +238,7 @@ export default function Pesquisa() {
             </View>
 
             {pressed === 0 ? (
-              <View className="px-2">
+              <View className="px-4">
                 {loading ? (
                   <Text style={estilo.texto}>Carregando imóveis...</Text>
                 ) : imoveis.length === 0? (
@@ -266,7 +266,7 @@ export default function Pesquisa() {
               </View>
             ) : (
 
-              <View>
+              <View className="px-4">
                 {loading ? (
                   <Text style={estilo.texto}>Carregando usuários...</Text>
                 ) : usuarios.length === 0 ? (
