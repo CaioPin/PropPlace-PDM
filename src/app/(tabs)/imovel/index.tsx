@@ -28,7 +28,7 @@ export default function informacaoImovel(){
 
     function defineImovel(){
         setLoading(carregandoImoveis);
-        setImovel(todosImoveis.find((imovel) => imovel.id === id))
+        setImovel(todosImoveis.find((imovel) => imovel.id === id));
     }
 
     function excluiImovel(id: string){
@@ -47,7 +47,7 @@ export default function informacaoImovel(){
                 caminho: `${IMAGE_API_URL}${imagem.nomeImagem}`,
                 // TODO: consertar exibição de imagem
             }));
-            defineImagens(novasImagens)
+            defineImagens(novasImagens);
         }
     }
 
@@ -162,12 +162,12 @@ export default function informacaoImovel(){
 const estilo = {
     texto: ConstrutorEstiloConstante.construtor()
     .corSecundaria()
-    .fonteXG()
+    .fonteGG()
     .peso3()
     .construir(),
     textoComPeso1: ConstrutorEstiloConstante.construtor()
     .corSecundaria()
-    .fonteXXG()
+    .fonteXG()
     .peso9()
     .construir(),
     textoComPeso2: ConstrutorEstiloConstante.construtor()
