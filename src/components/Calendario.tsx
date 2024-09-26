@@ -12,7 +12,11 @@ LocaleConfig.locales.pt = {
 };
 LocaleConfig.defaultLocale = "pt";
 
-function Calendario() {
+interface CalendarioPropriedades{
+    aoMudar: (parametro: object) => void,
+}
+
+function Calendario({aoMudar} : CalendarioPropriedades ) {
     const hoje = new Date();
     const hojeFormatado = formatarData(hoje);
     const dataMaxima = `${hoje.getFullYear() + 5}-${hoje.getMonth() + 1}-${hoje.getDate()}`;
@@ -49,6 +53,7 @@ function Calendario() {
 
             definirDatas({...datasIntermediarias, ...datasMarcadas});
         }
+        aoMudar(datasMarcadas);
     }, [datasMarcadas]);
 
     function marcarOutraData(data:DateData) {

@@ -29,7 +29,7 @@ export default function formularioAluguel(){
     const [ nome, setNome ] = useState("");
     const [ telefone, setTelefone ] = useState("");
     const [ quantPessoas, setQuantPessoas ] =useState("");
-    const [ tempo, setTempo ] = useState("");
+    const [ tempo, setTempo ] = useState({dataInicial: "1 ", dataFinal: "ano", dataFormatada: "1 ano"});
 
     function encontraUser(){
         setLoading(carregandoUsuarios);
@@ -40,12 +40,17 @@ export default function formularioAluguel(){
         setImovel(todosImoveis.find((imovel) => imovel.id === id));
     }
 
+    function pegaData(objeto: object){
+        const datas = Object.keys(objeto).map((data) => data.split("-").reverse().join("/")); 
+        setTempo({...tempo,dataFormatada: `De ${datas[0]} até ${datas[1]}`});
+    }
+
     function aoSelecionarOpcao(opcao: string){
         if(opcao === opcaoTempo){
-            setTempo("1 ano");
+            setCalendario(false);
+            setTempo({...tempo,dataFormatada: "1 ano"});
         }else{
             setCalendario(true);
-
         }
     }
 
@@ -60,7 +65,7 @@ export default function formularioAluguel(){
             contatoFormatado: formataTelefone(telefone),
             email: usuario.email,
             pessoas: quantPessoas,
-            periodo: tempo,
+            periodo: `${tempo.dataFormatada}`,
         }
         if(destinatario){
             const resposta = await enviaEmail(destinatario.email, informacoes);
@@ -124,7 +129,7 @@ export default function formularioAluguel(){
                         titulo={CheckboxTitulo.tempoContrato}
                     />
 
-                    {calendario? (<Calendario/>) : (null)}
+                    {calendario? (<Calendario aoMudar={pegaData}/> ) : (null)}
                     
                     <View className="flex flex-row justify-center mb-4">
                         <Botao variante="enviar" onPress={() => enviarEmail()}>
