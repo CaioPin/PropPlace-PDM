@@ -31,17 +31,14 @@ export default function informacaoImovel(){
         setImovel(todosImoveis.find((imovel) => imovel.id === id));
     }
 
-    async function excluiImovel(id: string){
-            setLoading(true);
-            try {
-                await excluirImovel(id);
-                setLoading(false);
-                setSucessoModal(true);
-            } catch (error) {
-                console.error("Erro ao excluir imóvel: ", error);
-                setFalhaModal(true);
-                setLoading(false);
-            }
+    function excluiImovel(id: string){
+        excluirImovel(id);
+        setImovel(todosImoveis.find((imovel) => imovel.id === id));
+        if(imovel){
+            setFalhaModal(true);
+        }else {
+            setSucessoModal(true);
+        }
     }
 
     function listaImagem(){
@@ -158,9 +155,7 @@ export default function informacaoImovel(){
                 titulo="Imóvel deletado com sucesso!"/>
 
                 <Modal visible={falhaModal}
-                onClose={() => {setFalhaModal(false)
-                    router.replace("../home")
-                }}
+                onClose={() => setFalhaModal(false)}
                 titulo="Não foi possível deletar o imóvel"></Modal>
             
             </View>

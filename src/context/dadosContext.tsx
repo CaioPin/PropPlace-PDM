@@ -42,7 +42,7 @@ function DadosProvider({ children }: IProps) {
   const [carregandoImoveis, setCarregandoImoveis] = useState<boolean>(true);
   const [todosUsuarios, setTodosUsuarios] = useState<UsuarioDTO[]>([]);
   const [todosImoveis, setTodosImoveis] = useState<ImovelEnderecado[]>([]);
-  const { userId, token, deslogar } = useAuthContext();
+  const { deslogar } = useAuthContext();
 
   useEffect(() => {
     (async () => {
@@ -81,26 +81,14 @@ function DadosProvider({ children }: IProps) {
     })();
   }, []);
 
-  async function excluirImovel(id: string) {
-    try {
-      const resposta = await api.delete(`/imoveis/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (resposta.status === 200) {
-        setCarregandoImoveis(true)
-        setTodosImoveis((prevImoveis) =>
-          prevImoveis.filter((imovel) => imovel.id !== id)
-        );        
-      } else {
-        console.error("Erro ao excluir o imóvel.");
-      }
-    } catch (error) {
+   async function excluirImovel(id: string){
+    try{
+      await api.delete(`/imoveis/${id}`)
+      setTodosImoveis((prevImoveis) =>
+        prevImoveis.filter((imovel) => imovel.id !== id));
+    }
+    catch(error){
       console.error("Erro ao excluir imóvel: ", error);
-    }finally{
-      setCarregandoImoveis(false)
     }
   }
 

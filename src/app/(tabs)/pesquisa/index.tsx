@@ -5,7 +5,7 @@ import { cores } from "@/constants/cores";
 import { iconesLib } from "@/assets/icons/iconesLib";
 import { Button } from "@rneui/base";
 import { ConstrutorEstiloConstante } from "@/utils/ConstrutorEstiloConstante";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Usuario } from "@/components/Usuario";
 import { Imovel } from "@/components/Imovel";
 import { Modal } from "@/components/Modal";
@@ -16,7 +16,7 @@ import { UsuarioDTO } from "@/models/Usuario";
 import usuarioPadrao from "@/assets/images/usuario.png"
 import imovelPadrao from "@/assets/images/imovelPadrao.png"
 import { DadosContext } from "@/context/dadosContext";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { CheckBox } from "@rneui/base";
 
 export default function Pesquisa() {
@@ -43,6 +43,7 @@ export default function Pesquisa() {
     }else{
       setImoveis(todosImoveis.filter((imovel) => imovel.disponivel === true));
     }
+    setLoading(carregandoImoveis);
   }
 
   async function listaUsuarios() {
@@ -160,13 +161,6 @@ export default function Pesquisa() {
     }
   }, [pesquisa, pressed]);
 
-  useFocusEffect(
-    useCallback(() => {
-        setCheck(false)
-        listaImoveis();
-    }, [todosImoveis, carregandoImoveis])
-);
-
   const buttonStyle = (buttonId: number) => ({
     flexGrow: 1,
     borderBottomWidth: pressed === buttonId ? 2 : 0, 
@@ -214,7 +208,6 @@ export default function Pesquisa() {
       }
     }
   };
-
 
   return <SafeAreaView style={{backgroundColor: cores.fundo, 
                               flexGrow: 1, padding: 4}}>
