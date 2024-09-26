@@ -15,14 +15,14 @@ class ModeloImovelPerfil {
 }
 
 class ModeloUsuarioPerfil {
-    imagem?: ImageSourcePropType;
+    imagem?: string;
     nomeCompleto: string;
     email: string;
     contato: string;
     nomeUsuario: string;
     imoveis?: ModeloImovelPerfil[];
 
-    constructor(imagem:ImageSourcePropType, nomeCompleto:string, email:string, contato:string, nomeUsuario:string, imoveis:ModeloImovelPerfil[]) {
+    constructor(imagem:string, nomeCompleto:string, email:string, contato:string, nomeUsuario:string, imoveis:ModeloImovelPerfil[]) {
         this.imagem = imagem;
         this.nomeCompleto = nomeCompleto;
         this.email = email;

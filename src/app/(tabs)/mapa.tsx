@@ -71,6 +71,7 @@ export default function TelaMapa() {
         <Mapa
           centro={coordenadas}
           selecionavel
+          realizarRequisicoes
         >
           <Mapa.AdicionaImovel/>
         </Mapa>

@@ -109,7 +109,7 @@ export default function informacaoImovel(){
                                 
                         {imovel.userId === userId ? (
                             <View className="flex flex-row justify-evenly pb-4">
-                                <Botao variante="generico" onPress={() => router.navigate({pathname: "../formularioImovel", params: {id: imovel.id}})}>
+                                <Botao variante="generico" onPress={() => router.navigate({pathname: "../formularioImovel", params: {id: imovel.nome}})}>
                                     <Botao.Titulo>Editar</Botao.Titulo>
                                 </Botao>
                                 <Botao variante="cancelar" onPress={() => setModal(true)}>

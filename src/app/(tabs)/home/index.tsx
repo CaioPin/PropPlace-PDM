@@ -7,12 +7,11 @@ import { Mapa } from "@/components/Mapa";
 import { Loading } from "@/components/Loading";
 import { ModeloImovelHome, ModeloProprietarioHome } from "@/models/modelosHome";
 import { cores } from "@/constants/cores";
-import { DadosContext } from "@/context/dadosContext";
-import { IMAGE_API_URL } from "@/api";
+import { useAuthContext } from "@/hooks/useAuthContext";
+import { constroiPerfilUsuario } from "@/utils/constroiModelo";
+import { api, IMAGE_API_URL } from "@/api";
 
 import usuarioPadrao from "@/assets/images/usuario.png";
-import imovelPadrao from "@/assets/images/imovelPadrao.png";
-import { useAuthContext } from "@/hooks/useAuthContext";
 
 export default function Home() {
     const { userId } = useAuthContext();
@@ -21,31 +20,19 @@ export default function Home() {
     const {todosImoveis, carregandoImoveis, carregandoUsuarios, todosUsuarios } = useContext(DadosContext);
     const [proprietarios, definirProprietarios] = useState<ModeloProprietarioHome[]>();
     const [carregando, definirCarregando] = useState(false);
+    const { userId } = useAuthContext();
 
     function defineImoveis(){
         definirCarregando(carregandoImoveis);
 
-            // TODO: adicionar requisição à API
+            const perfil = await constroiPerfilUsuario({userId: userId as string});
+            definirNome(perfil.nomeCompleto);
+            if (perfil.imoveis?.length > 0) definirImoveis(perfil.imoveis);
 
-            const modelosImoveis = todosImoveis?.map((imovel) => (
-                new ModeloImovelHome({ uri: imovel.imagens[0]? 
-                    `${IMAGE_API_URL}${imovel.imagens[0].nomeImagem}`
-                     : imovelPadrao}, imovel.nome, imovel.endereco, () => 
-                    router.navigate({pathname: "../imovel", 
-                        params: {id: imovel.id}}))
-            ));
-            
-            if (modelosImoveis?.length > 0) definirImoveis(modelosImoveis);
-    }
-
-    // async function defineProprietarios(){
-    //     const modelosProprietarios = todosUsuarios.map((proprietario => (
-    //             new ModeloProprietarioHome(proprietario.id, 
-    //                 {uri: proprietario.imagem? 
-    //                     proprietario.imagem : usuarioPadrao}, proprietario.nome)
-    //         )));            
-    //         definirProprietarios(modelosProprietarios);
-    // }
+            const usuarios = await api.get("/users")
+                .then(({data}) => data
+                    .map((usuario:any) => new ModeloProprietarioHome(usuario.id, usuario.imagem, usuario.nome)));
+            definirProprietarios(usuarios);
 
     useEffect(() => {
         console.log(todosImoveis)
@@ -56,6 +43,7 @@ export default function Home() {
     }, [carregandoImoveis, carregandoUsuarios]);
 
     function renderizarProprietario(proprietario:ModeloProprietarioHome) {
+        const tailwind = "border border-paleta-secundaria rounded-full";
         const tamanho = {height: 80, width: 80};
         const textoAlternativo = `Foto de ${proprietario.nomeCompleto}`;
 
@@ -63,9 +51,12 @@ export default function Home() {
             <TouchableOpacity className="flex gap-y-3"
                 onPress={() => router.navigate({pathname: "/perfil", params: {id: proprietario.id}})}>
 
-                <Image className="border border-paleta-secundaria rounded-full" style={tamanho}
-                    source={proprietario.imagem || usuarioPadrao} alt={textoAlternativo}
-                    progressiveRenderingEnabled />
+                { proprietario.imagem ? 
+                    <Image className={tailwind} style={tamanho} alt={textoAlternativo}
+                        src={IMAGE_API_URL + proprietario.imagem.nomeImagem} progressiveRenderingEnabled /> :
+                    <Image className={tailwind} style={tamanho} alt={textoAlternativo}
+                        source={usuarioPadrao}  progressiveRenderingEnabled />
+                }
 
                 <Text className="fonte-m text-paleta-secundaria text-center" numberOfLines={2}>{proprietario.nomeCompleto}</Text>
             </TouchableOpacity>
@@ -90,7 +81,7 @@ export default function Home() {
                     }
 
                     <View className={tailwindSecao}>
-                        <Text className={tailwindTexto}>Principais proprietários</Text>
+                        <Text className={tailwindTexto}>Principais usuários</Text>
                         <FlatList data={proprietarios} keyExtractor={(proprietario) => proprietario.id}
                             renderItem={(proprietario) => renderizarProprietario(proprietario.item)}
                             ItemSeparatorComponent={() => <View className="h-full w-8"></View>}

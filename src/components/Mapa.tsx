@@ -12,6 +12,7 @@ import pinToque from "@/assets/images/pinToque.png";
 import { cores } from "@/constants/cores";
 import { Botao } from "./Botao";
 import { router } from "expo-router";
+import { api } from "@/api";
 
 interface MapaCoordenadas {
     latitude: number,
@@ -30,7 +31,7 @@ const CoordenadaContexto = createContext<MapaCoordenadas | undefined>(undefined)
 
 function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes, aoMudar = ()=>{}, children, isFormInput, ...rest}: MapaPropriedades) {
     const coordenadaPadrao = {latitude: -22.970228680657357, longitude: -43.18134420587482};
-    const imovelPadrao = {nome: "", coordenadas: {latitude: 0, longitude: 0}, alugado: false, pagina: ""};
+    const imovelPadrao = {id: "", nome: "", coordenadas: {latitude: 0, longitude: 0}, disponivel: true};
 
     const [centroMapa, definirCentroMapa] = useState(coordenadaPadrao);
     const [localizacao, definirLocalizacao] = useState(coordenadaPadrao);
@@ -60,23 +61,28 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes, aoMudar 
         (async () => {
             if (!realizarRequisicoes) return;
 
-            // TODO: adicionar requisição ao back-end
-            const mock = [
-                {nome: "Imóvel livre", coordenadas: {latitude: -22.870228680657354, longitude: -43.08134420587480}, alugado: false, pagina: ""},
-                {nome: "Imóvel alugado", coordenadas: {latitude: -22.970228680657354, longitude: -43.18134420587480}, alugado: true, pagina: ""}
-            ];
-            definirImoveis(mock);
+            const respostaApi = await api.get("/imoveis", {data: localizacao}).then(({data}) => data);
+            console.log(respostaApi);
+            const imoveisApi = respostaApi.map((imovel:any) => {
+              return {
+                id: imovel.id,
+                nome: imovel.nome,
+                coordenadas: {latitude: imovel.latitude, longitude: imovel.longitude},
+                disponivel: imovel.disponivel
+              };
+            });
+
+            definirImoveis(imoveisApi);
         })();
     }, [localizacao]);
 
     function construirMarcadorImovel() {
         return (<>
             { imoveis.map((imovel, indice) => {
-                const pinImovel = imovel.alugado ? pinImovelAlugado : pinImovelLivre;
+                const pinImovel = imovel.disponivel ? pinImovelLivre : pinImovelAlugado;
 
-                // TODO: adicionar redirecionamento ao selecionar o marcador
                 return <Marker coordinate={imovel.coordenadas} image={pinImovel} title={imovel.nome}
-                    onSelect={() => {}} key={indice} />;
+                    onSelect={() => {router.navigate({pathname: "imovel", params: {id: imovel.id}})}} key={indice} />;
             }) }
         </>);
     }
@@ -140,7 +146,7 @@ function AdicionaImovel() {
         onPress={() => {
           router.push({
             pathname: "/formularioImovel",
-            params: { latitude, longitude },
+            params: { latitude, longitude, id: undefined },
           });
           markerRef.current?.hideCallout();
         }}>
