@@ -289,7 +289,7 @@ export default function Pesquisa() {
                       endereco={imovel.endereco}
                       preco={imovel.preco} 
                       disponivel={imovel.disponivel} 
-                      redirecionamento={() => router.navigate({pathname: "../imovel", 
+                      redirecionamento={() => router.navigate({pathname: "/imovel", 
                         params: {id: imovel.id}})}/>
                     
                     ))}

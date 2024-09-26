@@ -62,7 +62,6 @@ function Mapa({centro, marcarCentro, selecionavel, realizarRequisicoes, aoMudar 
             if (!realizarRequisicoes) return;
 
             const respostaApi = await api.get("/imoveis", {data: localizacao}).then(({data}) => data);
-            console.log(respostaApi);
             const imoveisApi = respostaApi.map((imovel:any) => {
               return {
                 id: imovel.id,

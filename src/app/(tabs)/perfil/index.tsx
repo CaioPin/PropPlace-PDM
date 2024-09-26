@@ -21,6 +21,7 @@ import { constroiPerfilUsuario } from "@/utils/constroiModelo";
 import adicionar from "@/assets/images/adicionar.png";
 import usuarioPadrao from "@/assets/images/usuario.png";
 import { api } from "@/api";
+import { Button } from "@rneui/base";
 
 interface Objeto {
     [key: string]: any
@@ -37,7 +38,7 @@ export default function Perfil() {
     const [atualizarCampos, definirAtualizarCampos] = useState(0);
     const [ehPerfilDoUserLogado, definirEhPerfilDoUserLogado] = useState(false);
     const { id: paramId } = useLocalSearchParams(); // renomeando pra não confundir
-    const { userId } = useAuthContext();
+    const { userId, deslogar } = useAuthContext();
 
     const campos:Objeto = {
         imagem: "Foto de perfil",
@@ -174,6 +175,10 @@ export default function Perfil() {
                     }
                 </TouchableOpacity>
                 <Text className="flex-1 text-paleta-secundaria text-xg" numberOfLines={2}>{usuario?.nomeCompleto}</Text>
+                <Button onPress={deslogar}
+                title="Sair"
+                titleStyle={{color: cores.destrutiva}}
+                type="clear"/>
             </View>
         );
     }

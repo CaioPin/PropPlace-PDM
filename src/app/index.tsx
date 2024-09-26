@@ -1,34 +1,22 @@
+import { Loading } from "@/components/Loading";
 import { useAuthContext } from "@/hooks/useAuthContext";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
 export default function App() {
-  const { username, userId, deslogar } = useAuthContext();
+  const { username } = useAuthContext();
 
   return (
     <View className="flex-1 justify-center items-center px-5 bg-paleta-fundo gap-4">
-      <Text>Root Screen acessível universalmente</Text>
       {username ? (
         <>
-          <Text>
-            username: "{username + '"\n'}id: "{userId + '"\n'}está logado
-          </Text>
-          <Link href="/home" className="text-blue-700">
-            Ir pra home em (tabs)
-          </Link>
+          <Redirect href={"/home"}></Redirect>
         </>
       ) : (
         <>
-          <Text>Ninguém está logado. Apenas rotas (auth) acessíveis</Text>
-          <Link href="/login" className="text-blue-700">
-            Ir pra login
-          </Link>
+          <Redirect href={"/login"}></Redirect>
         </>
       )}
-
-      <Pressable className="flex gap-y-3 bg-red-400" onPress={deslogar}>
-        <Text>Deslogar</Text>
-      </Pressable>
     </View>
   );
 }
