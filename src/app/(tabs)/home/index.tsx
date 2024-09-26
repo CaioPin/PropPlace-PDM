@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, Text, ScrollView, FlatList, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -14,15 +14,16 @@ import { api, IMAGE_API_URL } from "@/api";
 import usuarioPadrao from "@/assets/images/usuario.png";
 
 export default function Home() {
-    const [nome, definirNome] = useState("");
+    const { userId } = useAuthContext();
+    const [usuario, defineUsuario] = useState<any>();
     const [imoveis, definirImoveis] = useState<ModeloImovelHome[]>();
+    const {todosImoveis, carregandoImoveis, carregandoUsuarios, todosUsuarios } = useContext(DadosContext);
     const [proprietarios, definirProprietarios] = useState<ModeloProprietarioHome[]>();
     const [carregando, definirCarregando] = useState(false);
     const { userId } = useAuthContext();
 
-    useEffect(() => {
-        (async () => {
-            definirCarregando(true);
+    function defineImoveis(){
+        definirCarregando(carregandoImoveis);
 
             const perfil = await constroiPerfilUsuario({userId: userId as string});
             definirNome(perfil.nomeCompleto);
@@ -33,9 +34,13 @@ export default function Home() {
                     .map((usuario:any) => new ModeloProprietarioHome(usuario.id, usuario.imagem, usuario.nome)));
             definirProprietarios(usuarios);
 
-            definirCarregando(false);
-        })();
-    }, []);
+    useEffect(() => {
+        console.log(todosImoveis)
+        if (!carregandoImoveis && !carregandoUsuarios) {
+            defineImoveis();
+            definirCarregando(carregandoImoveis);
+        }
+    }, [carregandoImoveis, carregandoUsuarios]);
 
     function renderizarProprietario(proprietario:ModeloProprietarioHome) {
         const tailwind = "border border-paleta-secundaria rounded-full";
@@ -66,7 +71,7 @@ export default function Home() {
         <SafeAreaView style={{backgroundColor: cores.fundo, flexGrow: 1}}>
             <ScrollView>
                 <View className="flex justify-center gap-y-8 px-8">
-                    <Text className="font-extrabold text-xg text-paleta-secundaria text-center">Bem-vinda(o), {nome}!</Text>
+                    <Text className="font-extrabold text-xg text-paleta-secundaria text-center">Bem-vinda(o), !</Text>
 
                     { imoveis &&
                         <View className={tailwindSecao}>
