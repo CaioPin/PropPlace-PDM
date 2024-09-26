@@ -146,7 +146,7 @@ function AdicionaImovel() {
         onPress={() => {
           router.push({
             pathname: "/formularioImovel",
-            params: { latitude, longitude },
+            params: { latitude, longitude, id: undefined },
           });
           markerRef.current?.hideCallout();
         }}>

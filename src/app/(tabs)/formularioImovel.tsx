@@ -27,7 +27,7 @@ interface Objeto {
 }
 
 export default function FormularioImovel() {
-    const { id: identificadorImovel } = useLocalSearchParams();
+    const { id: identificadorImovel, latitude, longitude } = useLocalSearchParams();
     const [imovel, definirImovel] = useFormulario({});
     const [imagens, definirImagens] = useState<CarrosselItem[]>([]);
     const [coordenadas, definirCoordenadas] = useState<Coordenadas>();
@@ -65,6 +65,14 @@ export default function FormularioImovel() {
                 definirCarregando(false);
             } else {
                 resetarInformacoes();
+                
+                if (latitude && longitude) {
+                    const coords = {
+                        latitude: parseFloat(latitude as string),
+                        longitude: parseFloat(longitude as string)
+                    };
+                    definirCoordenadas(coords);
+                }
             }
         })();
     }, [identificadorImovel]);
