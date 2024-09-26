@@ -6,6 +6,7 @@ import {
   ModeloImovelPerfil,
 } from "@/models/modelosPerfil";
 import { router } from "expo-router";
+import { ImovelDTO } from "@/models/Imovel";
 
 type constroiPerfilArgs = {
   userId: string
@@ -40,7 +41,7 @@ export async function constroiPerfilUsuario(
         const redirecionamento = imoveisSaoEditaveis ? () => {
           router.navigate({
             pathname: "/formularioImovel",
-            params: { id: idImovel },
+            params: { id: nome },
           });
         } : () => {
           router.navigate({
@@ -54,4 +55,33 @@ export async function constroiPerfilUsuario(
     }),
   };
   return perfil;
+}
+
+type constroiImovelArgs = {
+  identificador: string
+}
+
+export async function constroiImovel({identificador}:constroiImovelArgs) {
+  const imovelApi: ImovelDTO = await api
+    .get("/imoveis/nome/" + identificador)
+    .then(({ data }) => data[0])
+    .catch((erro) => {
+      console.error(erro);
+    });
+
+    const imagens = imovelApi.imagens?.map(imagem => ({caminho: IMAGE_API_URL + imagem.nomeImagem})) || [];
+    const imovelMapeado = {
+      id: imovelApi.id,
+      nome: imovelApi.nome,
+      tipo: imovelApi.tipo,
+      descricao: imovelApi.descricao,
+      numInquilinos: imovelApi.numInquilinos,
+      preco: imovelApi.preco,
+      disponivel: imovelApi.disponivel,
+      latitude: imovelApi.latitude,
+      longitude: imovelApi.longitude,
+      imagens
+    };
+
+    return imovelMapeado;
 }
