@@ -14,7 +14,6 @@ function Usuario({ImagemUsuario, NomeUsuario, NivelUsuario, ...rest}: UsuariosPr
     return(
         <Button buttonStyle={estilo.botaoEstilo} type="clear" {...rest}>
             <View className="w-full flex-row py-2">
-                {/* TODO: Colocar imagem default caso nao receba imagem */}
                 <Image className="rounded-full border border-paleta-secundaria" source={ImagemUsuario} defaultSource={usuario} style={estilo.imagemEstilo} progressiveRenderingEnabled/>
                 <View className="ml-3 flex-1">
                     <Text className="text-paleta-secundaria text-gg font-black">{NomeUsuario}</Text>

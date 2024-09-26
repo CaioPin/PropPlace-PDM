@@ -45,7 +45,6 @@ export default function informacaoImovel(){
         if (imovel) {
             const novasImagens = imovel.imagens.map((imagem: { nomeImagem: string; }) => ({
                 caminho: `${IMAGE_API_URL}${imagem.nomeImagem}`,
-                // TODO: consertar exibição de imagem
             }));
             defineImagens(novasImagens);
         }
