@@ -13,6 +13,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { formataTelefone } from "@/utils/formatacoes";
 
 export default function formularioAluguel(){
     const { id } = useLocalSearchParams();
@@ -20,48 +21,62 @@ export default function formularioAluguel(){
     const { todosUsuarios, carregandoUsuarios, todosImoveis, enviaEmail } = useContext(DadosContext);
     const [ usuario, setUsuario ] = useState<any>();
     const [ imovel, setImovel ] = useState<any>();
-    const [loading, setLoading] = useState<boolean>(true);
+    const [ loading, setLoading ] = useState<boolean>(true);
     const [ modal, setModal ] = useState<boolean>(false);
     const [ modalErro, setModalErro ] = useState<boolean>(false);
     const [ calendario, setCalendario ] = useState<boolean>(false);
+    const [ opcaoTempo, setOpcaoTempo ] = useState<string>("1 ano")
     const [ nome, setNome ] = useState("");
     const [ telefone, setTelefone ] = useState("");
     const [ quantPessoas, setQuantPessoas ] =useState("");
     const [ tempo, setTempo ] = useState("");
-    const informacoes = { nome, telefone, quantPessoas, tempo };
-
 
     function encontraUser(){
         setLoading(carregandoUsuarios);
         setUsuario(todosUsuarios.find((usuario) => usuario.id === userId));
     }
 
-    async function encontraImovel() {
+    async function encontraImovelEDono() {
         setImovel(todosImoveis.find((imovel) => imovel.id === id));
     }
 
     function aoSelecionarOpcao(opcao: string){
-        if(opcao === "Personalizado"){
-            setCalendario(true);
+        if(opcao === opcaoTempo){
+            setTempo("1 ano");
         }else{
-            setTempo(opcao);
+            setCalendario(true);
+
         }
     }
 
     async function enviarEmail(){
-        const destinatario = usuario.email;
-        const resposta = await enviaEmail(destinatario, informacoes);
-
-        if (resposta.error) {
+        const destinatario = todosUsuarios.find((user) => user.id === imovel.userId);
+        const informacoes = {
+            proprietario: destinatario?.nome,
+            tipoImovel: imovel.tipo,
+            imovel: imovel.nome,
+            inquilino: nome,
+            contato: telefone,
+            contatoFormatado: formataTelefone(telefone),
+            email: usuario.email,
+            pessoas: quantPessoas,
+            periodo: tempo,
+        }
+        if(destinatario){
+            const resposta = await enviaEmail(destinatario.email, informacoes);
+            if (resposta.error) {
+                setModalErro(true);
+            } else {
+                setModal(true);
+            }
+        }else{
             setModalErro(true);
-        } else {
-            setModal(true);
         }
     }
 
     useEffect(() => {
         encontraUser();
-        encontraImovel();
+        encontraImovelEDono();
     }, [carregandoUsuarios]);
 
     return <SafeAreaView style={{backgroundColor: cores.fundo, 
@@ -85,6 +100,7 @@ export default function formularioAluguel(){
                         inputMode="text"
                         value={nome}
                         onChangeText={setNome}
+                        placeholder={usuario.nome}
                         ativo
                     />
                     <Campo aoMudar={() => {}}
