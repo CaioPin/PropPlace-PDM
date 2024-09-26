@@ -4,7 +4,7 @@ class ModeloImovelHome {
     imagem: ImageSourcePropType;
     titulo: string;
     subtitulo?: string;
-    redirecionamento: () => void
+    redirecionamento: () => void;
 
     constructor(imagem:ImageSourcePropType, titulo:string, subtitulo:string, redirecionamento:() => void) {
         this.imagem = imagem;
@@ -14,12 +14,16 @@ class ModeloImovelHome {
     }
 }
 
+interface ImagemProprietario {
+    nomeImagem: string
+}
+
 class ModeloProprietarioHome {
     id: string;
-    imagem: ImageSourcePropType;
+    imagem: ImagemProprietario;
     nomeCompleto: string;
 
-    constructor(id:string, imagem:ImageSourcePropType, nomeCompleto:string) {
+    constructor(id:string, imagem:ImagemProprietario, nomeCompleto:string) {
         this.id = id;
         this.imagem = imagem;
         this.nomeCompleto = nomeCompleto;
