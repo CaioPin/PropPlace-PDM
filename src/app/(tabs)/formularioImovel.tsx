@@ -102,11 +102,9 @@ export default function FormularioImovel() {
                 {data: {nomeImagem: imagem.caminho.split(IMAGE_API_URL)[1]}});
         });
 
-        const config = {     
-            headers: { 'content-type': 'multipart/form-data' }
-        }
+        const configuracao = {headers: {"content-type": "multipart/form-data"}};
 
-        if (novasImagens.length > 0) await api.post(url, dadosImagens, config);
+        if (novasImagens.length > 0) await api.post(url, dadosImagens, configuracao);
     }
 
     async function acaoBotaoSalvar() {

@@ -45,10 +45,8 @@ export async function constroiPerfilUsuario(
           });
         } : () => {
           router.navigate({
-            pathname: "/home",
-            // redirecionar pra outro canto
-            // pode ser uma tela que só mostra
-            // os atributos do imóvel estaticamente
+            pathname: "/imovel",
+            params: { id: idImovel },
           });
         }
       return new ModeloImovelPerfil(imagem, nome, descricao, redirecionamento);
