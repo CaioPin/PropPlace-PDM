@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, Text, ScrollView, FlatList, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -7,53 +7,53 @@ import { Mapa } from "@/components/Mapa";
 import { Loading } from "@/components/Loading";
 import { ModeloImovelHome, ModeloProprietarioHome } from "@/models/modelosHome";
 import { cores } from "@/constants/cores";
+import { DadosContext } from "@/context/dadosContext";
+import { IMAGE_API_URL } from "@/api";
 
 import usuarioPadrao from "@/assets/images/usuario.png";
 import imovelPadrao from "@/assets/images/imovelPadrao.png";
+import { useAuthContext } from "@/hooks/useAuthContext";
 
 export default function Home() {
-    const [nome, definirNome] = useState("");
+    const { userId } = useAuthContext();
+    const [usuario, defineUsuario] = useState<any>();
     const [imoveis, definirImoveis] = useState<ModeloImovelHome[]>();
+    const {todosImoveis, carregandoImoveis, carregandoUsuarios, todosUsuarios } = useContext(DadosContext);
     const [proprietarios, definirProprietarios] = useState<ModeloProprietarioHome[]>();
     const [carregando, definirCarregando] = useState(false);
 
-    useEffect(() => {
-        (async () => {
-            definirCarregando(true);
+    function defineImoveis(){
+        definirCarregando(carregandoImoveis);
 
             // TODO: adicionar requisição à API
-            const mock = {
-                nome: "Bruno Mars",
-                imoveis: [
-                    { id: "1", imagem: imovelPadrao, nome: "Mansão 1", endereco: "Rio de Janeiro - RJ" },
-                    { id: "2", imagem: imovelPadrao, nome: "Mansão 2", endereco: "Rio de Janeiro - RJ" },
-                    { id: "3", imagem: imovelPadrao, nome: "Mansão 3", endereco: "Rio de Janeiro - RJ" },
-                    { id: "4", imagem: imovelPadrao, nome: "Mansão 4", endereco: "Rio de Janeiro - RJ" }
-                ],
-                proprietarios: [
-                    { id: "32a43786-1413-4f24-ae58-71df0ea890fd", imagem: usuarioPadrao, nomeCompleto: "Pessoa 1" },
-                    { id: "2", imagem: usuarioPadrao, nomeCompleto: "Pessoa 2" },
-                    { id: "3", imagem: usuarioPadrao, nomeCompleto: "Pessoa 3" },
-                    { id: "4", imagem: usuarioPadrao, nomeCompleto: "Pessoa 4" }
-                ]
-            };
 
-            const modelosImoveis = mock.imoveis?.map((imovel) => (
-                new ModeloImovelHome(imovel.imagem, imovel.nome, imovel.endereco, () => 
+            const modelosImoveis = todosImoveis?.map((imovel) => (
+                new ModeloImovelHome({ uri: imovel.imagens[0]? 
+                    `${IMAGE_API_URL}${imovel.imagens[0].nomeImagem}`
+                     : imovelPadrao}, imovel.nome, imovel.endereco, () => 
                     router.navigate({pathname: "../imovel", 
                         params: {id: imovel.id}}))
             ));
-            const modelosProprietarios = mock.proprietarios.map((proprietario => (
-                new ModeloProprietarioHome(proprietario.id, proprietario.imagem, proprietario.nomeCompleto)
-            )));
-
-            definirNome(mock.nome.split(" ")[0]);
+            
             if (modelosImoveis?.length > 0) definirImoveis(modelosImoveis);
-            definirProprietarios(modelosProprietarios);
+    }
 
-            definirCarregando(false);
-        })();
-    }, []);
+    // async function defineProprietarios(){
+    //     const modelosProprietarios = todosUsuarios.map((proprietario => (
+    //             new ModeloProprietarioHome(proprietario.id, 
+    //                 {uri: proprietario.imagem? 
+    //                     proprietario.imagem : usuarioPadrao}, proprietario.nome)
+    //         )));            
+    //         definirProprietarios(modelosProprietarios);
+    // }
+
+    useEffect(() => {
+        console.log(todosImoveis)
+        if (!carregandoImoveis && !carregandoUsuarios) {
+            defineImoveis();
+            definirCarregando(carregandoImoveis);
+        }
+    }, [carregandoImoveis, carregandoUsuarios]);
 
     function renderizarProprietario(proprietario:ModeloProprietarioHome) {
         const tamanho = {height: 80, width: 80};
@@ -80,7 +80,7 @@ export default function Home() {
         <SafeAreaView style={{backgroundColor: cores.fundo, flexGrow: 1}}>
             <ScrollView>
                 <View className="flex justify-center gap-y-8 px-8">
-                    <Text className="font-extrabold text-xg text-paleta-secundaria text-center">Bem-vinda(o), {nome}!</Text>
+                    <Text className="font-extrabold text-xg text-paleta-secundaria text-center">Bem-vinda(o), !</Text>
 
                     { imoveis &&
                         <View className={tailwindSecao}>
