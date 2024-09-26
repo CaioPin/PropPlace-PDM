@@ -3,6 +3,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import mime from "mime";
 import { useFormulario } from "@/hooks/useFormulario";
 import { Campo } from "@/components/Campo";
 import { Carrossel, CarrosselTamanho } from "@/components/Carrosel";
@@ -15,10 +16,11 @@ import { cores } from "@/constants/cores";
 import { permissaoGaleria } from "@/utils/permissoes";
 import { formataTelefone } from "@/utils/formatacoes";
 import { validacoesUsuario } from "@/utils/validacoes";
+import { constroiPerfilUsuario } from "@/utils/constroiModelo";
 
 import adicionar from "@/assets/images/adicionar.png";
 import usuarioPadrao from "@/assets/images/usuario.png";
-import { constroiPerfilUsuario } from "@/utils/constroiModelo";
+import { api } from "@/api";
 
 interface Objeto {
     [key: string]: any
@@ -30,14 +32,13 @@ export default function Perfil() {
     const [editando, definirEditando] = useState(false);
     const [carregando, definirCarregando] = useState(true);
     const [mensagemErro, definirMensagemErro] = useState("");
-    const [caminhoImagem, definirCaminhoImagem] = useState("");
-    const [usuarioEditado, definirUsuarioEditado] = useFormulario();
+    const [caminhoImagem, definirCaminhoImagem] = useState<string | undefined>();
+    const [usuarioEditado, definirUsuarioEditado] = useFormulario({});
     const [atualizarCampos, definirAtualizarCampos] = useState(0);
+    const [ehPerfilDoUserLogado, definirEhPerfilDoUserLogado] = useState(false);
     const { id: paramId } = useLocalSearchParams(); // renomeando pra não confundir
-    const { userId } = useAuthContext()
+    const { userId } = useAuthContext();
 
-    const ehPerfilDoUserLogado = paramId === userId
-        // condição pro perfil ser do usuario logado ou de outro usuario
     const campos:Objeto = {
         imagem: "Foto de perfil",
         nomeCompleto: "Nome completo",
@@ -47,13 +48,14 @@ export default function Perfil() {
     };
     
     useEffect(() => {
+        definirEhPerfilDoUserLogado(paramId === userId);
         (async () => await atualizarPerfil())();
     }, [paramId]);
 
     async function atualizarPerfil() {
         definirCarregando(true);
 
-        if (!ehPerfilDoUserLogado) {
+        if (paramId !== userId) {
             
             const usuarioAvulso = await constroiPerfilUsuario({
               userId: paramId as string,
@@ -63,7 +65,7 @@ export default function Perfil() {
             definirImoveis(usuarioAvulso.imoveis || []);
         } else {
             const usuarioLogado = await constroiPerfilUsuario({
-              userId,
+              userId: userId as string,
               imoveisSaoEditaveis: true,
             });
             const adicionarImovel = new ModeloImovelPerfil(adicionar, "Adicionar imóvel",
@@ -79,7 +81,7 @@ export default function Perfil() {
     function acaoBotaoCancelar() {
         definirEditando(false);
         definirUsuarioEditado({});
-        definirCaminhoImagem("");
+        definirCaminhoImagem(undefined);
         definirAtualizarCampos(atualizarCampos + 1);
     }
 
@@ -91,21 +93,38 @@ export default function Perfil() {
             return;
         }
 
-        const partesUri = caminhoImagem.split(".");
-
-        const dados = new FormData();
-        Object.keys(usuarioEditado).forEach(key => {
-            dados.append(key, usuarioEditado[key]);
-        });
-        if (caminhoImagem) {
-            dados.append("imagem", JSON.stringify({
-                uri: caminhoImagem,
-                name: `imagemPerfil_${usuarioEditado.nomeCompleto}`,
-                type: `image/${partesUri[partesUri.length - 1]}`
-            }));
+        try {
+            const dados = {
+                nome: usuarioEditado.nomeCompleto,
+                email: usuarioEditado.email,
+                telefone: usuarioEditado.contato,
+                username: usuarioEditado.nomeUsuario
+            }
+            await api.put(`/users/${userId}`, dados);
+        } catch (erro) {
+            console.log(erro);
+            definirMensagemErro(`Houve um erro ao salvar as informações do perfil.`);
+            return;
         }
 
-        // TODO: adicionar chamada à API
+        try {
+            if (caminhoImagem) {
+                const dados = new FormData();
+                dados.append("imagem", {
+                    uri: caminhoImagem,
+                    type: mime.getType(caminhoImagem),
+                    name: `imagemPerfil_${usuarioEditado.nomeCompleto}.${mime.getType(caminhoImagem)?.split("/")[1]}`
+                } as any);
+                const configuracao = {headers: {"content-type": "multipart/form-data"}};
+    
+                await api.put("/imagem/user", dados, configuracao);
+            }
+        } catch (erro) {
+            console.log(erro);
+            definirMensagemErro(`Houve um erro ao salvar a foto de perfil.`);
+            return;
+        }
+
         await atualizarPerfil();
         acaoBotaoCancelar();
     }
@@ -167,17 +186,25 @@ export default function Perfil() {
                     { cabecalhoUsuario() }
 
                     <View className="flex gap-y-8">
-                        <Campo titulo={campos.nomeCompleto} texto={campos.nomeCompleto} valorInicial={usuario?.nomeCompleto} ativo={editando}
-                            aoMudar={(nomeCompleto) => definirUsuarioEditado({nomeCompleto})} atualizar={atualizarCampos} />
+                        <Campo titulo={campos.nomeCompleto} texto={campos.nomeCompleto}
+                            valorInicial={editando ? usuarioEditado.nomeCompleto : usuario?.nomeCompleto}
+                            ativo={editando} atualizar={atualizarCampos} aoMudar={() => {}}
+                            onChangeText={(nomeCompleto) => definirUsuarioEditado({nomeCompleto})} />
 
-                        <Campo titulo={campos.email} texto={campos.email} valorInicial={usuario?.email} ativo={editando} teclado="email-address"
-                            aoMudar={(email) => definirUsuarioEditado({email})} atualizar={atualizarCampos} />
+                        <Campo titulo={campos.email} texto={campos.email}
+                            valorInicial={editando ? usuarioEditado.email : usuario?.email}
+                            ativo={editando} teclado="email-address" atualizar={atualizarCampos} aoMudar={() => {}}
+                            onChangeText={(email) => definirUsuarioEditado({email})} />
 
-                        <Campo titulo={campos.contato} texto={campos.contato} valorInicial={usuario?.contato} ativo={editando} teclado="numeric"
-                            aoMudar={(contato) => definirUsuarioEditado({contato})} formatacao={formataTelefone} atualizar={atualizarCampos} />
+                        <Campo titulo={campos.contato} texto={campos.contato}
+                            valorInicial={editando ? usuarioEditado.contato : usuario?.contato}
+                            ativo={editando} teclado="numeric" atualizar={atualizarCampos}
+                            aoMudar={(contato) => definirUsuarioEditado({contato})} formatacao={formataTelefone} />
 
-                        { ehPerfilDoUserLogado && <Campo titulo={campos.nomeUsuario} texto={campos.nomeUsuario} valorInicial={usuario?.nomeUsuario} ativo={editando}
-                            aoMudar={(nomeUsuario) => definirUsuarioEditado({nomeUsuario})} atualizar={atualizarCampos} />}
+                        { ehPerfilDoUserLogado && <Campo titulo={campos.nomeUsuario} texto={campos.nomeUsuario}
+                            valorInicial={editando ? usuarioEditado.nomeUsuario : usuario?.nomeUsuario}
+                            ativo={editando} atualizar={atualizarCampos} aoMudar={() => {}}
+                            onChangeText={(nomeUsuario) => definirUsuarioEditado({nomeUsuario})} />}
                     </View>
 
                     { !editando && <Carrossel itens={imoveis} tamanho={CarrosselTamanho.GRANDE} mostrarTexto /> }

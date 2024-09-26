@@ -2,6 +2,10 @@ interface Objeto {
     [key: string]: any
 }
 
+function semValidacao(valor:any) {
+    return true;
+}
+
 function validaValorPresente(valor:any) {
     return valor !== undefined;
 }
@@ -51,15 +55,16 @@ function validacoesUsuario(usuario:Objeto) {
 
 function validacoesImovel(imovel:Objeto) {
     const validacoes: Objeto = {
+        id: semValidacao,
         imagens: validaArrayValido,
         nome: validaStringValida,
         tipo: validaStringValida,
         descricao: validaStringValida,
-        capacidade: validaNumeroValido,
+        numInquilinos: validaNumeroValido,
         preco: validaNumeroValido,
-        alugado: validaValorPresente,
-        endereco: validaStringValida,
-        coordenadas: validaObjetoValido
+        disponivel: validaValorPresente,
+        latitude: validaValorPresente,
+        longitude: validaValorPresente
     };
 
     return Object.keys(imovel).filter(key => !validacoes[key](imovel[key])).map(key => key);

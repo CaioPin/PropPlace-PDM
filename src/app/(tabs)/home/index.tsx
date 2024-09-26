@@ -7,55 +7,38 @@ import { Mapa } from "@/components/Mapa";
 import { Loading } from "@/components/Loading";
 import { ModeloImovelHome, ModeloProprietarioHome } from "@/models/modelosHome";
 import { cores } from "@/constants/cores";
+import { useAuthContext } from "@/hooks/useAuthContext";
+import { constroiPerfilUsuario } from "@/utils/constroiModelo";
+import { api, IMAGE_API_URL } from "@/api";
 
 import usuarioPadrao from "@/assets/images/usuario.png";
-import imovelPadrao from "@/assets/images/imovelPadrao.png";
 
 export default function Home() {
     const [nome, definirNome] = useState("");
     const [imoveis, definirImoveis] = useState<ModeloImovelHome[]>();
     const [proprietarios, definirProprietarios] = useState<ModeloProprietarioHome[]>();
     const [carregando, definirCarregando] = useState(false);
+    const { userId } = useAuthContext();
 
     useEffect(() => {
         (async () => {
             definirCarregando(true);
 
-            // TODO: adicionar requisição à API
-            const mock = {
-                nome: "Bruno Mars",
-                imoveis: [
-                    { id: "1", imagem: imovelPadrao, nome: "Mansão 1", endereco: "Rio de Janeiro - RJ" },
-                    { id: "2", imagem: imovelPadrao, nome: "Mansão 2", endereco: "Rio de Janeiro - RJ" },
-                    { id: "3", imagem: imovelPadrao, nome: "Mansão 3", endereco: "Rio de Janeiro - RJ" },
-                    { id: "4", imagem: imovelPadrao, nome: "Mansão 4", endereco: "Rio de Janeiro - RJ" }
-                ],
-                proprietarios: [
-                    { id: "32a43786-1413-4f24-ae58-71df0ea890fd", imagem: usuarioPadrao, nomeCompleto: "Pessoa 1" },
-                    { id: "2", imagem: usuarioPadrao, nomeCompleto: "Pessoa 2" },
-                    { id: "3", imagem: usuarioPadrao, nomeCompleto: "Pessoa 3" },
-                    { id: "4", imagem: usuarioPadrao, nomeCompleto: "Pessoa 4" }
-                ]
-            };
+            const perfil = await constroiPerfilUsuario({userId: userId as string});
+            definirNome(perfil.nomeCompleto);
+            if (perfil.imoveis?.length > 0) definirImoveis(perfil.imoveis);
 
-            const modelosImoveis = mock.imoveis?.map((imovel) => (
-                new ModeloImovelHome(imovel.imagem, imovel.nome, imovel.endereco, () => 
-                    router.navigate({pathname: "../imovel", 
-                        params: {id: imovel.id}}))
-            ));
-            const modelosProprietarios = mock.proprietarios.map((proprietario => (
-                new ModeloProprietarioHome(proprietario.id, proprietario.imagem, proprietario.nomeCompleto)
-            )));
-
-            definirNome(mock.nome.split(" ")[0]);
-            if (modelosImoveis?.length > 0) definirImoveis(modelosImoveis);
-            definirProprietarios(modelosProprietarios);
+            const usuarios = await api.get("/users")
+                .then(({data}) => data
+                    .map((usuario:any) => new ModeloProprietarioHome(usuario.id, usuario.imagem, usuario.nome)));
+            definirProprietarios(usuarios);
 
             definirCarregando(false);
         })();
     }, []);
 
     function renderizarProprietario(proprietario:ModeloProprietarioHome) {
+        const tailwind = "border border-paleta-secundaria rounded-full";
         const tamanho = {height: 80, width: 80};
         const textoAlternativo = `Foto de ${proprietario.nomeCompleto}`;
 
@@ -63,9 +46,12 @@ export default function Home() {
             <TouchableOpacity className="flex gap-y-3"
                 onPress={() => router.navigate({pathname: "/perfil", params: {id: proprietario.id}})}>
 
-                <Image className="border border-paleta-secundaria rounded-full" style={tamanho}
-                    source={proprietario.imagem || usuarioPadrao} alt={textoAlternativo}
-                    progressiveRenderingEnabled />
+                { proprietario.imagem ? 
+                    <Image className={tailwind} style={tamanho} alt={textoAlternativo}
+                        src={IMAGE_API_URL + proprietario.imagem.nomeImagem} progressiveRenderingEnabled /> :
+                    <Image className={tailwind} style={tamanho} alt={textoAlternativo}
+                        source={usuarioPadrao}  progressiveRenderingEnabled />
+                }
 
                 <Text className="fonte-m text-paleta-secundaria text-center" numberOfLines={2}>{proprietario.nomeCompleto}</Text>
             </TouchableOpacity>
@@ -90,7 +76,7 @@ export default function Home() {
                     }
 
                     <View className={tailwindSecao}>
-                        <Text className={tailwindTexto}>Principais proprietários</Text>
+                        <Text className={tailwindTexto}>Principais usuários</Text>
                         <FlatList data={proprietarios} keyExtractor={(proprietario) => proprietario.id}
                             renderItem={(proprietario) => renderizarProprietario(proprietario.item)}
                             ItemSeparatorComponent={() => <View className="h-full w-8"></View>}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
+import mime from "mime";
 import { useFormulario } from "@/hooks/useFormulario";
 import { Carrossel, CarrosselItem, CarrosselTamanho, CarrosselVisualizacao } from "@/components/Carrosel";
 import { Campo } from "@/components/Campo";
@@ -13,10 +14,8 @@ import { formataMoedaString } from "@/utils/formatacoes";
 import { ListaSuspensa } from "@/components/ListaSuspensa";
 import { Modal } from "@/components/Modal";
 import { validacoesImovel } from "@/utils/validacoes";
-
-import imovelPadrao from "@/assets/images/imovelPadrao.png";
-import logo from "@/assets/images/logo.png";
-import usuario from "@/assets/images/usuario.png";
+import { constroiImovel } from "@/utils/constroiModelo";
+import { api, IMAGE_API_URL } from "@/api";
 
 interface Coordenadas {
     latitude: number,
@@ -28,7 +27,7 @@ interface Objeto {
 }
 
 export default function FormularioImovel() {
-    const { id, longitude, latitude } = useLocalSearchParams();
+    const { id: identificadorImovel, latitude, longitude } = useLocalSearchParams();
     const [imovel, definirImovel] = useFormulario({});
     const [imagens, definirImagens] = useState<CarrosselItem[]>([]);
     const [coordenadas, definirCoordenadas] = useState<Coordenadas>();
@@ -42,93 +41,128 @@ export default function FormularioImovel() {
         nome: "Nome",
         tipo: "Tipo",
         descricao: "Descricao",
-        capacidade: "Número máximo de pessoas",
+        numInquilinos: "Número máximo de pessoas",
         preco: "Preço",
-        alugado: "Disponibilidade",
-        endereco: "Endereço",
-        coordenadas: "Localização no mapa"
+        disponivel: "Disponibilidade",
+        latitude: "Localização no mapa",
+        longitude: ""
     };
 
     useEffect(() => {
         (async () => {
-            if (id) {
+            if (identificadorImovel) {
                 definirCarregando(true);
     
-                // TODO: adicionar requisicao para buscar imóvel do ID
-                const mock = {
-                    imagens: [imovelPadrao, logo, usuario, logo],
-                    nome: "Mansão em Copacabana",
-                    tipo: "Casa",
-                    descricao: "600m²: tudo e um pouco mais",
-                    capacidade: 40,
-                    preco: 35800,
-                    alugado: false,
-                    endereco: "Rio de Janeiro - RJ",
-                    coordenadas: [-22.968687544875245, -43.18173037127648]
-                };
+                const imovelMapeado = await constroiImovel({identificador: identificadorImovel as string});
     
-                definirImovel(mock);
-                definirImagens(mock.imagens.map(imagem => ({imagem})));
-                definirCoordenadas({latitude: mock.coordenadas[0], longitude: mock.coordenadas[1]});
-                definirPreco(mock.preco.toString());
+                definirImovel(imovelMapeado);
+                definirImagens(imovelMapeado.imagens);
+                definirCoordenadas({
+                    latitude: imovelMapeado.latitude,
+                    longitude: imovelMapeado.longitude
+                });
+                definirPreco(imovelMapeado.preco.toString());
                 definirCarregando(false);
             } else {
                 resetarInformacoes();
+                
+                if (latitude && longitude) {
+                    const coords = {
+                        latitude: parseFloat(latitude as string),
+                        longitude: parseFloat(longitude as string)
+                    };
+                    definirCoordenadas(coords);
+                }
             }
         })();
-    }, [id]);
-
-    useEffect(() => {
-      (async () => {
-        if (latitude && longitude) {
-          definirCoordenadas({
-            longitude: Number(longitude as string),
-            latitude: Number(latitude as string),
-          });
-        }
-      })();
-    }, [latitude, longitude]);
+    }, [identificadorImovel]);
 
     function resetarInformacoes() {
-        definirImovel({nome: "", tipo: "", descricao: "", capacidade: "", preco: "", alugado: false, endereco: ""});
+        definirImovel({nome: "", tipo: "", descricao: "", numInquilinos: "", preco: "", disponivel: true});
         definirImagens([]);
         definirCoordenadas(undefined);
         definirPreco("");
         definirAtualizar(atualizar + 1);
     }
 
+    async function atualizarImagens(id?:string) {
+        const url = `/${id || imovel.id}/imagens`;
+        const novasImagens = imagens.filter(imagem => imagem.caminho?.includes("file:///"));
+
+        const dadosImagens = new FormData();
+        novasImagens.forEach(imagem => {
+            const caminho = imagem.caminho;
+
+            if (!caminho) return;
+
+            dadosImagens.append("images", {
+                uri: caminho,
+                type: mime.getType(caminho),
+                name: `imagemImovel_${imovel.nome}.${mime.getType(caminho)?.split("/")[1]}`
+            } as any);
+        });
+
+        const caminhosImagens = imagens.map(imagem => imagem.caminho);
+        const imagensParaDeletar = imovel.imagens.filter((imagem:any) => !caminhosImagens.includes(imagem.caminho));
+
+        imagensParaDeletar.forEach(async (imagem:Objeto) => {
+            await api.delete(url,
+                {data: {nomeImagem: imagem.caminho.split(IMAGE_API_URL)[1]}});
+        });
+
+        const configuracao = {headers: {"content-type": "multipart/form-data"}};
+
+        if (novasImagens.length > 0) await api.post(url, dadosImagens, configuracao);
+    }
+
     async function acaoBotaoSalvar() {
-        const imovelCompleto = {...imovel, imagens, coordenadas};
+        const preco = parseFloat(imovel.preco.toString().replace(",", "."));
+        const numInquilinos = parseInt(imovel.numInquilinos);
+
+        const imovelCompleto = {...imovel, ...coordenadas, imagens, preco, numInquilinos};
         const camposIncorretos = validacoesImovel(imovelCompleto).map(campo => `"${campos[campo]}"`).join(", ");
+
+        let idImovel = "";
 
         if (camposIncorretos.length > 0) {
             definirMensagemErro(`O(s) campo(s) ${camposIncorretos} apresenta(m) informacoes incorretas. Por favor, reveja-as para poder prosseguir.`);
             return;
         }
 
-        const dados = new FormData();
-        Object.keys(imovel).forEach(key => {
-            dados.append(key, imovel[key].toString());
-        });
-        dados.append("preco", imovel.preco.toString().replace(",", "."));
-        // TODO: ajustar alocação de imagens
-        dados.append("imagens", JSON.stringify(imagens.map(imagem => {
-            if (imagem.caminho) {
-                const partesUri = imagem.caminho.split(".");
-                return {
-                    uri: imagem.caminho,
-                    name: `imagemImovel_${imovel.nome}`,
-                    type: `image/${partesUri[partesUri.length - 1]}`
-                };
-            }
-            
-            return imagem;
-        })));
-        dados.append("coordenadas", JSON.stringify([coordenadas?.longitude, coordenadas?.latitude]));
+        const dadosImovel = {
+            nome: imovel.nome,
+            tipo: imovel.tipo,
+            descricao: imovel.descricao,
+            disponivel: imovel.disponivel,
+            preco: preco,
+            numInquilinos: numInquilinos,
+            latitude: coordenadas?.latitude,
+            longitude: coordenadas?.longitude
+        };
 
-        // TODO: adicionar chamad à API
-        console.log(dados);
-        if (!id) resetarInformacoes();
+        try {
+            if (!imovel.id) {
+                const retornoApi = await api.post("/imoveis", dadosImovel).then(retorno => retorno.data);
+                idImovel = retornoApi.imovel.id;
+            } else {
+                await api.put(`/imoveis/${imovel.id}`, dadosImovel);
+                idImovel = "";
+            }
+        } catch (erro) {
+            console.log(erro);
+            definirMensagemErro(`Houve um erro ao salvar as informações do imóvel.`);
+            return;
+        }
+
+        try {
+            await atualizarImagens(idImovel);
+        } catch (erro) {
+            console.log(erro);
+            definirMensagemErro(`Houve um erro ao salvar as imagens do imóvel.`);
+            return;
+        }
+
+        if (!identificadorImovel) resetarInformacoes();
         router.back();
     }
 
@@ -136,11 +170,12 @@ export default function FormularioImovel() {
         {nome: "Apartamento", valor: "Apartamento"},
         {nome: "Casa", valor: "Casa"},
         {nome: "Estúdio", valor: "Estúdio"},
+        {nome: "Kitnet", valor: "Kitnet"},
         {nome: "República", valor: "República"}
     ];
     const itensListaDisponibilidade = [
-        {nome: "Disponível", valor: false},
-        {nome: "Alugado", valor: true}
+        {nome: "Disponível", valor: true},
+        {nome: "Alugado", valor: false}
     ];
 
     return ( carregando ?
@@ -153,28 +188,22 @@ export default function FormularioImovel() {
 
                     <View className="flex gap-y-8">
                         <Campo titulo={campos.nome} texto="Apartamento no Edifício XPTO" valorInicial={imovel.nome}
-                            aoMudar={(nome) => definirImovel({nome})} ativo />
+                            onChangeText={(nome) => definirImovel({nome})} aoMudar={() => {}} ativo />
 
                         <ListaSuspensa titulo={campos.tipo} itens={itensListaTipo} valorInicial={imovel.tipo}
                             aoMudar={(tipo) => definirImovel({tipo: tipo.valor})} />
 
                         <Campo titulo={campos.descricao} texto="50m²: 1 sala, 1 suíte, 1 cozinha" valorInicial={imovel.descricao}
-                            aoMudar={(descricao) => definirImovel({descricao})} ativo />
+                            onChangeText={(descricao) => definirImovel({descricao})} aoMudar={() => {}} ativo />
 
-                        <Campo titulo={campos.capacidade} texto="0" valorInicial={imovel.capacidade?.toString()}
-                            aoMudar={(capacidade) => definirImovel({capacidade})} teclado="numeric" ativo />
-                        
-
-{/*                         TODO: Mudar campo para adicionar vírgula automaticamente no valor */}
+                        <Campo titulo={campos.numInquilinos} texto="0" valorInicial={imovel.numInquilinos?.toString()} teclado="numeric"
+                            onChangeText={(numInquilinos) => definirImovel({numInquilinos})} aoMudar={() => {}} ativo />
                         
                         <Campo titulo={campos.preco} texto="R$ 0,00" valorInicial={preco} formatacao={formataMoedaString}
                             aoMudar={(preco) => definirImovel({preco})} atualizar={atualizar} teclado="numeric" ativo />
 
-                        <ListaSuspensa titulo={campos.alugado} itens={itensListaDisponibilidade} valorInicial={imovel.alugado || false}
-                            aoMudar={(alugado) => definirImovel({alugado: alugado.valor})} />
-
-                        <Campo titulo={campos.endereco} texto="Cidade - UF" valorInicial={imovel.endereco}
-                            aoMudar={(endereco) => definirImovel({endereco})} ativo />
+                        <ListaSuspensa titulo={campos.disponivel} itens={itensListaDisponibilidade} valorInicial={imovel.disponivel}
+                            aoMudar={(disponivel) => definirImovel({disponivel: disponivel.valor})} />
                     </View>
 
                     <View className="h-64">
