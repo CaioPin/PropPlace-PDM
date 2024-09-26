@@ -66,6 +66,12 @@ export default function TabLayout() {
             href: null,
           }}
         />
+        <Tabs.Screen
+          name="imovel"
+          options={{
+            href: null,
+        }}
+        />
       </Tabs>
     </DadosProvider>
   );

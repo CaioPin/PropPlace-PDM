@@ -16,6 +16,8 @@ class ConstrutorEstiloConstante {
         return this;
     }
 
+    fonteXXXG() { return this.adicionarEstilo({fontSize: fonte.tipo.xxxg}); }
+    fonteXXG() { return this.adicionarEstilo({fontSize: fonte.tipo.xxg}); }
     fonteXG() { return this.adicionarEstilo({fontSize: fonte.tipo.xg}); }
     fonteGG() { return this.adicionarEstilo({fontSize: fonte.tipo.gg}); }
     fonteG() { return this.adicionarEstilo({fontSize: fonte.tipo.g}); }
