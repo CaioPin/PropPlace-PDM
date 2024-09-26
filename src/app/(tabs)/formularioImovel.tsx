@@ -78,7 +78,7 @@ export default function FormularioImovel() {
     }, [identificadorImovel]);
 
     function resetarInformacoes() {
-        definirImovel({nome: "", tipo: "", descricao: "", numInquilinos: "", preco: "", disponivel: true});
+        definirImovel({nome: "", tipo: "", descricao: "", numInquilinos: "", preco: "", disponivel: true, imagens: []});
         definirImagens([]);
         definirCoordenadas(undefined);
         definirPreco("");
@@ -141,7 +141,7 @@ export default function FormularioImovel() {
         };
 
         try {
-            if (!imovel.id) {
+            if (!identificadorImovel) {
                 const retornoApi = await api.post("/imoveis", dadosImovel).then(retorno => retorno.data);
                 idImovel = retornoApi.imovel.id;
             } else {
