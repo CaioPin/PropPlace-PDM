@@ -63,7 +63,7 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
 
     function visualizacaoExpandida() {
         const textoAlternativo = itemFocado?.titulo || "Imagem do imóvel";
-
+      
         return (
             <View className="h-64 w-full flex justify-center items-center">
                 <Image src={itemFocado?.caminho} source={itemFocado?.imagem || imovelPadrao}
