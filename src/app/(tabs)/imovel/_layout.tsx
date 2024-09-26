@@ -1,11 +1,14 @@
 import { DadosProvider } from "@/context/dadosContext";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 
-export default function informacaoImovelLayout() {
+export default function imovelLayout() {
   
   return (
     <DadosProvider>
-      <Slot />
+      <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index"/>
+      <Stack.Screen name="formularioAluguel"/>
+    </Stack>
     </DadosProvider>
   );
 }

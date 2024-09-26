@@ -63,16 +63,16 @@ function Carrossel({itens, tamanho, visualizacao = CarrosselVisualizacao.OCULTA,
 
     function visualizacaoExpandida() {
         const textoAlternativo = itemFocado?.titulo || "Imagem do imóvel";
-        const tailwindView = "h-64 flex justify-center items-center";
-        const tailwindImagem = "max-h-64 max-w-full mb-3";
-
+      
         return (
-            <View className={tailwindView} style={{height: 268}}>
-                <Image source={itemFocado?.imagem} alt={textoAlternativo} className={tailwindImagem}
-                    resizeMode="contain" defaultSource={imovelPadrao} progressiveRenderingEnabled  />
+            <View className="h-64 w-full flex justify-center items-center">
+                <Image src={itemFocado?.caminho} source={itemFocado?.imagem || imovelPadrao}
+                    alt={textoAlternativo} className="max-h-64 mb-3"
+                    resizeMode="contain" style={{width: "100%", height: "100%"}}
+                    progressiveRenderingEnabled  />
             </View>
-        );
-    }
+        );
+    }
 
     function focarItem() {
         if (!itemFocado) return <></>;

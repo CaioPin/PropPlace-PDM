@@ -13,6 +13,7 @@ import { IMAGE_API_URL } from "@/api";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Botao } from "@/components/Botao";
 import { Modal } from "@/components/Modal";
+import { formataMoeda } from "@/utils/formatacoes";
 
 export default function informacaoImovel(){
     const { id } = useLocalSearchParams(); 
@@ -27,7 +28,7 @@ export default function informacaoImovel(){
 
     function defineImovel(){
         setLoading(carregandoImoveis);
-        setImovel(todosImoveis.find((imovel) => imovel.id === id))
+        setImovel(todosImoveis.find((imovel) => imovel.id === id));
     }
 
     function excluiImovel(id: string){
@@ -44,15 +45,14 @@ export default function informacaoImovel(){
         if (imovel) {
             const novasImagens = imovel.imagens.map((imagem: { nomeImagem: string; }) => ({
                 caminho: `${IMAGE_API_URL}${imagem.nomeImagem}`,
-                // TODO: consertar exibição de imagem
             }));
-            defineImagens(novasImagens)
+            defineImagens(novasImagens);
         }
     }
 
     useEffect(() => {
         defineImovel();
-    }, [carregandoImoveis]);
+    }, [carregandoImoveis, id]);
 
     useEffect(() => {
         listaImagem();
@@ -80,22 +80,30 @@ export default function informacaoImovel(){
                         tamanho={CarrosselTamanho.MEDIO}
                         visualizacao={CarrosselVisualizacao.EXPANDIDA}
                         ></Carrossel>
-                        <Text style={estilo.textoComPeso2}>R${imovel.preco}</Text>
+                        <Text style={estilo.textoComPeso2}>{formataMoeda(imovel.preco)}</Text>
                         <Text className="pt-4 pb-2" style={estilo.texto}>{imovel.descricao}</Text>
                         <Text style={estilo.textoComPeso1}>Max. pessoas: {imovel.numInquilinos}</Text>
-                        <View className="h-64 py-4" style={{ position: 'relative' }}>
-                            <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
-                                <Mapa realizarRequisicoes/>
-                                <View style={{
-                                    position: 'absolute',
-                                    bottom: 5,
-                                    right: 5,
-                                    alignItems: 'center'
-                                }}>
-                                    <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
-                                </View>  
-                            </TouchableOpacity>                      
-                            </View>
+                       
+                                {imovel.endereco? (
+                                <View className="h-64 py-4" style={{ position: 'relative' }}>                                        
+                                <Mapa centro={{latitude: imovel.latitude, longitude: imovel.longitude}} marcarCentro/>
+                                    <View style={{
+                                        position: 'absolute',
+                                        bottom: 15,
+                                        right: 5,
+                                        alignItems: 'center'
+                                    }}>  
+                                        <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
+                                            <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
+                                        </TouchableOpacity>                      
+                                    </View> 
+                                </View>
+                                ) : (
+                                    <View className="flex-1 items-center justify-center my-20">
+                                      <Text style={estilo.texto}>Não foi possível localizar o imóvel no mapa.</Text>
+                                    </View>                                
+                                )}
+                                
                         {imovel.userId === userId ? (
                             <View className="flex flex-row justify-evenly pb-4">
                                 <Botao variante="generico" onPress={() => router.navigate({pathname: "../formularioImovel", params: {id: imovel.id}})}>
@@ -107,7 +115,11 @@ export default function informacaoImovel(){
                             </View>
                         ) : (
                             <View className="flex flex-row justify-center pb-4">
-                                <Botao variante="enviar" onPress={() => router.navigate({pathname: "", params: {id: ""}})}>
+                                <Botao variante={imovel.disponivel === true?
+                                                "enviar" 
+                                                : "inativo"} 
+                                     onPress={() => router.navigate({pathname: "./formularioAluguel", 
+                                     params: {id: imovel.id}})}>
                                     <Botao.Titulo>Alugar</Botao.Titulo>
                                 </Botao>
                             </View>
@@ -154,12 +166,12 @@ export default function informacaoImovel(){
 const estilo = {
     texto: ConstrutorEstiloConstante.construtor()
     .corSecundaria()
-    .fonteXG()
+    .fonteGG()
     .peso3()
     .construir(),
     textoComPeso1: ConstrutorEstiloConstante.construtor()
     .corSecundaria()
-    .fonteXXG()
+    .fonteXG()
     .peso9()
     .construir(),
     textoComPeso2: ConstrutorEstiloConstante.construtor()

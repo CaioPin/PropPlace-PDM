@@ -37,7 +37,7 @@ function Imovel({imagem, nome, endereco, preco, disponivel, redirecionamento}:Im
                     <View className="flex flex-row items-center gap-x-1">
                         <View className={tailwindIndicadorDisponibilidade} />
 
-                        <Text className="text-paleta-secundaria text-p font-medium">
+                        <Text className="text-paleta-secundaria pl-1 text-p font-medium">
                             {disponivel ? "Disponível" : "Indisponível"}
                         </Text>
                     </View>

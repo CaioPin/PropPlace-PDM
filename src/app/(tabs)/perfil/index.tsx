@@ -154,7 +154,7 @@ export default function Perfil() {
                             alt={textoAlternativo} progressiveRenderingEnabled/>
                     }
                 </TouchableOpacity>
-                <Text className="flex-1 text-paleta-secundaria text-g" numberOfLines={2}>{usuario?.nomeCompleto}</Text>
+                <Text className="flex-1 text-paleta-secundaria text-xg" numberOfLines={2}>{usuario?.nomeCompleto}</Text>
             </View>
         );
     }

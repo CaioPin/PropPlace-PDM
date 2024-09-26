@@ -17,6 +17,7 @@ import usuarioPadrao from "@/assets/images/usuario.png"
 import imovelPadrao from "@/assets/images/imovelPadrao.png"
 import { DadosContext } from "@/context/dadosContext";
 import { router } from "expo-router";
+import { CheckBox } from "@rneui/base";
 
 export default function Pesquisa() {
   const valorPadraoUser = "Inquilino";
@@ -32,11 +33,16 @@ export default function Pesquisa() {
   const [modalUser, defineModalUser] = useState(false);
   const [opcaoUser, setOpcaoUser] = useState<string>(valorPadraoUser);
   const [opcaoImovel, setOpcaoImovel] = useState<string>(valorPadraoImovel);
-  const {todosImoveis, todosUsuarios, carregandoImoveis, carregandoUsuarios} = useContext(DadosContext)
+  const {todosImoveis, todosUsuarios, carregandoImoveis, carregandoUsuarios} = useContext(DadosContext);
+  const [check, setCheck] = useState<boolean>(false)
 
   function listaImoveis() {
     setLoading(carregandoImoveis);
-    setImoveis(todosImoveis);
+    if(check){
+      setImoveis(todosImoveis);
+    }else{
+      setImoveis(todosImoveis.filter((imovel) => imovel.disponivel === true));
+    }
     setLoading(carregandoImoveis);
   }
 
@@ -74,8 +80,14 @@ export default function Pesquisa() {
         listaImoveis();
         return
       }
-      const imoveisTipoResultado = todosImoveis.filter(({tipo: tipoImovel}) => tipo === tipoImovel)
-      setImoveis(imoveisTipoResultado);
+      if(check){
+        const imoveisTipoResultado = todosImoveis.filter(({tipo: tipoImovel}) => tipo === tipoImovel);
+        setImoveis(imoveisTipoResultado);
+      }else{
+        const imoveisDisp = todosImoveis.filter((imovel) => imovel.disponivel === true);
+        const imoveisTipoResultado = imoveisDisp.filter(({tipo: tipoImovel}) => tipo === tipoImovel);
+        setImoveis(imoveisTipoResultado);
+      }
     }catch(error){
       console.error("Erro ao buscar imóveis por tipo: ", error);
     }
@@ -122,15 +134,16 @@ export default function Pesquisa() {
 
   useEffect(() => {
     if (pressed === 1) {
+      setCheck(false);
       listaUsuarios(); 
     }
   }, [pressed]);
 
   useEffect(() => {
     if (pressed === 0) {
-      listaImoveis();
+        listaImoveis();
     }
-  }, [pressed]);
+  }, [pressed, check]);
 
   useEffect(() => {
     if (pesquisa.length > 0) {
@@ -199,7 +212,7 @@ export default function Pesquisa() {
   return <SafeAreaView style={{backgroundColor: cores.fundo, 
                               flexGrow: 1, padding: 4}}>
           <ScrollView>
-            <View className="flex flex-row">
+            <View className="flex flex-row px-2">
               <View className="grow">
                 <Campo
                 ativo
@@ -238,7 +251,20 @@ export default function Pesquisa() {
             </View>
 
             {pressed === 0 ? (
-              <View>
+              <View className="px-4">
+                <View className="pb-4 flex justify-end">
+                  <CheckBox
+                  title="Incluir imóveis indisponíveis"
+                  containerStyle={{backgroundColor: cores.fundo, padding: 0, margin: 0}}
+                  textStyle={estilo.texto}
+                  checked={check}
+                  uncheckedIcon={iconesLib.quadrado}
+                  checkedIcon={iconesLib.quadradoCheck}
+                  onPress={() => {setCheck(!check)
+                    listaImoveis()
+                  }}
+                  ></CheckBox>
+                </View>
                 {loading ? (
                   <Text style={estilo.texto}>Carregando imóveis...</Text>
                 ) : imoveis.length === 0? (
@@ -266,7 +292,7 @@ export default function Pesquisa() {
               </View>
             ) : (
 
-              <View>
+              <View className="px-4">
                 {loading ? (
                   <Text style={estilo.texto}>Carregando usuários...</Text>
                 ) : usuarios.length === 0 ? (
@@ -320,7 +346,6 @@ export default function Pesquisa() {
           separador={true}
           aoSelecionar={aoSelecionarOpcao}
           />
-          {/* TODO: Filtro por disponibilidade? */}
           <View className="flex justify-center items-center">
             <Botao variante="enviar"
             onPress={confirmarSelecao}>
