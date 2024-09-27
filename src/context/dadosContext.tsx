@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { api } from "../api";
 import { UsuarioDTO } from "@/models/Usuario";
 import { ImovelDTO, ImovelEnderecado } from "@/models/Imovel";
-import { enderecaImoveis } from "@/utils/enderecaImovel";
+import { enderecaImoveis, enderecaImovel } from "@/utils/enderecaImovel";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { pegaStatusDeErro } from "@/utils/pegaStatusDeErro";
 
@@ -20,6 +20,7 @@ interface UsuariosContext {
 
 interface ImoveisContext {
   todosImoveis: ImovelEnderecado[];
+  atualizaImovel: (idImovel: string) => void;
   carregandoImoveis: boolean;
   excluirImovel: (id: string) => Promise<void>;
 }
@@ -27,6 +28,7 @@ interface ImoveisContext {
 const DadosContext = createContext<UsuariosContext & ImoveisContext>({
   todosUsuarios: [],
   todosImoveis: [],
+  atualizaImovel: (idImovel = "") => {},
   carregandoUsuarios: false,
   carregandoImoveis: false,
   excluirImovel: async () => {},
@@ -38,11 +40,11 @@ interface IProps {
 }
 
 function DadosProvider({ children }: IProps) {
-  const [carregandoUsuarios, setCarregandoUsuarios] = useState<boolean>(true);
-  const [carregandoImoveis, setCarregandoImoveis] = useState<boolean>(true);
+  const [carregandoUsuarios, setCarregandoUsuarios] = useState<boolean>(false);
+  const [carregandoImoveis, setCarregandoImoveis] = useState<boolean>(false);
   const [todosUsuarios, setTodosUsuarios] = useState<UsuarioDTO[]>([]);
   const [todosImoveis, setTodosImoveis] = useState<ImovelEnderecado[]>([]);
-  const { userId, token, deslogar } = useAuthContext();
+  const { token, deslogar } = useAuthContext();
 
   useEffect(() => {
     (async () => {
@@ -117,6 +119,28 @@ function DadosProvider({ children }: IProps) {
   }
 }
 
+async function atualizaImovel(idImovel: string) {
+  setCarregandoImoveis(true)
+  const todosImoveisAttPromise = todosImoveis.map(async (imovel) => {
+    if (imovel.id === idImovel) {
+      const imovelAtt: ImovelDTO = await api
+        .get("/imoveis/id/" + idImovel)
+        .then(({ data }) => data.imovel)
+        .catch((erro) => {
+          console.error(erro);
+        });
+      const imovelAttEnderecado: ImovelEnderecado = await enderecaImovel(
+        imovelAtt
+      );
+      return imovelAttEnderecado;
+    }
+    return imovel;
+  });
+  const todosImoveisAtt = await Promise.all(todosImoveisAttPromise)
+  setCarregandoImoveis(false)
+  setTodosImoveis(todosImoveisAtt);
+}
+
   return (
     <DadosContext.Provider
       value={{
@@ -126,6 +150,7 @@ function DadosProvider({ children }: IProps) {
         todosImoveis,
         excluirImovel,
         enviaEmail,
+        atualizaImovel
       }}>
       {children}
     </DadosContext.Provider>

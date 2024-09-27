@@ -40,8 +40,8 @@ export async function constroiPerfilUsuario(
 
         const redirecionamento = imoveisSaoEditaveis ? () => {
           router.navigate({
-            pathname: "/formularioImovel",
-            params: { id: nome },
+            pathname: "/imovel",
+            params: { id: idImovel },
           });
         } : () => {
           router.navigate({
@@ -60,9 +60,10 @@ type constroiImovelArgs = {
 }
 
 export async function constroiImovel({identificador}:constroiImovelArgs) {
+  const mandaReq = "/imoveis/id/" + identificador
   const imovelApi: ImovelDTO = await api
-    .get("/imoveis/nome/" + identificador)
-    .then(({ data }) => data[0])
+    .get("/imoveis/id/" + identificador)
+    .then(({ data }) => data.imovel)
     .catch((erro) => {
       console.error(erro);
     });

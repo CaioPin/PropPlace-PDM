@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
@@ -22,6 +22,7 @@ import adicionar from "@/assets/images/adicionar.png";
 import usuarioPadrao from "@/assets/images/usuario.png";
 import { api } from "@/api";
 import { Button } from "@rneui/base";
+import { DadosContext } from "@/context/dadosContext";
 
 interface Objeto {
     [key: string]: any
@@ -39,6 +40,7 @@ export default function Perfil() {
     const [ehPerfilDoUserLogado, definirEhPerfilDoUserLogado] = useState(false);
     const { id: paramId } = useLocalSearchParams(); // renomeando pra não confundir
     const { userId, deslogar } = useAuthContext();
+    const { todosImoveis } = useContext(DadosContext);
 
     const campos:Objeto = {
         imagem: "Foto de perfil",
@@ -51,7 +53,7 @@ export default function Perfil() {
     useEffect(() => {
         definirEhPerfilDoUserLogado(paramId === userId);
         (async () => await atualizarPerfil())();
-    }, [paramId]);
+    }, [paramId, todosImoveis]);
 
     async function atualizarPerfil() {
         definirCarregando(true);
@@ -175,10 +177,10 @@ export default function Perfil() {
                     }
                 </TouchableOpacity>
                 <Text className="flex-1 text-paleta-secundaria text-xg" numberOfLines={2}>{usuario?.nomeCompleto}</Text>
-                <Button onPress={deslogar}
+                { paramId === userId &&<Button onPress={deslogar}
                 title="Sair"
                 titleStyle={{color: cores.destrutiva}}
-                type="clear"/>
+                type="clear"/> }
             </View>
         );
     }
@@ -212,7 +214,10 @@ export default function Perfil() {
                             onChangeText={(nomeUsuario) => definirUsuarioEditado({nomeUsuario})} />}
                     </View>
 
-                    { !editando && <Carrossel itens={imoveis} tamanho={CarrosselTamanho.GRANDE} mostrarTexto /> }
+                    { !editando && <>
+                        <Text className="text-paleta-secundaria font-medium text-g mb-3">Imóveis</Text>
+                        <Carrossel itens={imoveis} tamanho={CarrosselTamanho.GRANDE} mostrarTexto />
+                    </>}
 
                     { ehPerfilDoUserLogado &&
                         <View className="flex flex-row justify-evenly w-full">

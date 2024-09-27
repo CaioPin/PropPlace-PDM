@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
@@ -16,6 +16,7 @@ import { Modal } from "@/components/Modal";
 import { validacoesImovel } from "@/utils/validacoes";
 import { constroiImovel } from "@/utils/constroiModelo";
 import { api, IMAGE_API_URL } from "@/api";
+import { DadosContext } from "@/context/dadosContext";
 
 interface Coordenadas {
     latitude: number,
@@ -35,6 +36,7 @@ export default function FormularioImovel() {
     const [preco, definirPreco] = useState("");
     const [mensagemErro, definirMensagemErro] = useState("");
     const [atualizar, definirAtualizar] = useState(0);
+    const { atualizaImovel } = useContext(DadosContext);
 
     const campos:Objeto = {
         imagens: "Fotos do imóvel",
@@ -116,6 +118,7 @@ export default function FormularioImovel() {
     }
 
     async function acaoBotaoSalvar() {
+        definirCarregando(true)
         const preco = parseFloat(imovel.preco.toString().replace(",", "."));
         const numInquilinos = parseInt(imovel.numInquilinos);
 
@@ -163,6 +166,8 @@ export default function FormularioImovel() {
         }
 
         if (!identificadorImovel) resetarInformacoes();
+        atualizaImovel(idImovel);
+        definirCarregando(false)
         router.back();
     }
 
