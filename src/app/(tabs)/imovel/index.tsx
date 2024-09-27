@@ -96,7 +96,7 @@ export default function informacaoImovel(){
                                         right: 5,
                                         alignItems: 'center'
                                     }}>  
-                                        <TouchableOpacity onPress={() => router.navigate({pathname: "../mapa"})}>
+                                        <TouchableOpacity onPress={() => router.navigate({pathname: "/mapa"})}>
                                             <Text style={[estilo.texto, { textDecorationLine: 'underline' }]}>Ver no mapa</Text>
                                         </TouchableOpacity>                      
                                     </View> 
@@ -109,7 +109,8 @@ export default function informacaoImovel(){
                                 
                         {imovel.userId === userId ? (
                             <View className="flex flex-row justify-evenly pb-4">
-                                <Botao variante="generico" onPress={() => router.navigate({pathname: "/imovel/formularioImovel", params: {id: imovel.nome}})}>
+                                <Botao variante="generico" onPress={() =>
+                                    router.navigate({pathname: "/formularioImovel", params: {id: imovel.id}})}>
                                     <Botao.Titulo>Editar</Botao.Titulo>
                                 </Botao>
                                 <Botao variante="cancelar" onPress={() => setModal(true)}>
@@ -121,7 +122,7 @@ export default function informacaoImovel(){
                                 <Botao variante={imovel.disponivel === true?
                                                 "enviar" 
                                                 : "inativo"} 
-                                     onPress={() => router.navigate({pathname: "./formularioAluguel", 
+                                     onPress={() => router.navigate({pathname: "/imovel/formularioAluguel", 
                                      params: {id: imovel.id}})}>
                                     <Botao.Titulo>Alugar</Botao.Titulo>
                                 </Botao>
@@ -159,7 +160,7 @@ export default function informacaoImovel(){
 
                 <Modal visible={falhaModal}
                 onClose={() => {setFalhaModal(false)
-                    router.replace("../home")
+                    router.replace("/home")
                 }}
                 titulo="Não foi possível deletar o imóvel"></Modal>
             
