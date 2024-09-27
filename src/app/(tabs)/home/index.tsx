@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, Text, ScrollView, FlatList, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -12,6 +12,7 @@ import { constroiPerfilUsuario } from "@/utils/constroiModelo";
 import { api, IMAGE_API_URL } from "@/api";
 
 import usuarioPadrao from "@/assets/images/usuario.png";
+import { DadosContext } from "@/context/dadosContext";
 
 export default function Home() {
     const [nome, definirNome] = useState("");
@@ -19,6 +20,7 @@ export default function Home() {
     const [proprietarios, definirProprietarios] = useState<ModeloProprietarioHome[]>();
     const [carregando, definirCarregando] = useState(false);
     const { userId } = useAuthContext();
+    const { todosImoveis } = useContext(DadosContext);
 
     useEffect(() => {
         (async () => {
@@ -35,7 +37,7 @@ export default function Home() {
 
             definirCarregando(false);
         })();
-    }, []);
+    }, [todosImoveis]);
 
     function renderizarProprietario(proprietario:ModeloProprietarioHome) {
         const tailwind = "border border-paleta-secundaria rounded-full";
